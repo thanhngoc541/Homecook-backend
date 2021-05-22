@@ -164,6 +164,8 @@ sketch
 # Edit at https://www.toptal.com/developers/gitignore?templates=eclipse,intellij
 
 ### Eclipse ###
+.classpath
+.project
 .metadata
 bin/
 tmp/
@@ -221,9 +223,6 @@ local.properties
 .scala_dependencies
 .worksheet
 
-# Uncomment this line if you wish to ignore the project description file.
-# Typically, this file would be tracked if it contains build/dependency configurations:
-#.project
 
 ### Eclipse Patch ###
 # Spring Boot Tooling
