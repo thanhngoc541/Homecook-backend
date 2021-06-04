@@ -1,3 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Lato", sans-serif;
+}
+
 .row-header {
   margin: 0px auto;
   padding: 0px auto;
@@ -11,7 +20,7 @@
 }
 
 .footer {
-  background-color: #ffffff;
+  background-color: #cccccc;
   margin: 0px auto;
   padding: 20px 0px 20px 0px;
   font-size: 80%;
@@ -19,6 +28,93 @@
 }
 
 .header {
-  padding: 10px 20px;
   background-color: #262626;
 }
+
+.bg-grey {
+  background-color: black;
+}
+
+.bg-liner {
+  background-image: linear-gradient(#c60021, #2c45b4);
+}
+
+/* START CSS for group-transition */
+.page-enter {
+  opacity: 0.01;
+  transform: translateX(-100%);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateX(0%);
+  transition: all 300ms ease-in;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateX(0%);
+}
+
+.page-exit-active {
+  opacity: 0.01;
+  transform: translateX(100%);
+  transition: all 300ms ease-out;
+}
+/* END CSS for group-transition */
+
+/* START CSS for custom SideBar */
+.menu-bars {
+  margin-left: 2rem;
+  font-size: 2rem;
+  background: none;
+}
+
+.nav-menu {
+  background-image: linear-gradient(#c60021, #2c45b4);
+  width: 250px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: fixed;
+  top: 0;
+  left: -100%;
+  transition: 850ms;
+  z-index: 9999;
+}
+
+.nav-menu.active {
+  left: 0;
+  transition: 350ms;
+}
+
+.nav-text {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 8px 0px 8px 16px;
+  list-style: none;
+  height: 60px;
+}
+
+.nav-text a {
+  text-decoration: none;
+  color: #f5f5f5;
+  font-size: 18px;
+  width: 95%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 4px;
+}
+
+.nav-text a:hover {
+  background-color: #a09f9f;
+}
+
+.nav-menu-items {
+  width: 100%;
+}
+/*END CSS for custom SideBar */

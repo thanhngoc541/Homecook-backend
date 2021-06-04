@@ -1,24 +1,38 @@
-import React from 'react'
-import { Switch, Route, Redirect, withRouter } from "react-router-dom"
-import { TransitionGroup, CSSTransition } from "react-transition-group"
-import Header from './Header'
-import Footer from './Footer'
+import React from "react";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import Header from "./Header";
+import Footer from "./Footer";
+import Home from "./Home";
+import Order from "./Order";
+import Setting from "./Setting";
+import Login from "./Login";
+import Menu from "./Menu";
 
-function Main(props){
-    return (
-        <div>
-            <Header />
-            <TransitionGroup>
-                <CSSTransition>
-                    <Switch>
-                        <Route />
-                        <Redirect to ='/home' />
-                    </Switch>
-                </CSSTransition>
-            </TransitionGroup>
-            <Footer />
-        </div>
-    )
+function Main(props) {
+  return (
+    <>
+      <Header />
+      <TransitionGroup>
+        <CSSTransition
+          key={props.location.key}
+          classNames="page"
+          timeout={300}
+          exit={false}
+        >
+          <Switch>
+            <Route path="/home" component={Home} />
+            <Route path="/menu" component={Menu} />
+            <Route path="/order" component={Order} />
+            <Route path="/setting" component={Setting} />
+            <Route path="/login" component={Login} />
+            <Redirect to="/home" />
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
+      <Footer />
+    </>
+  );
 }
 
-export default withRouter(Main)
+export default withRouter(Main);
