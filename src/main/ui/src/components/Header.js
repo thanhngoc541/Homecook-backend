@@ -3,7 +3,7 @@ import { Nav, Navbar, NavItem, Button } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
 function Header(props) {
-  const [sidebar, setSidebar] = useState(true);
+  const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
 
   return (
@@ -19,7 +19,7 @@ function Header(props) {
           </NavItem>
         </Nav>
       </Navbar>
-      {/* Cutom sidebar */}
+      {/* Custom sidebar */}
       <Navbar
         className={sidebar ? "nav-menu active bg-linear" : "nav-menu"}
         onClick={showSidebar}
@@ -27,35 +27,42 @@ function Header(props) {
         <Nav className="nav-menu-items" navbar vertical>
           <NavItem className="menu-bars">
             <i
-              class="fa fa-times text-white"
+              class="fa fa-times text-white mx-2"
               aria-hidden="true"
               onClick={showSidebar}
             ></i>
           </NavItem>
           <NavItem className="nav-text ">
             <NavLink className="nav-link px-3" to="/home">
-              <i class="fa fa-home fa-lg" aria-hidden="true"></i> Home
+              <i className="fa fa-home fa-lg mx-2" aria-hidden="true"></i>
+              <span>Home</span>
             </NavLink>
           </NavItem>
           <NavItem className="nav-text">
             <NavLink className="nav-link px-3" to="/menu">
-              <i class="fa fa-cutlery fa-lg" aria-hidden="true"></i> Menu
+              <i className="fa fa-cutlery fa-lg mx-2" aria-hidden="true"></i>
+              <span>Menu</span>
             </NavLink>
           </NavItem>
           <NavItem className="nav-text">
             <NavLink className="nav-link px-3" to="/order">
-              <i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i>{" "}
-              Orders
+              <i
+                className="fa fa-shopping-cart fa-lg mx-2"
+                aria-hidden="true"
+              ></i>
+              <span>Menu</span>
             </NavLink>
           </NavItem>
           <NavItem className="nav-text">
             <NavLink className="nav-link px-3" to="/setting">
-              <i class="fa fa-sliders fa-lg" aria-hidden="true"></i> Settings
+              <i className="fa fa-sliders fa-lg mx-2" aria-hidden="true"></i>
+              <span>Setting</span>
             </NavLink>
           </NavItem>
           <NavItem className="nav-text">
             <NavLink className="nav-link px-3" to="/login">
-              <i className="fa fa-sign-in fa-lg" aria-hidden="true"></i> Login
+              <i className="fa fa-sign-in fa-lg mx-2" aria-hidden="true"></i>
+              <span>Login</span>
             </NavLink>
           </NavItem>
         </Nav>
