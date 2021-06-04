@@ -11,7 +11,7 @@ function Main(props){
             <TransitionGroup>
                 <CSSTransition>
                     <Switch>
-                        <Route/>
+                        <Route />
                         <Redirect to ='/home' />
                     </Switch>
                 </CSSTransition>
