@@ -50,7 +50,7 @@ function Header(props) {
                 className="fa fa-shopping-cart fa-lg mx-2"
                 aria-hidden="true"
               ></i>
-              <span>Menu</span>
+              <span>Order</span>
             </NavLink>
           </NavItem>
           <NavItem className="nav-text">

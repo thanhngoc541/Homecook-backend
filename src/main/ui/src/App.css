@@ -1,10 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   font-family: "Lato", sans-serif;
+}
+
+body::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: #1e1e24;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #6649b8;
 }
 
 .row-header {
@@ -20,7 +29,7 @@
 }
 
 .footer {
-  background-color: #cccccc;
+  background-color: #ffffff;
   margin: 0px auto;
   padding: 20px 0px 20px 0px;
   font-size: 80%;
@@ -32,7 +41,7 @@
 }
 
 .bg-grey {
-  background-color: black;
+  background-color: #f8f9fc;
 }
 
 .bg-liner {
@@ -118,3 +127,43 @@
   width: 100%;
 }
 /*END CSS for custom SideBar */
+
+.ml-auto {
+  margin-left: auto;
+}
+.mr-auto {
+  margin-right: auto;
+}
+.mr-1 {
+  margin-right: 0.25rem;
+}
+.mr-2 {
+  margin-right: 0.5rem;
+}
+.mr-3 {
+  margin-right: 1rem;
+}
+.ml-1 {
+  margin-left: 0.25rem;
+}
+.ml-2 {
+  margin-left: 0.5rem;
+}
+.ml-3 {
+  margin-left: 1rem;
+}
+
+.my-3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.mx-3 {
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.mb-3 {
+  margin-bottom: 1rem;
+}
