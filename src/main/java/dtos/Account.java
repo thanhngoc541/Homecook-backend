@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Account implements Comparable<Account> {
+public class Account {
     private int UserID;
     private String Username, Password, Role, Email, FullName, Address, PhoneNumber;
     private boolean IsActive;
@@ -146,8 +146,15 @@ public class Account implements Comparable<Account> {
     	return 0;
     }
 
-    @Override
-    public int compareTo(Account o) {
-        return 0;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		Account o = (Account) obj;
+		return this.UserID == o.UserID && this.IsActive == o.IsActive && this.Address.equals(o.Address)
+	        	&& this.Email.equals(o.Email) && this.FullName.equals(o.FullName) && this.Username.equals(o.Username)
+	        	&& this.Password.equals(o.Password) && (this.DoB.compareTo(o.DoB)) == 0 
+	        	&& this.PhoneNumber.equals(o.PhoneNumber) && this.Role.equals(o.Role);
+	}
+    
+    
 }

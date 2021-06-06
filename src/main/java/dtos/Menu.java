@@ -69,4 +69,13 @@ public class Menu {
                 ", Dishes=" + Dishes +
                 '}';
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		Menu m = (Menu) obj;
+		return this.IsServing == m.IsServing && this.MenuID == m.MenuID && this.MenuName.equals(m.MenuName)
+				&& this.HomeCookName.equals(m.HomeCookName) && this.Dishes.containsAll(m.Dishes);
+	}
+    
+    
 }

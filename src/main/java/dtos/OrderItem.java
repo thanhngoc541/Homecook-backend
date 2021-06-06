@@ -83,4 +83,14 @@ public class OrderItem {
                 ", TotalPrice=" + TotalPrice +
                 '}';
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		OrderItem o = (OrderItem) obj;
+		return this.ItemID == o.ItemID && this.Note.equals(o.Note) && this.OrderID == o.OrderID
+				&& this.Quantity == o.Quantity && this.TotalPrice == this.TotalPrice
+				&& this.Dish.equals(o.Dish);
+	}
+    
+    
 }

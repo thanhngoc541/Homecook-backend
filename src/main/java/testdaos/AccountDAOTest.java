@@ -5,20 +5,20 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import org.junit.Test;
 
-import daos.HomeCookDAO;
+import daos.AccountDAO;
 import dtos.Account;
 
-public class HomeCookDAOTests {
-	HomeCookDAO testSubject = new HomeCookDAO();
+public class AccountDAOTest {
+	AccountDAO testSubject = new AccountDAO();
 	ArrayList<Account> expected = new ArrayList<Account>();
 	
 	//Prepare the test data
 	{
-		expected = testSubject.getAllHomeCook();
+		expected = testSubject.getAllAccountByRole("HomeCook");
 	}
 	@Test
 	public void testGetHomeCook() {
-		ArrayList<Account> output = testSubject.getAllHomeCook();
+		ArrayList<Account> output = testSubject.getAllAccountByRole("HomeCook");
 		for (int i=0; i < expected.size(); i++) {
 			assertEquals(expected.get(i), output.get(i));
 		}
