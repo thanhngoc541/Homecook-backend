@@ -104,4 +104,15 @@ public class Dish {
                 ", ImageURL='" + ImageURL + '\'' +
                 '}';
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		Dish d = (Dish) obj;
+		return this.IsAvailable == d.IsAvailable && this.DishId == d.DishId 
+				&& this.Description.equals(d.Description) && this.DishName.equals(d.DishName)
+				&& this.ImageURL.equals(d.ImageURL) && this.HomeCookID == d.HomeCookID 
+				&& this.Price == d.Price;
+	}
+    
+    
 }

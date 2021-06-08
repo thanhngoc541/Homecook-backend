@@ -1,16 +1,102 @@
 package daos;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Utils.DBContext;
 import dtos.Account;
 
-public class UserDAO {
-	public Account getUserByID(int ID) {
+public class AccountDAO {
+	
+	public ArrayList<Account> getAllAccountByRole(String role){
+		try {
+			ArrayList<Account> result = new ArrayList<Account>();
+			Account tempoResult = new Account();
+			Connection conn = DBContext.makeConnection();
+			
+			String query = "SELECT UserID, Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber, IsActive "
+					+ "FROM Accounts "
+					+ "WHERE RoleID = ?";
+			
+			PreparedStatement prstm = conn.prepareStatement(query);
+			prstm.setInt(1, tempoResult.getRoleID(role));
+			ResultSet rs = prstm.executeQuery();
+			
+			while (rs.next()) {
+				tempoResult.setUserID(rs.getInt("UserID"));
+				tempoResult.setUsername(rs.getString("Username"));
+				tempoResult.setPassword(rs.getString("Password"));
+				tempoResult.setFullName(rs.getString("FullName"));
+				tempoResult.setEmail(rs.getString("Email"));
+				tempoResult.setDoB(
+						new java.util.Date(rs.getDate("DoB").getTime()));
+				tempoResult.setAddress(rs.getString("Address"));
+				tempoResult.setPhoneNumber(rs.getString("PhoneNumber"));
+				tempoResult.setActive(rs.getBoolean("IsActive"));
+				tempoResult.setRole(tempoResult.getRoleName(rs.getInt("RoleID")));
+				
+				result.add(tempoResult);
+			}
+			conn.close();
+			return result;
+		}		
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public boolean createAccount(Account input) {
+		try {
+			Connection conn = DBContext.makeConnection();
+			String query =
+					"INSERT INTO Accounts (Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber)"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement prstm = conn.prepareStatement(query);
+			
+			prstm.setString(1, input.getUsername());
+			prstm.setString(2, input.getPassword());
+			prstm.setInt(3,  input.getRoleID(input.getRole()));
+			prstm.setString(4, input.getEmail());
+			prstm.setString(5, input.getFullName());
+			prstm.setDate(6, java.sql.Date.valueOf(input.getDoB()));
+			prstm.setString(7,  input.getAddress());
+			prstm.setString(8, input.getPhoneNumber());
+			
+			return prstm.executeUpdate() == 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean changeHomeCookStatus(int userID, boolean status) {
+		try {
+		Connection conn = DBContext.makeConnection();
+		
+		String query =
+				"UPDATE Accounts"
+				+ "SET IsActive = ?"
+				+ "WHERE UserID= ?";
+		
+		PreparedStatement prstm = conn.prepareStatement(query);
+		
+		prstm.setBoolean(1, status);
+		prstm.setInt(8, userID);
+		
+		return prstm.executeUpdate() == 1;
+	}
+	catch (Exception e) {
+		e.printStackTrace();
+	}
+	return false;
+	}
+	
+	public Account getAccountByID(int ID) {
 		try {
 			Account result = new Account();
 			Connection conn = DBContext.makeConnection();
@@ -78,32 +164,8 @@ public class UserDAO {
 		return null;
 	}
 	
-	public boolean createUserAccount(Account input) {
-		try {
-			Connection conn = DBContext.makeConnection();
-			String query =
-					"INSERT INTO Accounts (Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber)"
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-			PreparedStatement prstm = conn.prepareStatement(query);
-			
-			prstm.setString(1, input.getUsername());
-			prstm.setString(2, input.getPassword());
-			prstm.setInt(3,  input.getRoleID("Customer"));
-			prstm.setString(4, input.getEmail());
-			prstm.setString(5, input.getFullName());
-			prstm.setDate(6, java.sql.Date.valueOf(input.getDoB()));
-			prstm.setString(7,  input.getAddress());
-			prstm.setString(8, input.getPhoneNumber());
-			
-			return prstm.executeUpdate() == 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
 	
-	public boolean updateUserInfo(Account input) {
+	public boolean updateAccountInfo(Account input) {
 		try {
 			Connection conn = DBContext.makeConnection();
 			String query =
@@ -129,43 +191,5 @@ public class UserDAO {
 			e.printStackTrace();
 		}
 		return false;
-	}
-	
-	public ArrayList<Account> getAllCustomers(){
-		try {
-			ArrayList<Account> result = new ArrayList<Account>();
-			Account tempoResult = new Account();
-			Connection conn = DBContext.makeConnection();
-		
-			String query = "SELECT UserID, Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber, IsActive "
-					+ "FROM Accounts "
-					+ "WHERE RoleID = ?";
-		
-			PreparedStatement prstm = conn.prepareStatement(query);
-			prstm.setInt(1, tempoResult.getRoleID("Customer"));
-			ResultSet rs = prstm.executeQuery();
-		
-			while (rs.next()) {
-				tempoResult.setUserID(rs.getInt("UserID"));
-				tempoResult.setUsername(rs.getString("Username"));
-				tempoResult.setPassword(rs.getString("Password"));
-				tempoResult.setFullName(rs.getString("FullName"));
-				tempoResult.setEmail(rs.getString("Email"));
-				tempoResult.setDoB(
-					new java.util.Date(rs.getDate("DoB").getTime()));
-				tempoResult.setAddress(rs.getString("Address"));
-				tempoResult.setPhoneNumber(rs.getString("PhoneNumber"));
-				tempoResult.setActive(rs.getBoolean("IsActive"));
-				tempoResult.setRole(tempoResult.getRoleName(rs.getInt("RoleID")));
-			
-				result.add(tempoResult);
-			}
-			conn.close();
-			return result;
-		}		
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 }

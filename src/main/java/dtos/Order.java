@@ -169,4 +169,15 @@ public class Order {
         }
         return 0;
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		Order o = (Order) obj;
+		return this.CustomerID == o.CustomerID && this.HomeCookID == o.HomeCookID && this.OrderID == o.OrderID
+				&& this.ReceiverAddress.equals(o.ReceiverAddress) && this.ReceiverName.equals(o.ReceiverName)
+				&& this.ReceiverPhone.equals(o.ReceiverPhone) && this.Note.equals(o.Note)
+				&& this.OrderItems.containsAll(o.OrderItems) && this.Status.equals(o.Status);
+	}
+    
+    
 }
