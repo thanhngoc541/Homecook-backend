@@ -1,9 +1,6 @@
 package dtos;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Order {
     int OrderID, HomeCookID, CustomerID;
@@ -11,13 +8,14 @@ public class Order {
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
     ArrayList<OrderItem> OrderItems;
-    Map<Integer, String> statusTable= new HashMap<>();
+    //transient để json ko in ra cái status table
+    transient Map<Integer, String>  statusTable= new HashMap<>();
     //Status table
     {
         statusTable.put(1, "Pending");
         statusTable.put(2, "Accept");
         statusTable.put(3, "Delivering");
-        statusTable.put(4, "Delivering");
+        statusTable.put(4, "Delivered");
         statusTable.put(5, "Finished");
         statusTable.put(6, "Rejected");
         statusTable.put(7, "Cancelled");
@@ -27,6 +25,20 @@ public class Order {
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         OrderID = orderID;
+        HomeCookID=  homecookID;
+        CustomerID= customerID;
+        TimeStamp= timeStamp;
+        Status= status;
+        ReceiverPhone= receiverPhone;
+        ReceiverAddress= receiverAddress;
+        ReceiverName= receiverName;
+        Total= total;
+        Note= note;
+        OrderItems= orderItems;
+    }
+    public Order(int homecookID, int customerID, Date timeStamp, String status, String receiverPhone,
+                 String receiverAddress,
+                 String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         HomeCookID=  homecookID;
         CustomerID= customerID;
         TimeStamp= timeStamp;
@@ -149,17 +161,20 @@ public class Order {
     @Override
     public String toString() {
         return "\nOrder{" +
-                "OrderID=" + OrderID +
+                " OrderID=" + OrderID +
+                ", HomeCookID=" + HomeCookID +
+                ", CustomerID=" + CustomerID +
                 ", TimeStamp=" + TimeStamp +
                 ", ReceiverPhone='" + ReceiverPhone + '\'' +
                 ", ReceiverAddress='" + ReceiverAddress + '\'' +
                 ", ReceiverName='" + ReceiverName + '\'' +
                 ", Note='" + Note + '\'' +
+                ", Status='" + Status + '\'' +
                 ", Total=" + Total +
                 ", OrderItems=" + OrderItems +
-                ", Status=" + Status +
                 '}';
     }
+
     public String getStatusName(int statusID) {return statusTable.get(statusID);}
 
     public int getStatusID(String statusName) {
@@ -178,6 +193,26 @@ public class Order {
 				&& this.ReceiverPhone.equals(o.ReceiverPhone) && this.Note.equals(o.Note)
 				&& this.OrderItems.containsAll(o.OrderItems) && this.Status.equals(o.Status);
 	}
-    
+    private class Orders {
+        List<Order> orders= new ArrayList<>();
+
+        public List<Order> getOrders() {
+            return orders;
+        }
+
+        public void setOrders(List<Order> orders) {
+            this.orders = orders;
+        }
+        public void addOrders (Order ord) {
+            this.orders.add(ord);
+        }
+
+        @Override
+        public String toString() {
+            return "Orders{" +
+                    "orders=" + orders +
+                    '}';
+        }
+    }
     
 }

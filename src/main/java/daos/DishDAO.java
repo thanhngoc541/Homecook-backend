@@ -183,15 +183,12 @@ public class DishDAO {
 //        for (Dish d : dishdao.getAllDishesByStatus(true)){
 //            System.out.println(d);
 //        }
-<<<<<<< HEAD
 //        for (Dish d : dishdao.getAllDishesByOrderID(4)){
 //            System.out.println(d);
-//        }
-=======
+
 		/*
 		 * for (Dish d : dishdao.getAllDishesByOrderID(4)){ System.out.println(d); }
 		 */
->>>>>>> 9c7a3ced1b3cb7a1cc6790ad3c0420886f28334d
         //HomeCookID, DishName, Price, IsAvailable Description, ImageURL
 //        boolean flag = dishdao.createDish(new Dish(2,"Bun Bo",50.1,false,"Ngon nhat Sai Gon", "abc"));
 //        Dish dish = dishdao.getDishByID(2);
