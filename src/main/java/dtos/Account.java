@@ -93,6 +93,10 @@ public class Account {
     public String getAddress() {
         return Address;
     }
+    
+    public long DoBForDA() {
+    	return DoB.getTime();
+    }
 
     public void setAddress(String address) {
         Address = address;

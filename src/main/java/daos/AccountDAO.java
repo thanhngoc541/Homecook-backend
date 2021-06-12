@@ -1,6 +1,7 @@
 package daos;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,34 +12,28 @@ import dtos.Account;
 
 public class AccountDAO {
 	
-	public ArrayList<Account> getAllAccountByRole(String role){
+	public ArrayList<Account> getAllAccountByRole(String role, int page){
 		try {
 			ArrayList<Account> result = new ArrayList<Account>();
 			Account tempoResult = new Account();
 			Connection conn = DBContext.makeConnection();
 			
-			String query = "SELECT UserID, Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber, IsActive "
-					+ "FROM Accounts "
-					+ "WHERE RoleID = ?";
+			String query = "getAccountByRoleID @page=?, @RoleID = ?";
 			
-			PreparedStatement prstm = conn.prepareStatement(query);
-			prstm.setInt(1, tempoResult.getRoleID(role));
+			PreparedStatement prstm = conn.prepareCall(query);
+			prstm.setInt(1, page);
+			prstm.setInt(2,  tempoResult.getRoleID(role));
 			ResultSet rs = prstm.executeQuery();
 			
 			while (rs.next()) {
-				tempoResult.setUserID(rs.getInt("UserID"));
-				tempoResult.setUsername(rs.getString("Username"));
-				tempoResult.setPassword(rs.getString("Password"));
-				tempoResult.setFullName(rs.getString("FullName"));
-				tempoResult.setEmail(rs.getString("Email"));
-				tempoResult.setDoB(
-						new java.util.Date(rs.getDate("DoB").getTime()));
-				tempoResult.setAddress(rs.getString("Address"));
-				tempoResult.setPhoneNumber(rs.getString("PhoneNumber"));
-				tempoResult.setActive(rs.getBoolean("IsActive"));
-				tempoResult.setRole(tempoResult.getRoleName(rs.getInt("RoleID")));
+				Account input = new Account (rs.getInt("UserID"), rs.getString("Username"),
+						rs.getString("Password"), tempoResult.getRoleName(rs.getInt("RoleID")),
+						rs.getString("Email"), rs.getString("FullName"),
+						 new java.util.Date(rs.getDate("DoB").getTime()),
+						rs.getString("Address"), rs.getString("PhoneNumber"),
+						rs.getBoolean("IsActive"));
 				
-				result.add(tempoResult);
+				result.add(input);
 			}
 			conn.close();
 			return result;
@@ -49,13 +44,22 @@ public class AccountDAO {
 		return null;
 	}
 	
+	/**
+	 * @param input
+	 * @return
+	 */
 	public boolean createAccount(Account input) {
 		try {
 			Connection conn = DBContext.makeConnection();
-			String query =
-					"INSERT INTO Accounts (Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber)"
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-			PreparedStatement prstm = conn.prepareStatement(query);
+			String query = "EXEC createAccount @Username = ?, "
+					+ "@Password = ?, "
+					+ "@RoleID = ?, "
+					+ "@Email= ?, "
+					+ "@FullName = ?, "
+					+ "@Date = ?, "
+					+ "@Address = ?, "
+					+ "@PhoneNumber = ?";
+			PreparedStatement prstm = conn.prepareCall(query);
 			
 			prstm.setString(1, input.getUsername());
 			prstm.setString(2, input.getPassword());
@@ -78,15 +82,14 @@ public class AccountDAO {
 		try {
 		Connection conn = DBContext.makeConnection();
 		
-		String query =
-				"UPDATE Accounts"
-				+ "SET IsActive = ?"
-				+ "WHERE UserID= ?";
+		String query =	"EXEC changeHomeCookStatus "
+				+ "@IsActive = ?, "
+				+ "@UserID = ?";
 		
 		PreparedStatement prstm = conn.prepareStatement(query);
 		
 		prstm.setBoolean(1, status);
-		prstm.setInt(8, userID);
+		prstm.setInt(2, userID);
 		
 		return prstm.executeUpdate() == 1;
 	}
@@ -100,9 +103,7 @@ public class AccountDAO {
 		try {
 			Account result = new Account();
 			Connection conn = DBContext.makeConnection();
-			String query = "SELECT UserID, Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber, IsActive "
-					+ "FROM Accounts "
-					+ "WHERE UserID = ?";
+			String query = "EXEC getAccountByID @UserID = ?";
 			PreparedStatement prstm = conn.prepareStatement(query);
 			prstm.setInt(1, ID);
 			ResultSet rs = prstm.executeQuery();
@@ -129,17 +130,14 @@ public class AccountDAO {
 		return null;
 	}
 	
-	public Account getAccountByUNameAndPassword(String username, String password) {
+	public Account getAccountByUName(String username) {
 		try {
 			Account result = new Account();
 			Connection conn = DBContext.makeConnection();
 			String query = 
-					"SELECT UsesrID, Username, Password, RoleID, Email, FullName, DoB, Address, PhoneNumber, IsActive "
-					+ "FROM Accounts "
-					+ "WHERE UserName = ? AND Password = ?";
+					"EXEC getAccountByUName @Username = ?";
 			PreparedStatement prstm = conn.prepareStatement(query);
 			prstm.setString(1, username);
-			prstm.setString(2,  password);
 			ResultSet rs = prstm.executeQuery();
 			
 			while (rs.next()) {
@@ -168,19 +166,22 @@ public class AccountDAO {
 	public boolean updateAccountInfo(Account input) {
 		try {
 			Connection conn = DBContext.makeConnection();
-			String query =
-					"UPDATE Accounts"
-					+ "SET Username = ?, Password = ?, Email = ?, "
-					+ "FullName = ?, DoB = ?, Address = ?, "
-					+ "PhoneNumber = ? "
-					+ "WHERE UserID= ?";
+			String query ="EXEC updateAccountInfo "
+					+ "@Username = ?,"
+					+ "@Password = ?,"
+					+ "@Email = ?,"
+					+ "@FullName = ?,"
+					+ "@Date = ?,"
+					+ "@Address = ?,"
+					+ "@PhoneNumber = ?,"
+					+ "@UserID = ?";
 			PreparedStatement prstm = conn.prepareStatement(query);
 			
 			prstm.setString(1, input.getUsername());
 			prstm.setString(2, input.getPassword());
 			prstm.setString(3, input.getEmail());
 			prstm.setString(4, input.getFullName());
-			prstm.setDate(5, java.sql.Date.valueOf(input.getDoB()));
+			prstm.setDate(5, new java.sql.Date(input.DoBForDA()));
 			prstm.setString(6,  input.getAddress());
 			prstm.setString(7, input.getPhoneNumber());
 			prstm.setInt(8, input.getUserID());
@@ -191,5 +192,19 @@ public class AccountDAO {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public static void main(String[] args) {
+		AccountDAO tempo = new AccountDAO();
+		tempo.getAllAccountByRole("Customer", 2);
+		for (Account account : tempo.getAllAccountByRole("Customer",1)) {
+			System.out.println(account.toString());			
+		}
+		
+		tempo.changeHomeCookStatus(2, false);
+		
+		System.out.println(tempo.getAccountByID(1));
+		
+		tempo.updateAccountInfo(tempo.getAccountByID(10));
 	}
 }
