@@ -21,7 +21,11 @@ public class MenuDAO {
     }
 
     public boolean createMenu(Menu menu) throws SQLException {
-        String sql = "INSERT INTO Menus (HomeCookID, MenuName, IsServing,HomeCookName) VALUES ( ?, ?, ?,?)";
+        String sql = "EXEC createMenu "
+        		+ "@HomeCookID = ?, "
+        		+ "@MenuName = ?, "
+        		+ "@IsServing = ?, "
+        		+ "@HomeCookName = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -44,7 +48,9 @@ public class MenuDAO {
     }
 
     public boolean addDishToMenu(int menuID,int dishID) throws  SQLException{
-        String sql ="INSERT INTO DishIn (MenuID, DishID) VALUES (?,?)";
+        String sql ="EXEC addDishToMenu "
+        		+ "@MenuID = ?, "
+        		+ "@DishID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -65,7 +71,9 @@ public class MenuDAO {
     }
 
     public boolean deleteDishFromMenu(int menuID,int dishID) throws  SQLException{
-        String sql ="DELETE  FROM DishIn WHERE MenuID= ? AND DishID=?";
+        String sql = "EXEC deleteDishFromMenu "
+        		+ "@MenuID = ?, "
+        		+ "@DishID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -86,7 +94,9 @@ public class MenuDAO {
     }
 
     public boolean changeMenuName(String menuName, int menuId) throws  SQLException{
-        String sql ="UPDATE Menus SET MenuName= ? WHERE MenuID= ?";
+        String sql ="EXEC changeMenuName "
+        		+ "@MenuName = ?, "
+        		+ "@MenuID= ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -107,7 +117,9 @@ public class MenuDAO {
     }
 
     public boolean changeMenuStatus(boolean isServing, int menuId) throws  SQLException{
-        String sql ="UPDATE Menus SET IsServing= ? WHERE MenuID= ?";
+        String sql ="EXEC changeMenuStatus "
+        		+ "@IsServing = ?, "
+        		+ "@MenuID = ?";
         try {
             con = DBContext.makeConnection();
             if (con != null){
@@ -128,7 +140,8 @@ public class MenuDAO {
     }
 
     public boolean deleteMenu( int menuId) throws  SQLException{
-        String sql ="DELETE  FROM Menus WHERE MenuID= ?";
+        String sql ="EXEC deleteMenu "
+        		+ "@MenuID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -147,13 +160,16 @@ public class MenuDAO {
         return false;
     }
 
-    public Menu getMenuByID(int ID) throws SQLException {
-        String sql = "SELECT MenuName, IsServing,HomeCookName FROM Menus WHERE MenuID= ?";
+    public Menu getMenuByID(int ID, int page) throws SQLException {
+        String sql = "EXEC getMenuByID "
+        		+ "@MenuID = ?, "
+        		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setInt(1, ID);
+                pm.setInt(2, page);
                 rs = pm.executeQuery();
                 if (rs.next()) return new Menu(ID,
                         rs.getString("MenuName"),
@@ -171,14 +187,17 @@ public class MenuDAO {
         return null;
     }
 
-    public List<Menu> getAllMenusByHomeCookID(int ID) throws SQLException {
+    public List<Menu> getAllMenusByHomeCookID(int ID, int page) throws SQLException {
         List list = new ArrayList<Menu>();
-        String sql = "SELECT MenuID , MenuName, IsServing,HomeCookName FROM Menus WHERE HomeCookID= ?";
+        String sql = "EXEC getMenuByHomeCookID "
+        		+ "@HomeCookID = ?, "
+        		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setInt(1, ID);
+                pm.setInt(2, page);
                 rs = pm.executeQuery();
                 while(rs.next()) list.add(new Menu(rs.getInt("MenuID"),
                         rs.getString("MenuName"),
@@ -195,17 +214,22 @@ public class MenuDAO {
         }
         return list;
     }
-    public List<Menu> getAllMenusByHomeCookIDAndStatus(int ID,boolean isServing) throws SQLException {
+    public List<Menu> getAllMenusByHomeCookIDAndStatus(int ID, boolean isServing, int page) throws SQLException {
         List list = new ArrayList<Menu>();
-        String sql = "SELECT MenuID , MenuName,HomeCookName FROM Menus WHERE HomeCookID= ? AND IsServing=?";
+        String sql = "EXEC getMenuByHomeCookIDAndStatus "
+        		+ "@HomeCookID = ?, "
+        		+ "@IsServing= ?, "
+        		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setInt(1, ID);
                 pm.setBoolean(2, isServing);
+                pm.setInt(3, page);
                 rs = pm.executeQuery();
-                while(rs.next()) list.add(new Menu(rs.getInt("MenuID"),
+                while(rs.next()) 
+                	list.add(new Menu(rs.getInt("MenuID"),
                         rs.getString("MenuName"),
                         isServing,
                         rs.getString("HomeCookName"),
@@ -221,17 +245,21 @@ public class MenuDAO {
         return list;
     }
 
-    public List<Dish> getAllDishesInMenu(int menuID) throws SQLException {
+    public List<Dish> getAllDishesInMenu(int menuID, int page) throws SQLException {
         List list = new ArrayList<Dish>();
-        String sql = "SELECT DishID FROM DishIn WHERE MenuID=?";
+        String sql = "EXEC getAllDishesInMenu "
+        		+ "@MenuID = ?, "
+        		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setInt(1, menuID);
+                pm.setInt(2, page);
                 rs = pm.executeQuery();
                 DishDAO dishDAO=new DishDAO();
-                while(rs.next()) list.add(dishDAO.getDishByID(rs.getInt("DishID")));
+                while(rs.next())
+                	list.add(dishDAO.getDishByID((rs.getInt("DishID"))));
             }
         }
         catch (Exception e) {

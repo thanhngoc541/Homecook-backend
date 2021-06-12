@@ -24,18 +24,20 @@ public class DishDAO {
         if (con !=null) con.close();
     }
 
-    public List<Dish> getAllDishesByHomeCook(int ID) throws SQLException {
+    public List<Dish> getAllDishesByHomeCook(int homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
-        String sql = "SELECT DishID ,DishName, Price, IsAvailable, Description, ImageURL  FROM Dishes WHERE HomeCookID= ?";
+        String sql = "EXEC getAllDishByHomeCook "
+        		+ "@HomeCookID = ?, "
+        		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setInt(1, ID);
+                pm.setInt(1, homeCookID);
+                pm.setInt(2, page);
                 rs = pm.executeQuery();
                 while(rs.next()){
                     list.add(new Dish(rs.getInt("DishID"),
-                            ID,
                             rs.getString("DishName"),
                             rs.getDouble("Price"),
                             rs.getBoolean("IsAvailable"),
@@ -49,14 +51,17 @@ public class DishDAO {
         return list;
     }
 
-    public List<Dish> getAllDishesByStatus(boolean status) throws SQLException {
+    public List<Dish> getAllDishesByStatus(boolean status, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
-        String sql ="SELECT DishID, HomeCookID, DishName, Price, Description, ImageURL FROM Dishes WHERE IsAvailable = ?";
+        String sql ="EXEC getAllDishesByStatus "
+        		+ "@Status = ?, "
+        		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1, status);
+                pm.setInt(2, page);
                 rs = pm.executeQuery();
                 while(rs.next()){
                     list.add(new Dish(rs.getInt("DishID"),
@@ -77,7 +82,8 @@ public class DishDAO {
 
     public Dish getDishByID(int DishID) throws  SQLException{
         Dish result = null;
-        String sql = "SELECT HomeCookID, DishName, Price, IsAvailable, Description, ImageURL  FROM Dishes WHERE DishID= ?";
+        String sql = "EXEC getDishByID "
+        		+ "@DishID= ?";
         try{
             con = DBContext.makeConnection();
                 if (con != null){
@@ -99,7 +105,13 @@ public class DishDAO {
     }
 
     public boolean createDish(Dish dish) throws SQLException {
-        String sql = "INSERT INTO Dishes (HomeCookID, DishName, Price, IsAvailable, Description, ImageURL) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "EXEC createDish "
+        		+ "@HomeCookID = ?, "
+        		+ "@DishName = ?, "
+        		+ "@Price = ?, "
+        		+ "@IsAvailable = ?, "
+        		+ "@Description = ?, "
+        		+ "@ImageURL = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -111,7 +123,7 @@ public class DishDAO {
                 pm.setString(5,dish.getDescription());
                 pm.setString(6, dish.getImageURL());
                 int n = pm.executeUpdate();
-                if (n > 0) return true;
+                if (n == 1) return true;
             }
         }finally {
             closeConnection();
@@ -120,7 +132,13 @@ public class DishDAO {
     }
 
     public boolean updateDish(Dish dish) throws  SQLException{
-        String sql ="UPDATE Dishes SET DishName= ?, Price = ?, IsAvailable = ?, Description = ?, ImageURL = ? WHERE DishID= ?";
+        String sql ="EXEC updateDish "
+        		+ "@DishName= ?, "
+        		+ "@Price = ?, "
+        		+ "@IsAvailable = ?, "
+        		+ "@Description = ?, "
+        		+ "@ImageURL = ? "
+        		+ "@DishID= ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -141,14 +159,15 @@ public class DishDAO {
     }
 
     public boolean deleteDish(int DishID) throws SQLException{
-        String sql ="DELETE from Dishes WHERE DishID =?";
+        String sql ="EXEC deleteDish "
+        		+ "@DishID = ?";
         try{
             con = DBContext.makeConnection();
             if(con != null){
                 pm = con.prepareStatement(sql);
                 pm.setInt(1, DishID);
                 int n = pm.executeUpdate();
-                if( n > 0) return true;
+                if( n == 1) return true;
             }
         }finally{
             closeConnection();
@@ -159,7 +178,9 @@ public class DishDAO {
 
 
     public boolean changeDishStatus(int DishID, boolean input) throws SQLException {
-        String sql = "UPDATE Dishes SET IsAvailable = ? WHERE DishID= ?";
+        String sql = "EXEC changeDishStatus"
+        		+ "@IsAvailable = ?, "
+        		+ "@DishID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
