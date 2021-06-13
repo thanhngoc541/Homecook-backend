@@ -26,7 +26,7 @@ public class DishDAO {
 
     public List<Dish> getAllDishesByHomeCook(int homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
-        String sql = "EXEC getAllDishByHomeCook "
+        String sql = "EXEC getAllDishesByHomeCook "
         		+ "@HomeCookID = ?, "
         		+ "@Page = ?";
         try{
@@ -198,9 +198,9 @@ public class DishDAO {
 
     public static void main(String[] args) throws SQLException {
         DishDAO dishdao = new DishDAO();
-//        for (Dish d : dishdao.getAllDishesByHomeCook(2)){
-//            System.out.println(d);
-//        }
+        for (Dish d : dishdao.getAllDishesByHomeCook(2,1)){
+            System.out.println(d);
+        }
 //        for (Dish d : dishdao.getAllDishesByStatus(true)){
 //            System.out.println(d);
 //        }
