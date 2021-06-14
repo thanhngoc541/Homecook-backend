@@ -1,10 +1,14 @@
 package daos;
 
 import Utils.DBContext;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dtos.Dish;
 import dtos.Order;
 import dtos.OrderItem;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
@@ -238,7 +242,7 @@ public class OrderDAO {
                 + "@ReceiverAddress = ?, "
                 + "@ReceiverName = ?, "
                 + "@Total = ?, "
-                + "@Note = ?) ";
+                + "@Note = ? ";
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
@@ -254,11 +258,7 @@ public class OrderDAO {
                 ps.setString(9, ord.getNote());
 
                 int n = ps.executeUpdate();
-                if (n > 0) {
-
-                    return true;
-                }
-
+                return true;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -297,14 +297,25 @@ public class OrderDAO {
         return null;
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException, SQLException {
 		OrderDAO tempo = new OrderDAO();
-		try {
-			tempo.changeOrderStatus(4, "Finished");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			tempo.changeOrderStatus(4, "Finished");
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+        String strDate=  "1900-01-01 00:00:06.000";
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date= formatter.parse(strDate);
+		Order ord= new Order(5,3 , date, "Pending",
+                "0901517531", "NTMK", "Huy dep trai", 500, "Ok Test", null);
+        System.out.println(tempo.createOrder(ord));
+
+//        ArrayList<Order> ord= tempo.getOrderByCustomerID(7, 1);
+//        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+//        String json= gson.toJson(ord);
+//        System.out.println(json);
 	}
 
 }
