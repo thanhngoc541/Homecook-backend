@@ -6,25 +6,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import Utils.DBContext;
 import dtos.Account;
 
+import Utils.DBContext;
+
+
 public class AccountDAO {
-	
+
 	public ArrayList<Account> getAllAccountByRole(String role, int page){
 		try {
 			ArrayList<Account> result = new ArrayList<Account>();
 			Account tempoResult = new Account();
 			Connection conn = DBContext.makeConnection();
-			
+
 			String query = "getAccountByRoleID @page=?, @RoleID = ?";
-			
+
 			PreparedStatement prstm = conn.prepareCall(query);
 			prstm.setInt(1, page);
 			prstm.setInt(2,  tempoResult.getRoleID(role));
 			ResultSet rs = prstm.executeQuery();
-			
+
 			while (rs.next()) {
 				Account input = new Account (rs.getInt("UserID"), rs.getString("Username"),
 						rs.getString("Password"), tempoResult.getRoleName(rs.getInt("RoleID")),
@@ -32,18 +33,18 @@ public class AccountDAO {
 						 new java.util.Date(rs.getDate("DoB").getTime()),
 						rs.getString("Address"), rs.getString("PhoneNumber"),
 						rs.getBoolean("IsActive"));
-				
+
 				result.add(input);
 			}
 			conn.close();
 			return result;
-		}		
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param input
 	 * @return
@@ -60,7 +61,7 @@ public class AccountDAO {
 					+ "@Address = ?, "
 					+ "@PhoneNumber = ?";
 			PreparedStatement prstm = conn.prepareCall(query);
-			
+
 			prstm.setString(1, input.getUsername());
 			prstm.setString(2, input.getPassword());
 			prstm.setInt(3,  input.getRoleID(input.getRole()));
@@ -69,7 +70,7 @@ public class AccountDAO {
 			prstm.setDate(6, java.sql.Date.valueOf(input.getDoB()));
 			prstm.setString(7,  input.getAddress());
 			prstm.setString(8, input.getPhoneNumber());
-			
+
 			return prstm.executeUpdate() == 1;
 		}
 		catch (Exception e) {
@@ -77,20 +78,20 @@ public class AccountDAO {
 		}
 		return false;
 	}
-	
+
 	public boolean changeHomeCookStatus(int userID, boolean status) {
 		try {
 		Connection conn = DBContext.makeConnection();
-		
+
 		String query =	"EXEC changeHomeCookStatus "
 				+ "@IsActive = ?, "
 				+ "@UserID = ?";
-		
+
 		PreparedStatement prstm = conn.prepareStatement(query);
-		
+
 		prstm.setBoolean(1, status);
 		prstm.setInt(2, userID);
-		
+
 		return prstm.executeUpdate() == 1;
 	}
 	catch (Exception e) {
@@ -98,7 +99,7 @@ public class AccountDAO {
 	}
 	return false;
 	}
-	
+
 	public Account getAccountByID(int ID) {
 		try {
 			Account result = new Account();
@@ -107,7 +108,7 @@ public class AccountDAO {
 			PreparedStatement prstm = conn.prepareStatement(query);
 			prstm.setInt(1, ID);
 			ResultSet rs = prstm.executeQuery();
-			
+
 			while (rs.next()) {
 				result.setUserID(rs.getInt("UserID"));
 				result.setUsername(rs.getString("Username"));
@@ -129,17 +130,17 @@ public class AccountDAO {
 		}
 		return null;
 	}
-	
+
 	public Account getAccountByUName(String username) {
 		try {
 			Account result = new Account();
 			Connection conn = DBContext.makeConnection();
-			String query = 
+			String query =
 					"EXEC getAccountByUName @Username = ?";
 			PreparedStatement prstm = conn.prepareStatement(query);
 			prstm.setString(1, username);
 			ResultSet rs = prstm.executeQuery();
-			
+
 			while (rs.next()) {
 				result.setUserID(rs.getInt("UserID"));
 				result.setUsername(rs.getString("Username"));
@@ -161,8 +162,8 @@ public class AccountDAO {
 		}
 		return null;
 	}
-	
-	
+
+
 	public boolean updateAccountInfo(Account input) {
 		try {
 			Connection conn = DBContext.makeConnection();
@@ -176,7 +177,7 @@ public class AccountDAO {
 					+ "@PhoneNumber = ?,"
 					+ "@UserID = ?";
 			PreparedStatement prstm = conn.prepareStatement(query);
-			
+
 			prstm.setString(1, input.getUsername());
 			prstm.setString(2, input.getPassword());
 			prstm.setString(3, input.getEmail());
@@ -185,7 +186,7 @@ public class AccountDAO {
 			prstm.setString(6,  input.getAddress());
 			prstm.setString(7, input.getPhoneNumber());
 			prstm.setInt(8, input.getUserID());
-			
+
 			return prstm.executeUpdate() == 1;
 		}
 		catch (Exception e) {
@@ -193,18 +194,18 @@ public class AccountDAO {
 		}
 		return false;
 	}
-	
+
 	public static void main(String[] args) {
 		AccountDAO tempo = new AccountDAO();
 		tempo.getAllAccountByRole("Customer", 2);
 		for (Account account : tempo.getAllAccountByRole("Customer",1)) {
-			System.out.println(account.toString());			
+			System.out.println(account.toString());
 		}
-		
+
 		tempo.changeHomeCookStatus(2, false);
-		
+
 		System.out.println(tempo.getAccountByID(1));
-		
+
 		tempo.updateAccountInfo(tempo.getAccountByID(10));
 	}
 }

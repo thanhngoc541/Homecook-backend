@@ -187,8 +187,8 @@ public class DishDAO {
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1,input);
                 pm.setInt(2, DishID);
-                int n = pm.executeUpdate();
-                if (n > 0 ) return true;
+                pm.executeUpdate();
+                return true;
             }
         }finally {
             closeConnection();
