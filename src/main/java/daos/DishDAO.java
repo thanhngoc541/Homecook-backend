@@ -24,7 +24,7 @@ public class DishDAO {
         if (con !=null) con.close();
     }
 
-    public List<Dish> getAllDishesByHomeCook(int homeCookID, int page) throws SQLException {
+    public List<Dish> getAllDishesByHomeCook(String homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
         String sql = "EXEC getAllDishByHomeCook "
         		+ "@HomeCookID = ?, "
@@ -33,11 +33,11 @@ public class DishDAO {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setInt(1, homeCookID);
+                pm.setString(1, homeCookID);
                 pm.setInt(2, page);
                 rs = pm.executeQuery();
                 while(rs.next()){
-                    list.add(new Dish(rs.getInt("DishID"),
+                    list.add(new Dish(rs.getString("DishID"),
                             rs.getString("DishName"),
                             rs.getDouble("Price"),
                             rs.getBoolean("IsAvailable"),
@@ -64,8 +64,8 @@ public class DishDAO {
                 pm.setInt(2, page);
                 rs = pm.executeQuery();
                 while(rs.next()){
-                    list.add(new Dish(rs.getInt("DishID"),
-                            rs.getInt("HomeCookID"),
+                    list.add(new Dish(rs.getString("DishID"),
+                            rs.getString("HomeCookID"),
                             rs.getString("DishName"),
                             rs.getDouble("Price"),
                             status,
@@ -80,7 +80,7 @@ public class DishDAO {
     }
 
 
-    public Dish getDishByID(int DishID) throws  SQLException{
+    public Dish getDishByID(String DishID) throws  SQLException{
         Dish result = null;
         String sql = "EXEC getDishByID "
         		+ "@DishID= ?";
@@ -88,10 +88,10 @@ public class DishDAO {
             con = DBContext.makeConnection();
                 if (con != null){
                     pm = con.prepareStatement(sql);
-                    pm.setInt(1, DishID);
+                    pm.setString(1, DishID);
                     rs = pm.executeQuery();
                     if (rs.next()) return new Dish(DishID,
-                            rs.getInt("HomeCookID"),
+                            rs.getString("HomeCookID"),
                             rs.getString("DishName"),
                             rs.getDouble("Price"),
                             rs.getBoolean("IsAvailable"),
@@ -116,7 +116,7 @@ public class DishDAO {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setInt(1, dish.getHomeCookID());
+                pm.setString(1, dish.getHomeCookID());
                 pm.setString(2,dish.getDishName());
                 pm.setFloat(3, (float) dish.getPrice());
                 pm.setBoolean(4, dish.isAvailable());
@@ -148,7 +148,7 @@ public class DishDAO {
                 pm.setBoolean(3, dish.isAvailable());
                 pm.setString(4, dish.getDescription());
                 pm.setString(5 , dish.getImageURL());
-                pm.setInt(6, dish.getDishId());
+                pm.setString(6, dish.getDishId());
                 int n = pm.executeUpdate();
                 if ( n > 0) return true;
             }
@@ -158,14 +158,14 @@ public class DishDAO {
         return false;
     }
 
-    public boolean deleteDish(int DishID) throws SQLException{
+    public boolean deleteDish(String DishID) throws SQLException{
         String sql ="EXEC deleteDish "
         		+ "@DishID = ?";
         try{
             con = DBContext.makeConnection();
             if(con != null){
                 pm = con.prepareStatement(sql);
-                pm.setInt(1, DishID);
+                pm.setString(1, DishID);
                 int n = pm.executeUpdate();
                 if( n == 1) return true;
             }
@@ -177,7 +177,7 @@ public class DishDAO {
     }
 
 
-    public boolean changeDishStatus(int DishID, boolean input) throws SQLException {
+    public boolean changeDishStatus(String DishID, boolean input) throws SQLException {
         String sql = "EXEC changeDishStatus"
         		+ "@IsAvailable = ?, "
         		+ "@DishID = ?";
@@ -186,7 +186,7 @@ public class DishDAO {
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1,input);
-                pm.setInt(2, DishID);
+                pm.setString(2, DishID);
                 int n = pm.executeUpdate();
                 if (n > 0 ) return true;
             }
