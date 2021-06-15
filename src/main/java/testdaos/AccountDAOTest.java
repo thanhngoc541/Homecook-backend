@@ -24,8 +24,7 @@ public class AccountDAOTest {
                 String[] arr = s.split(",");
                 if (arr.length==4)
                 {
-                    Staff temp = new Staff(arr[0], arr[1], arr[2], arr[3]);
-                    list.add(temp);
+                    //
                 }
             }
         }
@@ -47,8 +46,5 @@ public class AccountDAOTest {
                 e.printStackTrace();
             }
         }
-        
-        return list;
     }
-	}
 }
