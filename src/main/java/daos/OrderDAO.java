@@ -31,7 +31,7 @@ public class OrderDAO {
 
 
     //Lay order cua customer (Customer View)
-    public ArrayList<Order> getOrderByCustomerID(int customerID, int page) throws SQLException {
+    public ArrayList<Order> getOrderByCustomerID(String customerID, int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
         String query = "EXEC getOrderByCustomerID "
         		+ "@CustomerID = ?, "
@@ -40,17 +40,17 @@ public class OrderDAO {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
-                ps.setInt(1, customerID);
+                ps.setString(1, customerID);
                 ps.setInt(2, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
-                    int orderID = rs.getInt("OrderID");
+                    String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
                     java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
                     java.util.Date timeStamp = new Date(tmpTime.getTime());
                     //chuyen tu status id => name
-                    int homecookID = rs.getInt("HomeCookID");
+                    String homecookID = rs.getString("HomeCookID");
                     String status = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
@@ -82,7 +82,7 @@ public class OrderDAO {
         return null;
     }
     //lay order cua homecook (HomeCook View)
-    public ArrayList<Order> getOrderByHomeCookID(int homecookID, int page) throws SQLException {
+    public ArrayList<Order> getOrderByHomeCookID(String homecookID, int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
         String query = "EXEC getOrderByHomeCookID "
         		+ "@HomeCookID = ?, "
@@ -91,12 +91,12 @@ public class OrderDAO {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
-                ps.setInt(1, homecookID);
+                ps.setString(1, homecookID);
                 ps.setInt(2, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    Order ord = new Order(0, null, null, 0, null);
-                    int orderID = rs.getInt("OrderID");
+                    Order ord = new Order("", null, null, 0, null);
+                    String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
                     java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
                     java.util.Date timeStamp = new Date(tmpTime.getTime());
@@ -140,8 +140,8 @@ public class OrderDAO {
                 ps.setInt(3, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    Order ord = new Order(0, null, null, 0, null);
-                    int orderID = rs.getInt("OrderID");
+                    Order ord = new Order("", null, null, 0, null);
+                    String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
                     java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
                     java.util.Date timeStamp = new Date(tmpTime.getTime());
@@ -169,7 +169,7 @@ public class OrderDAO {
     }
 
     //Doi status
-    public boolean changeOrderStatus(int orderID, String statusName) throws SQLException {
+    public boolean changeOrderStatus(String orderID, String statusName) throws SQLException {
         Order ord = new Order();
         int statusID = ord.getStatusID(statusName);
         String query = "EXEC changeOrderStatus "
@@ -180,7 +180,7 @@ public class OrderDAO {
             if (conn != null) {
                 ps = conn.prepareStatement(query);
                 ps.setInt(1, statusID);
-                ps.setInt(2, orderID);
+                ps.setString(2, orderID);
                 int n = ps.executeUpdate();
                 if (n > 0) {
                     return true;
@@ -209,8 +209,8 @@ public class OrderDAO {
                 //Vay thi phai commit db manually
                 conn.setAutoCommit(false);
                 for (OrderItem item : ord.getOrderItems()) {
-                    ps.setInt(1, ord.getOrderID());
-                    ps.setInt(2, item.getDish().getDishId());
+                    ps.setString(1, ord.getOrderID());
+                    ps.setString(2, item.getDish().getDishId());
                     ps.setInt(3, item.getQuantity());
                     ps.setString(4, item.getNote());
                     ps.setDouble(5, item.getTotalPrice());
@@ -229,7 +229,7 @@ public class OrderDAO {
         return false;
     }
 
-    public int createOrder(Order ord) throws SQLException {
+    public String createOrder(Order ord) throws SQLException {
         int statusID = ord.getStatusID(ord.getStatus());
         java.util.Date objDate = new java.util.Date(ord.getTimeStamp().getTime());
         java.sql.Timestamp timeStamp = new java.sql.Timestamp(objDate.getTime());
@@ -247,8 +247,8 @@ public class OrderDAO {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
-                ps.setInt(1, ord.getHomeCookID());
-                ps.setInt(2, ord.getCustomerID());
+                ps.setString(1, ord.getHomeCookID());
+                ps.setString(2, ord.getCustomerID());
                 ps.setTimestamp(3, timeStamp);
                 ps.setInt(4, statusID);
                 ps.setString(5, ord.getReceiverPhone());
@@ -265,7 +265,7 @@ public class OrderDAO {
         } finally {
             closeConnection();
         }
-        return ord.getOrderID();
+        return null;
     }
     public boolean deleteOrder(int OrderID) {
         String query= "EXEC deleteOrder" +
@@ -284,7 +284,7 @@ public class OrderDAO {
         return false;
     }
     //Customer xem item trong ord
-    public ArrayList<OrderItem> getListItemByOrderID(int ordID, int page) throws SQLException {
+    public ArrayList<OrderItem> getListItemByOrderID(String ordID, String page) throws SQLException {
         ArrayList<OrderItem> list = new ArrayList<>();
         String query = "EXEC getListItemByOrderID "
         		+ "@OrderID = ?, "
@@ -293,14 +293,14 @@ public class OrderDAO {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
-                ps.setInt(1, ordID);
-                ps.setInt(2, page);
+                ps.setString(1, ordID);
+                ps.setString(2, page);
                 rs = ps.executeQuery();
             }
             while (rs.next()) {
-                Dish dish = new Dish(rs.getInt("DishID"), rs.getInt("HomeCookID"), rs.getString("DishName"),
+                Dish dish = new Dish(rs.getString("DishID"), rs.getString("HomeCookID"), rs.getString("DishName"),
                         rs.getDouble("Price"), rs.getString("ImageURL"));
-                list.add(new OrderItem(rs.getInt("ItemID"), rs.getInt("OrderID"), dish, rs.getInt("Quantity"),
+                list.add(new OrderItem(rs.getString("ItemID"), rs.getString("OrderID"), dish, rs.getInt("Quantity"),
                         rs.getString("Note"), rs.getDouble("TotalPrice")));
             }
             return list;
@@ -312,18 +312,19 @@ public class OrderDAO {
         return null;
     }
     
+
     public static void main(String[] args) throws ParseException, SQLException {
-		OrderDAO tempo = new OrderDAO();
+        OrderDAO tempo = new OrderDAO();
 //		try {
 //			tempo.changeOrderStatus(4, "Finished");
 //		} catch (SQLException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-        String strDate=  "1900-01-01 00:00:06.000";
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date= formatter.parse(strDate);
-		Order ord= new Order(5,3 , date, "Pending",
+        String strDate = "1900-01-01 00:00:06.000";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = formatter.parse(strDate);
+        Order ord = new Order("", "", date, "Pending",
                 "0901517531", "NTMK", "Huy dep trai", 500, "Ok Test", null);
         System.out.println(tempo.createOrder(ord));
 
@@ -331,8 +332,7 @@ public class OrderDAO {
 //        Gson gson= new GsonBuilder().setPrettyPrinting().create();
 //        String json= gson.toJson(ord);
 //        System.out.println(json);
-	}
-
+    }
 }
 
 

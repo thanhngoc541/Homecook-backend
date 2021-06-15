@@ -3,8 +3,7 @@ package dtos;
 import java.util.ArrayList;
 
 public class Menu {
-    int MenuID;
-    String MenuName;
+    String MenuName, MenuID;
     boolean IsServing;
     String HomeCookName;
     ArrayList<Dish> Dishes;
@@ -12,7 +11,7 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(int menuID, String menuName, boolean isServing, String homeCookName, ArrayList<Dish> dishes) {
+    public Menu(String menuID, String menuName, boolean isServing, String homeCookName, ArrayList<Dish> dishes) {
         MenuID = menuID;
         MenuName = menuName;
         IsServing = isServing;
@@ -20,11 +19,11 @@ public class Menu {
         Dishes = dishes;
     }
 
-    public int getMenuID() {
+    public String getMenuID() {
         return MenuID;
     }
 
-    public void setMenuID(int menuID) {
+    public void setMenuID(String menuID) {
         MenuID = menuID;
     }
 
@@ -73,7 +72,7 @@ public class Menu {
 	@Override
 	public boolean equals(Object obj) {
 		Menu m = (Menu) obj;
-		return this.IsServing == m.IsServing && this.MenuID == m.MenuID && this.MenuName.equals(m.MenuName)
+		return this.IsServing == m.IsServing && this.MenuID.equals(m.MenuID) && this.MenuName.equals(m.MenuName)
 				&& this.HomeCookName.equals(m.HomeCookName) && this.Dishes.containsAll(m.Dishes);
 	}
     

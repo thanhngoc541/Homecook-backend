@@ -20,7 +20,7 @@ public class OrderServices {
     @GET
     @Path("/customer/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderByCustomerID(@PathParam("id") int id) throws SQLException {
+    public String getOrderByCustomerID(@PathParam("id") String id) throws SQLException {
         ArrayList<Order> orders= service.getOrderByCustomerID(id, 1);
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(orders);
@@ -30,7 +30,7 @@ public class OrderServices {
     @GET
     @Path("/homecook/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderByHomeCookID(@PathParam("id") int id) throws SQLException {
+    public String getOrderByHomeCookID(@PathParam("id") String id) throws SQLException {
         ArrayList<Order> orders= service.getOrderByHomeCookID(id, 1);
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(orders);
@@ -40,7 +40,7 @@ public class OrderServices {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createOrder(Order ord) throws SQLException, URISyntaxException {
-        int newOrderId= service.createOrder(ord);
+        String newOrderId= service.createOrder(ord);
         URI uri= new URI("/customer/" + newOrderId);
         return Response.created(uri).build();
     }
@@ -49,7 +49,7 @@ public class OrderServices {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response updateOrder(@PathParam("id") int id, Order ord, String status) throws SQLException {
+    public Response updateOrder(@PathParam("id") String id, Order ord, String status) throws SQLException {
         ord.setOrderID(id);
         if (service.changeOrderStatus(ord.getOrderID(), status))
             return Response.ok().build();

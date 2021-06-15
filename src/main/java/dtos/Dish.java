@@ -1,14 +1,12 @@
 package dtos;
 
 public class Dish {
-    int DishId;
-    int HomeCookID;
-    String DishName;
+    String DishName, DishId, HomeCookID;
     double Price;
     boolean IsAvailable;
     String Description, ImageURL;
 
-    public Dish(int dishId, int HomeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
+    public Dish(String dishId, String HomeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
         DishId = dishId;
         this.HomeCookID = HomeCookID;
         DishName = dishName;
@@ -18,8 +16,8 @@ public class Dish {
         ImageURL = imageURL;
     }
 
-    public Dish(int homeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
-        DishId = 0;
+    public Dish(String homeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
+        DishId = "";
         HomeCookID = homeCookID;
         DishName = dishName;
         Price = price;
@@ -29,7 +27,7 @@ public class Dish {
     }
 
     //Huy dung cho OrderDAO
-    public Dish(int dishId, int homeCookID, String dishName, double price, String imgURL) {
+    public Dish(String dishId, String homeCookID, String dishName, double price, String imgURL) {
         this.DishId= dishId;
         this.HomeCookID= homeCookID;
         this.DishId= dishId;
@@ -37,19 +35,19 @@ public class Dish {
         this.ImageURL= imgURL;
     }
 
-    public int getHomeCookID() {
+    public String getHomeCookID() {
         return HomeCookID;
     }
 
-    public void setHomeCookID(int homeCookID) {
+    public void setHomeCookID(String homeCookID) {
         HomeCookID = homeCookID;
     }
 
-    public int getDishId() {
+    public String getDishId() {
         return DishId;
     }
 
-    public void setDishId(int dishId) {
+    public void setDishId(String dishId) {
         DishId = dishId;
     }
 
@@ -108,9 +106,9 @@ public class Dish {
 	@Override
 	public boolean equals(Object obj) {
 		Dish d = (Dish) obj;
-		return this.IsAvailable == d.IsAvailable && this.DishId == d.DishId 
+		return this.IsAvailable == d.IsAvailable && this.DishId.equals(d.DishId) 
 				&& this.Description.equals(d.Description) && this.DishName.equals(d.DishName)
-				&& this.ImageURL.equals(d.ImageURL) && this.HomeCookID == d.HomeCookID 
+				&& this.ImageURL.equals(d.ImageURL) && this.HomeCookID.equals(d.HomeCookID) 
 				&& this.Price == d.Price;
 	}
     
