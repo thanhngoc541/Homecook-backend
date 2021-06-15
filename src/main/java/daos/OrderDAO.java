@@ -229,7 +229,7 @@ public class OrderDAO {
         return false;
     }
 
-    public boolean createOrder(Order ord) throws SQLException {
+    public int createOrder(Order ord) throws SQLException {
         int statusID = ord.getStatusID(ord.getStatus());
         java.util.Date objDate = new java.util.Date(ord.getTimeStamp().getTime());
         java.sql.Timestamp timeStamp = new java.sql.Timestamp(objDate.getTime());
@@ -258,16 +258,31 @@ public class OrderDAO {
                 ps.setString(9, ord.getNote());
 
                 int n = ps.executeUpdate();
-                return true;
+                return ord.getOrderID();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
             closeConnection();
         }
+        return ord.getOrderID();
+    }
+    public boolean deleteOrder(int OrderID) {
+        String query= "EXEC deleteOrder" +
+                "@OrderID = ?";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setInt(1, OrderID);
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return false;
     }
-
     //Customer xem item trong ord
     public ArrayList<OrderItem> getListItemByOrderID(int ordID, int page) throws SQLException {
         ArrayList<OrderItem> list = new ArrayList<>();

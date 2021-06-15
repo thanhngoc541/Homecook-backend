@@ -9,13 +9,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.ext.Provider;
 
 /**
  * Servlet Filter implementation class CORSFilter
  */
 // Enable it for Servlet 3.x implementations
 /* @ WebFilter(asyncSupported = true, urlPatterns = { "/*" }) */
-public class CORSFilter implements Filter {
+    @Provider
+public class CORSFilter implements ContainerResponseFilter {
 
     /**
      * Default constructor.
@@ -63,4 +68,17 @@ public class CORSFilter implements Filter {
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
+        containerResponseContext.getHeaders().add(
+                "Access-Control-Allow-Origin", "*");
+        containerResponseContext.getHeaders().add(
+                "Access-Control-Allow-Credentials", "true");
+        containerResponseContext.getHeaders().add(
+                "Access-Control-Allow-Headers",
+                "origin, content-type, accept, authorization");
+        containerResponseContext.getHeaders().add(
+                "Access-Control-Allow-Methods",
+                "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+    }
 }
