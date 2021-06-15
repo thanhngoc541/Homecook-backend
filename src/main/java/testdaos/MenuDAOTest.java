@@ -1,35 +1,36 @@
 package testdaos;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;  
-import java.io.FileInputStream;  
+import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Iterator;  
 import org.apache.poi.ss.usermodel.Cell;  
 import org.apache.poi.ss.usermodel.Row;  
 import org.apache.poi.xssf.usermodel.XSSFSheet;  
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import daos.AccountDAO;
+import daos.MenuDAO;
+import dtos.Menu;
 
-import java.sql.Date;
-import java.util.ArrayList;
 
-import dtos.Account;
-
-public class AccountDAOTest {
-	ArrayList<Account> inputData = new ArrayList<Account>();
-	private String inputFile = "";
-	private AccountDAO testSubject = new AccountDAO();
+public class MenuDAOTest {
+	ArrayList<Menu> inputData = new ArrayList<Menu>();
+	ArrayList<DishIn> inputDish =new ArrayList<DishIn>();
 	
-	public ArrayList<Account> getData(){
-		return inputData;
+	class DishIn{
+		String DishID, MenuID;
+
+		public DishIn(String dishID, String menuID) {
+			DishID = dishID;
+			MenuID = menuID;
+		}
+		
 	}
 	
 	private void readData(String inputFile) {        
         try 
         {
-        	File file = new File("TestData/AddAccountTestData.xlsx");   //creating a new file instance  
+        	File file = new File("TestData/AddDishInTestData.xlsx");   //creating a new file instance  
         	FileInputStream fis = new FileInputStream(file); 
         	
         	XSSFWorkbook wb = new XSSFWorkbook(file);
@@ -53,11 +54,8 @@ public class AccountDAOTest {
         				break;
         			}
         		}
-        		inputData.add(new Account("", data.get(0), data.get(1), data.get(2),
-        				data.get(3), data.get(4), Date.valueOf(data.get(5)), data.get(6),
-        				data.get(7), Boolean.getBoolean(data.get(8))));
+        		inputDish.add(new DishIn(data.get(1), data.get(0)) );
         	}
-        	
         	
         }
         catch (Exception e)
@@ -70,12 +68,19 @@ public class AccountDAOTest {
     }
 	
 	public static void main(String[] args) {
-		AccountDAO tempo = new AccountDAO();
-		AccountDAOTest subject = new AccountDAOTest();
-		subject.readData("TestData/AddAccountTestData.xlsx");
-		for (Account account : subject.inputData) {
-			tempo.createAccount(account);
-			System.out.println("Success");
+		MenuDAOTest subject = new MenuDAOTest();
+		MenuDAO input = new MenuDAO();
+		
+		subject.readData("");
+		try {
+			for (DishIn dishin : subject.inputDish) {
+				input.addDishToMenu(dishin.MenuID, dishin.DishID);
+				System.out.println(dishin.toString());
+			}
 		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

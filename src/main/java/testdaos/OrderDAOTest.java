@@ -1,35 +1,28 @@
 package testdaos;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;  
-import java.io.FileInputStream;  
-import java.util.Iterator;  
-import org.apache.poi.ss.usermodel.Cell;  
-import org.apache.poi.ss.usermodel.Row;  
-import org.apache.poi.xssf.usermodel.XSSFSheet;  
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import daos.AccountDAO;
-
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-import dtos.Account;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class AccountDAOTest {
-	ArrayList<Account> inputData = new ArrayList<Account>();
-	private String inputFile = "";
-	private AccountDAO testSubject = new AccountDAO();
-	
-	public ArrayList<Account> getData(){
-		return inputData;
-	}
+import daos.OrderDAO;
+import dtos.Dish;
+import dtos.Order;
+
+public class OrderDAOTest {
+
+	ArrayList<Order> inputData = new ArrayList<Order>();
 	
 	private void readData(String inputFile) {        
         try 
         {
-        	File file = new File("TestData/AddAccountTestData.xlsx");   //creating a new file instance  
+        	File file = new File("TestData/AddOrderTestData.xlsx");   //creating a new file instance  
         	FileInputStream fis = new FileInputStream(file); 
         	
         	XSSFWorkbook wb = new XSSFWorkbook(file);
@@ -53,11 +46,16 @@ public class AccountDAOTest {
         				break;
         			}
         		}
-        		inputData.add(new Account("", data.get(0), data.get(1), data.get(2),
-        				data.get(3), data.get(4), Date.valueOf(data.get(5)), data.get(6),
-        				data.get(7), Boolean.getBoolean(data.get(8))));
+        		inputData.add(new Order("", data.get(0), data.get(1),
+        						  Date.valueOf(data.get(2)),
+        						  data.get(3),
+        						  data.get(4), 
+        						  data.get(5),
+        						  data.get(6),
+        						  Double.parseDouble(data.get(7)),
+        						  data.get(8),
+        						  null));
         	}
-        	
         	
         }
         catch (Exception e)
@@ -70,12 +68,18 @@ public class AccountDAOTest {
     }
 	
 	public static void main(String[] args) {
-		AccountDAO tempo = new AccountDAO();
-		AccountDAOTest subject = new AccountDAOTest();
-		subject.readData("TestData/AddAccountTestData.xlsx");
-		for (Account account : subject.inputData) {
-			tempo.createAccount(account);
-			System.out.println("Success");
+		OrderDAOTest testSubject = new OrderDAOTest();
+		OrderDAO input = new OrderDAO();
+		
+		testSubject.readData("");
+		try {
+			for (Order order : testSubject.inputData) {
+				input.createOrder(order);
+				System.out.println(order.toString());
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

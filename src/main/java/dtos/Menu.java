@@ -3,16 +3,33 @@ package dtos;
 import java.util.ArrayList;
 
 public class Menu {
-    String MenuName, MenuID;
-    boolean IsServing;
+    String MenuName, MenuID, HomeCookID;
+    public String getHomeCookID() {
+		return HomeCookID;
+	}
+
+	public void setHomeCookID(String homeCookID) {
+		HomeCookID = homeCookID;
+	}
+
+	public boolean isIsServing() {
+		return IsServing;
+	}
+
+	public void setIsServing(boolean isServing) {
+		IsServing = isServing;
+	}
+
+	boolean IsServing;
     String HomeCookName;
     ArrayList<Dish> Dishes;
 
     public Menu() {
     }
 
-    public Menu(String menuID, String menuName, boolean isServing, String homeCookName, ArrayList<Dish> dishes) {
+    public Menu(String menuID, String homeCookID, String menuName, boolean isServing, String homeCookName, ArrayList<Dish> dishes) {
         MenuID = menuID;
+        HomeCookID = homeCookID;
         MenuName = menuName;
         IsServing = isServing;
         HomeCookName = homeCookName;

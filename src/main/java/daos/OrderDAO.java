@@ -203,19 +203,15 @@ public class OrderDAO {
                 ps = conn.prepareStatement(query);
                 //when we query, the db will commit automatically => ko dung addBatch duoc
                 //Vay thi phai commit db manually
-                conn.setAutoCommit(false);
                 for (OrderItem item : ord.getOrderItems()) {
-                    ps.setString(1, ord.getOrderID());
+                    ps.setString(1, item.getOrderID());
                     ps.setString(2, item.getDish().getDishId());
                     ps.setInt(3, item.getQuantity());
                     ps.setString(4, item.getNote());
                     ps.setDouble(5, item.getTotalPrice());
+                    ps.executeUpdate();
                 }
-                int[] count = ps.executeBatch();
-                conn.commit();
-                if (count != null) {
-                    return true;
-                }
+                return true;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -238,7 +234,7 @@ public class OrderDAO {
                 + "@ReceiverAddress = ?, "
                 + "@ReceiverName = ?, "
                 + "@Total = ?, "
-                + "@Note = ?) ";
+                + "@Note = ?";
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
