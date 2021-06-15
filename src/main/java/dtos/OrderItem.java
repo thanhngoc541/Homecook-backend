@@ -1,12 +1,13 @@
 package dtos;
 
 public class OrderItem {
-    int ItemID, OrderID, Quantity;
+    String ItemID, OrderID;
+    int Quantity;
     String Note;
     Dish Dish;
     double TotalPrice;
 
-    public OrderItem(int itemID, int orderID, Dish dishItem, int quantity, String note, double totalPrice) {
+    public OrderItem(String itemID, String orderID, Dish dishItem, int quantity, String note, double totalPrice) {
         ItemID = itemID;
         OrderID = orderID;
         Dish = dishItem; 
@@ -16,27 +17,27 @@ public class OrderItem {
     }
 
     public OrderItem() {
-        this.ItemID=0;
-        this.OrderID=0;
+        this.ItemID="";
+        this.OrderID="";
         this.Dish= null;
         this.Quantity=0;
         this.Note= "";
         this.TotalPrice=0;
     }
 
-    public int getItemID() {
+    public String getItemID() {
         return ItemID;
     }
 
-    public void setItemID(int itemID) {
+    public void setItemID(String itemID) {
         ItemID = itemID;
     }
 
-    public int getOrderID() {
+    public String getOrderID() {
         return OrderID;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(String orderID) {
         OrderID = orderID;
     }
 
@@ -87,7 +88,7 @@ public class OrderItem {
 	@Override
 	public boolean equals(Object obj) {
 		OrderItem o = (OrderItem) obj;
-		return this.ItemID == o.ItemID && this.Note.equals(o.Note) && this.OrderID == o.OrderID
+		return this.ItemID.equals(o.ItemID) && this.Note.equals(o.Note) && this.OrderID.equals(o.OrderID)
 				&& this.Quantity == o.Quantity && this.TotalPrice == this.TotalPrice
 				&& this.Dish.equals(o.Dish);
 	}
