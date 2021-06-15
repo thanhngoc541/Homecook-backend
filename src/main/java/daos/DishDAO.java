@@ -28,6 +28,7 @@ public class DishDAO {
         ArrayList<Dish> list = new ArrayList<>();
         String sql = "EXEC getAllDishesByHomeCook "
         		+ "@HomeCookID = ?, "
+        		+ "@HomeCookID = ?, "
         		+ "@Page = ?";
         try{
             con = DBContext.makeConnection();
@@ -38,6 +39,7 @@ public class DishDAO {
                 rs = pm.executeQuery();
                 while(rs.next()){
                     list.add(new Dish(rs.getInt("DishID"),
+                            rs.getInt("HomeCookID"),
                             rs.getString("DishName"),
                             rs.getDouble("Price"),
                             rs.getBoolean("IsAvailable"),
@@ -201,6 +203,8 @@ public class DishDAO {
         for (Dish d : dishdao.getAllDishesByHomeCook(2,1)){
             System.out.println(d);
         }
+    }
+
 //        for (Dish d : dishdao.getAllDishesByStatus(true)){
 //            System.out.println(d);
 //        }
@@ -218,5 +222,5 @@ public class DishDAO {
 //        boolean flag = dishdao.changeDishStatus(2,false);
 //        System.out.println(flag);
 
-    }
+//    }
 }
