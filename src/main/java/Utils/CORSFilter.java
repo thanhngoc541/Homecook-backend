@@ -19,8 +19,7 @@ import javax.ws.rs.ext.Provider;
  */
 // Enable it for Servlet 3.x implementations
 /* @ WebFilter(asyncSupported = true, urlPatterns = { "/*" }) */
-    @Provider
-public class CORSFilter implements ContainerResponseFilter {
+public class CORSFilter implements Filter {
 
     /**
      * Default constructor.
@@ -66,19 +65,5 @@ public class CORSFilter implements ContainerResponseFilter {
      */
     public void init(FilterConfig fConfig) throws ServletException {
         // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
-        containerResponseContext.getHeaders().add(
-                "Access-Control-Allow-Origin", "*");
-        containerResponseContext.getHeaders().add(
-                "Access-Control-Allow-Credentials", "true");
-        containerResponseContext.getHeaders().add(
-                "Access-Control-Allow-Headers",
-                "origin, content-type, accept, authorization");
-        containerResponseContext.getHeaders().add(
-                "Access-Control-Allow-Methods",
-                "GET, POST, PUT, DELETE, OPTIONS, HEAD");
     }
 }

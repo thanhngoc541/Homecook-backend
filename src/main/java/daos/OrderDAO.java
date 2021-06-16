@@ -122,7 +122,51 @@ public class OrderDAO {
         }
         return null;
     }
+    //lay AllOrder (admin)
+    public ArrayList<Order> getAllOrder() {
+        ArrayList<Order> list= new ArrayList<>();
+        String query= "EXEC getAllOrder";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                rs=ps.executeQuery();
+                while (rs.next()) {
+                    Order ord = new Order();
+                    String orderID = rs.getString("OrderID");
+                    //Doi tu sql Timestamp qua Date java
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    //chuyen tu status id => name
+                    String homecookID = rs.getString("HomeCookID");
+                    String customerID= rs.getString("CustomerID");
+                    String status = ord.getStatusName(rs.getInt("StatusID"));
+                    double total = rs.getDouble("Total");
+                    String note = rs.getString("Note");
+                    String phone = rs.getString("ReceiverPhone");
+                    String address = rs.getString("ReceiverAddress");
+                    String name = rs.getString("ReceiverName");
 
+                    ord.setOrderID(orderID);
+                    ord.setCustomerID(customerID);
+                    ord.setHomeCookID(homecookID);
+                    ord.setTimeStamp(timeStamp);
+                    ord.setStatus(status);
+                    ord.setTotal(total);
+                    ord.setNote(note);
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverAddress(address);
+                    ord.setReceiverName(name);
+
+                    list.add(ord);
+                }
+                return list;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
     //Khi lay date tu object ve thi phai convert sang string de goi ham nay
     public ArrayList<Order> getOrderByTimeRange(String fromDate, String toDate, int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
@@ -256,8 +300,10 @@ public class OrderDAO {
                 ps.setString(7, ord.getReceiverName());
                 ps.setDouble(8, ord.getTotal());
                 ps.setString(9, ord.getNote());
+                ps.executeUpdate();
 
-                int n = ps.executeUpdate();
+
+                System.out.println(ord.getOrderID());
                 return ord.getOrderID();
             }
         } catch (SQLException throwables) {
@@ -321,13 +367,15 @@ public class OrderDAO {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-        String strDate = "1900-01-01 00:00:06.000";
+        String strDate = "2022-01-01 15:00:06.000";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = formatter.parse(strDate);
-        Order ord = new Order("", "", date, "Pending",
-                "0901517531", "NTMK", "Huy dep trai", 500, "Ok Test", null);
+        Order ord = new Order("B489E4B9-9ABC-41B9-88FC-380579FB3CC6", "535340B1-8053-4819-8772-488577A10639", date, "Pending",
+                "0901517531", "NTMK", "Ngokku", 500, "Ok Test", null);
         System.out.println(tempo.createOrder(ord));
+//
 
+//        System.out.println(tempo.getAllOrder());
 //        ArrayList<Order> ord= tempo.getOrderByCustomerID(7, 1);
 //        Gson gson= new GsonBuilder().setPrettyPrinting().create();
 //        String json= gson.toJson(ord);

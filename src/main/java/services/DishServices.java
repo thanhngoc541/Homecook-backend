@@ -19,7 +19,7 @@ public class DishServices {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllDishesByHomeCook(@PathParam("id") int id) throws SQLException {
+    public String getAllDishesByHomeCook(@PathParam("id") String id) throws SQLException {
         List<Dish> dishes = service.getAllDishesByHomeCook(id,1);
         String result = new Gson().toJson(dishes);
         return result;

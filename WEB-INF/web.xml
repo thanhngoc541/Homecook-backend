@@ -7,7 +7,6 @@
         <filter-name>Cors Filter</filter-name>
         <filter-class>Utils.CORSFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>Cors Filter</filter-name>
         <url-pattern>/*</url-pattern>

@@ -197,10 +197,10 @@ public class DishDAO {
     }
 
     public static void main(String[] args) throws SQLException {
-        DishDAO dishdao = new DishDAO();
-        for (Dish d : dishdao.getAllDishesByHomeCook(2,1)){
-            System.out.println(d);
-        }
+//        DishDAO dishdao = new DishDAO();
+//        for (Dish d : dishdao.getAllDishesByHomeCook(2,1)){
+//            System.out.println(d);
+//        }
 //        for (Dish d : dishdao.getAllDishesByStatus(true)){
 //            System.out.println(d);
 //        }
