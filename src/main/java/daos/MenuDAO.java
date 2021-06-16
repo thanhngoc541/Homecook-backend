@@ -1,4 +1,5 @@
 package daos;
+import com.google.gson.Gson;
 import dtos.Dish;
 import dtos.Menu;
 import Utils.DBContext;
@@ -160,18 +161,17 @@ public class MenuDAO {
         return false;
     }
 
-    public Menu getMenuByID(int ID, int page) throws SQLException {
+    public Menu getMenuByID(int ID) throws SQLException {
         String sql = "EXEC getMenuByID "
-        		+ "@MenuID = ?, "
-        		+ "@Page = ?";
+        		+ "@MenuID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setInt(1, ID);
-                pm.setInt(2, page);
                 rs = pm.executeQuery();
-                if (rs.next()) return new Menu(ID,
+                if (rs.next()) return new Menu(rs.getInt("HomeCookID"),
+                        ID,
                         rs.getString("MenuName"),
                         rs.getBoolean("IsServing"),
                         rs.getString("HomeCookName"),
@@ -199,7 +199,7 @@ public class MenuDAO {
                 pm.setInt(1, ID);
                 pm.setInt(2, page);
                 rs = pm.executeQuery();
-                while(rs.next()) list.add(new Menu(rs.getInt("MenuID"),
+                while(rs.next()) list.add(new Menu(ID,rs.getInt("MenuID"),
                         rs.getString("MenuName"),
                         rs.getBoolean("IsServing"),
                         rs.getString("HomeCookName"),
@@ -229,11 +229,41 @@ public class MenuDAO {
                 pm.setInt(3, page);
                 rs = pm.executeQuery();
                 while(rs.next()) 
-                	list.add(new Menu(rs.getInt("MenuID"),
+                	list.add(new Menu(ID,rs.getInt("MenuID"),
                         rs.getString("MenuName"),
                         isServing,
                         rs.getString("HomeCookName"),
                         null));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeConnection();
+        }
+        return list;
+    }
+
+    public List<Menu> getAllMenusByStatus(boolean isServing, int page) throws SQLException {
+        List list = new ArrayList<Menu>();
+        String sql = "EXEC getMenuByStatus "
+                + "@IsServing= ?, "
+                + "@Page = ?";
+        try{
+            con = DBContext.makeConnection();
+            if (con != null){
+                pm = con.prepareStatement(sql);
+                pm.setBoolean(1, isServing);
+                pm.setInt(2, page);
+                rs = pm.executeQuery();
+                while(rs.next())
+                    list.add(new Menu(rs.getInt("HomeCookID"),
+                            rs.getInt("MenuID"),
+                            rs.getString("MenuName"),
+                            isServing,
+                            rs.getString("HomeCookName"),
+                            null));
             }
         }
         catch (Exception e) {
@@ -274,6 +304,9 @@ public class MenuDAO {
 
 
     public static void main(String[] args) throws SQLException {
-
+    MenuDAO dao=new MenuDAO();
+    List<Menu> menus = dao.getAllMenusByHomeCookID(1,1);
+    String data = new Gson().toJson(menus);
+        System.out.println(data);
     }
 }

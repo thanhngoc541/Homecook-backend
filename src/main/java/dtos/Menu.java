@@ -8,56 +8,65 @@ public class Menu {
     boolean IsServing;
     String HomeCookName;
     ArrayList<Dish> Dishes;
-
+    int HomeCookID;
     public Menu() {
     }
 
-    public Menu(int menuID, String menuName, boolean isServing, String homeCookName, ArrayList<Dish> dishes) {
-        MenuID = menuID;
-        MenuName = menuName;
-        IsServing = isServing;
-        HomeCookName = homeCookName;
-        Dishes = dishes;
+    public Menu(int HomeCookID,int MenuID, String MenuName, boolean IsServing, String HomeCookName, ArrayList<Dish> Dishes) {
+        this.MenuID = MenuID;
+        this.HomeCookID=HomeCookID;
+        this.MenuName = MenuName;
+        this.IsServing = IsServing;
+        this.HomeCookName = HomeCookName;
+        this.Dishes = Dishes;
     }
 
     public int getMenuID() {
         return MenuID;
     }
 
-    public void setMenuID(int menuID) {
-        MenuID = menuID;
+    public void setMenuID(int MenuID) {
+        this.MenuID = MenuID;
     }
 
     public String getMenuName() {
         return MenuName;
     }
 
-    public void setMenuName(String menuName) {
-        MenuName = menuName;
+    public void setMenuName(String MenuName) {
+        this.MenuName = MenuName;
     }
 
     public boolean isServing() {
         return IsServing;
     }
 
-    public void setServing(boolean serving) {
-        IsServing = serving;
+    public void setServing(boolean IsServing) {
+        this.IsServing = IsServing;
     }
 
     public String getHomeCookName() {
         return HomeCookName;
     }
 
-    public void setHomeCookName(String homeCookName) {
-        HomeCookName = homeCookName;
+    public void setHomeCookName(String HomeCookName) {
+        this.HomeCookName = HomeCookName;
     }
 
     public ArrayList<Dish> getDishes() {
         return Dishes;
     }
 
-    public void setDishes(ArrayList<Dish> dishes) {
-        Dishes = dishes;
+    public void setDishes(ArrayList<Dish> Dishes) {
+        this.Dishes = Dishes;
+    }
+
+    public int getHomeCookID() {
+        return HomeCookID;
+    }
+
+    public void setHomeCookID(int HomeCookID) {
+        this.HomeCookID = HomeCookID;
     }
 
     @Override
