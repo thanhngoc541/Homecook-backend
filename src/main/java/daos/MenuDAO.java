@@ -30,7 +30,7 @@ public class MenuDAO {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setString(1, menu.getMenuID());
+                pm.setString(1, menu.getHomeCookID());
                 pm.setString(2,menu.getMenuName());
                 pm.setBoolean(3, menu.isServing());
                 pm.setString(4,menu.getHomeCookName());
@@ -173,6 +173,7 @@ public class MenuDAO {
                 rs = pm.executeQuery();
                 if (rs.next()) return new Menu(ID,
                         rs.getString("MenuName"),
+                        rs.getString("HomeCookID"),
                         rs.getBoolean("IsServing"),
                         rs.getString("HomeCookName"),
                         null);
@@ -201,6 +202,7 @@ public class MenuDAO {
                 rs = pm.executeQuery();
                 while(rs.next()) 
                 	list.add(new Menu(rs.getString("MenuID"),
+                			rs.getString("HomeCookID"),
                         rs.getString("MenuName"),
                         rs.getBoolean("IsServing"),
                         rs.getString("HomeCookName"),
@@ -231,6 +233,7 @@ public class MenuDAO {
                 rs = pm.executeQuery();
                 while(rs.next()) 
                 	list.add(new Menu(rs.getString("MenuID"),
+                		rs.getString("HomeCookID"),
                         rs.getString("MenuName"),
                         isServing,
                         rs.getString("HomeCookName"),
