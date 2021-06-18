@@ -11,7 +11,14 @@ public class DBContext {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
             //2. Tao object ket noi CSDL gom 3 param: url, username, pwd
-            String url = "jdbc:sqlserver://homecook.database.windows.net:1433;database=homecook;user=azureAdmin@homecook;password=home@dmin391;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+            String url = "jdbc:sqlserver://homecook.database.windows.net:1433;" +
+                    "database=homecook;" +
+                    "user=azureAdmin@homecook;" +
+                    "password=home@dmin391;" +
+                    "encrypt=true;" +
+                    "trustServerCertificate=false;" +
+                    "hostNameInCertificate=*.database.windows.net;" +
+                    "loginTimeout=30;";
             Connection con = DriverManager.getConnection(url);
             return con;
         } catch (ClassNotFoundException | SQLException e) {

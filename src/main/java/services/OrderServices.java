@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import daos.OrderDAO;
 import dtos.Order;
+import dtos.OrderItem;
 
 import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
@@ -37,6 +38,17 @@ public class OrderServices {
         return result;
     }
 
+    //ORDER ITEMs
+    @GET
+    @Path("/{orderID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getListItems(@PathParam("orderID") String id) throws SQLException {
+        ArrayList<OrderItem> items= service.getListItemByOrderID(id,1);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result= gson.toJson(items);
+        return result;
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createOrder(Order ord) throws SQLException, URISyntaxException {
@@ -48,14 +60,13 @@ public class OrderServices {
     //Loi ham put
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public Response updateOrder(@PathParam("id") String id, Order ord, String status) throws SQLException {
-        ord.setOrderID(id);
-        if (service.changeOrderStatus(ord.getOrderID(), status))
+    @Path("/updateStatus/{id}/{status}")
+    public Response updateOrder(@PathParam("id") String id, @PathParam("status") String status) throws SQLException {
+        if (service.changeOrderStatus(id, status))
             return Response.ok().build();
         else return Response.notModified().build();
     }
-//
+
     @DELETE
     @Path("{id}")
     public Response deleteOrder(@PathParam("id") int id) {

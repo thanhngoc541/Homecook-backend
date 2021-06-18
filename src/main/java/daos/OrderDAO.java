@@ -158,6 +158,7 @@ public class OrderDAO {
                     ord.setReceiverAddress(address);
                     ord.setReceiverName(name);
 
+                    System.out.println(ord.getOrderItems());
                     list.add(ord);
                 }
                 return list;
@@ -213,6 +214,7 @@ public class OrderDAO {
     }
 
     //Doi status
+    //
     public boolean changeOrderStatus(String orderID, String statusName) throws SQLException {
         Order ord = new Order();
         int statusID = ord.getStatusID(statusName);
@@ -225,10 +227,8 @@ public class OrderDAO {
                 ps = conn.prepareStatement(query);
                 ps.setInt(1, statusID);
                 ps.setString(2, orderID);
-                int n = ps.executeUpdate();
-                if (n > 0) {
-                    return true;
-                }
+                ps.executeUpdate();
+                return true;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -296,10 +296,10 @@ public class OrderDAO {
                 ps.setString(7, ord.getReceiverName());
                 ps.setDouble(8, ord.getTotal());
                 ps.setString(9, ord.getNote());
-                ps.executeUpdate();
-
-
-                System.out.println(ord.getOrderID());
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    ord.setOrderID(rs.getString("OrderID"));
+                }
                 return ord.getOrderID();
             }
         } catch (SQLException throwables) {
@@ -326,7 +326,7 @@ public class OrderDAO {
         return false;
     }
     //Customer xem item trong ord
-    public ArrayList<OrderItem> getListItemByOrderID(String ordID, String page) throws SQLException {
+    public ArrayList<OrderItem> getListItemByOrderID(String ordID, int page) throws SQLException {
         ArrayList<OrderItem> list = new ArrayList<>();
         String query = "EXEC getListItemByOrderID "
         		+ "@OrderID = ?, "
@@ -336,7 +336,7 @@ public class OrderDAO {
             if (conn != null) {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, ordID);
-                ps.setString(2, page);
+                ps.setInt(2, page);
                 rs = ps.executeQuery();
             }
             while (rs.next()) {
@@ -363,14 +363,15 @@ public class OrderDAO {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-        String strDate = "2022-01-01 15:00:06.000";
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = formatter.parse(strDate);
-        Order ord = new Order("B489E4B9-9ABC-41B9-88FC-380579FB3CC6", "535340B1-8053-4819-8772-488577A10639", date, "Pending",
-                "0901517531", "NTMK", "Ngokku", 500, "Ok Test", null);
-        System.out.println(tempo.createOrder(ord));
-//
+//        String strDate = "2022-01-01 15:00:06.000";
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date = formatter.parse(strDate);
+//        Order ord = new Order("B489E4B9-9ABC-41B9-88FC-380579FB3CC6", "535340B1-8053-4819-8772-488577A10639", date, "Pending",
+//                "0901517531", "NTMK", "Ngokku", 500, "Ok Test", null);
+//        System.out.println(tempo.createOrder(ord));
 
+//        System.out.println(tempo.changeOrderStatus("BD89AAF7-6364-4C9E-897E-159E40DAF7B1", "Accept"));
+        System.out.println(tempo.getListItemByOrderID("D0B05EAC-8C40-416E-9283-F13B787FB908", 1));
 //        System.out.println(tempo.getAllOrder());
 //        ArrayList<Order> ord= tempo.getOrderByCustomerID(7, 1);
 //        Gson gson= new GsonBuilder().setPrettyPrinting().create();

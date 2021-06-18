@@ -28,10 +28,10 @@ public class OrderItem {
     public String getItemID() {
         return ItemID;
     }
-
     public void setItemID(String itemID) {
         ItemID = itemID;
     }
+
 
     public String getOrderID() {
         return OrderID;

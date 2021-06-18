@@ -30,7 +30,7 @@ public class Dish {
     public Dish(String dishId, String homeCookID, String dishName, double price, String imgURL) {
         this.DishId= dishId;
         this.HomeCookID= homeCookID;
-        this.DishId= dishId;
+        this.DishName= dishName;
         this.Price= price;
         this.ImageURL= imgURL;
     }
