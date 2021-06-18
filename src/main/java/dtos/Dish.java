@@ -8,6 +8,10 @@ public class Dish {
     boolean IsAvailable;
     String Description, ImageURL;
 
+    public Dish() {
+        super();
+    }
+
     public Dish(String dishId, String HomeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
         DishId = dishId;
         this.HomeCookID = HomeCookID;

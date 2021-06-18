@@ -7,9 +7,5 @@ import javax.ws.rs.core.MediaType;
 
 @ApplicationPath("/")
 public class MainApplication extends Application {
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String hello(){
-        return "Main application";
-    }
+
 }

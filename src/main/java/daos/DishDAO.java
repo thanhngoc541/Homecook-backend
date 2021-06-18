@@ -27,10 +27,10 @@ public class DishDAO {
     public List<Dish> getAllDishesByHomeCook(String homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
         String sql = "EXEC getAllDishesByHomeCook "
-                + "@HomeCookID = ?, "
-                + "@HomeCookID = ?, "
-                + "@Page = ?";
-        try {
+
+        		+ "@HomeCookID = ?, "
+        		+ "@Page = ?";
+        try{
             con = DBContext.makeConnection();
             if (con != null) {
                 pm = con.prepareStatement(sql);
@@ -106,7 +106,7 @@ public class DishDAO {
         return null;
     }
 
-    public boolean createDish(Dish dish) throws SQLException {
+    public String createDish(Dish dish) throws SQLException {
         String sql = "EXEC createDish "
                 + "@HomeCookID = ?, "
                 + "@DishName = ?, "
@@ -124,24 +124,26 @@ public class DishDAO {
                 pm.setBoolean(4, dish.isAvailable());
                 pm.setString(5, dish.getDescription());
                 pm.setString(6, dish.getImageURL());
-                int n = pm.executeUpdate();
-                if (n == 1) return true;
+                rs = pm.executeQuery();
+                if(rs.next()) return rs.getString("DishID");
             }
         } finally {
             closeConnection();
         }
-        return false;
+        return null;
     }
 
-    public boolean updateDish(Dish dish) throws SQLException {
-        String sql = "EXEC updateDish "
-                + "@DishName= ?, "
-                + "@Price = ?, "
-                + "@IsAvailable = ?, "
-                + "@Description = ?, "
-                + "@ImageURL = ? "
-                + "@DishID= ?";
-        try {
+
+    public boolean updateDish(Dish dish) throws  SQLException{
+        String sql ="EXEC updateDish "
+        		+ "@DishName= ?, "
+        		+ "@Price = ?, "
+        		+ "@IsAvailable = ?, "
+        		+ "@Description = ?, "
+        		+ "@ImageURL = ? ,"
+        		+ "@DishID= ?";
+        try{
+
             con = DBContext.makeConnection();
             if (con != null) {
                 pm = con.prepareStatement(sql);
@@ -151,8 +153,10 @@ public class DishDAO {
                 pm.setString(4, dish.getDescription());
                 pm.setString(5, dish.getImageURL());
                 pm.setString(6, dish.getDishId());
-                int n = pm.executeUpdate();
-                if (n > 0) return true;
+
+                pm.executeUpdate();
+                return true;
+
             }
         } finally {
             closeConnection();
@@ -168,8 +172,10 @@ public class DishDAO {
             if (con != null) {
                 pm = con.prepareStatement(sql);
                 pm.setString(1, DishID);
-                int n = pm.executeUpdate();
-                if (n == 1) return true;
+
+                pm.executeUpdate();
+                return true;
+
             }
         } finally {
             closeConnection();
@@ -189,8 +195,9 @@ public class DishDAO {
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1, input);
                 pm.setString(2, DishID);
-                int n = pm.executeUpdate();
-                if (n > 0) return true;
+
+                pm.executeUpdate();
+                return true;
             }
         } finally {
             closeConnection();
@@ -198,17 +205,13 @@ public class DishDAO {
         return false;
     }
 
-    public static void main(String[] args) throws SQLException {
-//        DishDAO dishdao = new DishDAO();
-//        for (Dish d : dishdao.getAllDishesByHomeCook(2,1)){
-//            System.out.println(d);
-//        }
-        // public static void main(String[] args) throws SQLException {
-        //     DishDAO dishdao = new DishDAO();
-        //     for (Dish d : dishdao.getAllDishesByHomeCook(2,1)){
-        //         System.out.println(d);
-        //     }
-        // }
+
+//     public static void main(String[] args) throws SQLException {
+//         DishDAO dishdao = new DishDAO();
+//         for (Dish d : dishdao.getAllDishesByHomeCook("6ABE8D62-72D2-4F13-B790-C35EA529365B",1)){
+//             System.out.println(d);
+//         }
+//     }
 
 //        for (Dish d : dishdao.getAllDishesByStatus(true)){
 //            System.out.println(d);
@@ -228,5 +231,5 @@ public class DishDAO {
 //        System.out.println(flag);
 
 //    }
-    }
+
 }
