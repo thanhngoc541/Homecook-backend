@@ -52,12 +52,12 @@ public class OrderServices {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createOrder(Order ord) throws SQLException, URISyntaxException {
-        String newOrderId= service.createOrder(ord);
-        URI uri= new URI("/customer/" + newOrderId);
+        service.createOrder(ord);
+        service.insertOrderItems(ord);
+        URI uri= new URI("/customer/");
         return Response.created(uri).build();
     }
 
-    //Loi ham put
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/updateStatus/{id}/{status}")
