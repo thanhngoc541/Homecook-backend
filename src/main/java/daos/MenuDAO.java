@@ -20,8 +20,102 @@ public class MenuDAO {
         if (pm != null) pm.close();
         if (con !=null) con.close();
     }
+    public Menu getMenuByID(String ID) throws SQLException {
+        String sql = "EXEC getMenuByID "
+                + "@MenuID = ?";
+        try{
+            con = DBContext.makeConnection();
+            if (con != null){
+                pm = con.prepareStatement(sql);
+                pm.setString(1, ID);
+                rs = pm.executeQuery();
+                DishInDAO dao = new DishInDAO();
+                if (rs.next()) return
+                        new Menu(rs.getString("MenuName"),
+                                ID,
+                                rs.getString("HomeCookID"),
+                                rs.getString("HomeCookName"),
+                                rs.getBoolean("IsServing"),
+                                dao.getAllDishesInMenu(ID));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeConnection();
+        }
+        return null;
+    }
+
+    public List<Menu> getAllMenusByHomeCookID(String ID) throws SQLException {
+        List<Menu> list = new ArrayList<Menu>();
+        String sql = "EXEC getMenuByHomeCookID "
+                + "@HomeCookID = ?";
+        try{
+            con = DBContext.makeConnection();
+            if (con != null){
+                pm = con.prepareStatement(sql);
+                pm.setString(1, ID);
+                rs = pm.executeQuery();
+                DishInDAO dao= new DishInDAO();
+                while(rs.next())
+                    list.add(new Menu(rs.getString("MenuName"),
+                            rs.getString("MenuID"),
+                            ID,
+                            rs.getString("HomeCookName"),
+                            rs.getBoolean("IsServing"),
+                            dao.getAllDishesInMenu(ID)));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeConnection();
+        }
+        return list;
+    }
+    public List<Menu> getAllActiveMenus(int page) throws SQLException {
+        List list = new ArrayList<Menu>();
+        String sql = "EXEC getMenuByStatus "
+                + "@IsServing= ?, "
+                + "@Page = ?";
+        String menuId=null;
+        try{
+            con = DBContext.makeConnection();
+            if (con != null){
+                pm = con.prepareStatement(sql);
+                pm.setBoolean(1,true);
+                pm.setInt(2, page);
+
+
+                rs = pm.executeQuery();
+
+                DishInDAO dao = new DishInDAO();
+
+                while(rs.next()){
+                    menuId=rs.getString("MenuID");
+                    System.out.println(menuId);
+                    list.add(new Menu(rs.getString("MenuName"),
+                            menuId,
+                            rs.getString("HomeCookID"),
+                            rs.getString("HomeCookName"),
+                            true,
+                            dao.getAllDishesInMenu(menuId)));}
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeConnection();
+        }
+        return list;
+    }
 
     public boolean createMenu(Menu menu) throws SQLException {
+        System.out.println(menu.getMenuName());
         String sql = "EXEC createMenu "
         		+ "@HomeCookID = ?, "
         		+ "@MenuName = ?, "
@@ -31,7 +125,7 @@ public class MenuDAO {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setInt(1, menu.getMenuID());
+                pm.setString(1, menu.getHomeCookID());
                 pm.setString(2,menu.getMenuName());
                 pm.setBoolean(3, menu.isServing());
                 pm.setString(4,menu.getHomeCookName());
@@ -48,53 +142,7 @@ public class MenuDAO {
         return false;
     }
 
-    public boolean addDishToMenu(int menuID,int dishID) throws  SQLException{
-        String sql ="EXEC addDishToMenu "
-        		+ "@MenuID = ?, "
-        		+ "@DishID = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setInt(1, menuID);
-                pm.setInt(2, dishID);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return false;
-    }
-
-    public boolean deleteDishFromMenu(int menuID,int dishID) throws  SQLException{
-        String sql = "EXEC deleteDishFromMenu "
-        		+ "@MenuID = ?, "
-        		+ "@DishID = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setInt(1, menuID);
-                pm.setInt(2, dishID);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return false;
-    }
-
-    public boolean changeMenuName(String menuName, int menuId) throws  SQLException{
+    public boolean changeMenuName(String menuName, String menuId) throws  SQLException{
         String sql ="EXEC changeMenuName "
         		+ "@MenuName = ?, "
         		+ "@MenuID= ?";
@@ -103,7 +151,7 @@ public class MenuDAO {
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setString(1, menuName);
-                pm.setInt(2, menuId);
+                pm.setString(2, menuId);
                 int n = pm.executeUpdate();
                 if ( n > 0) return true;
             }
@@ -117,7 +165,7 @@ public class MenuDAO {
         return false;
     }
 
-    public boolean changeMenuStatus(boolean isServing, int menuId) throws  SQLException{
+    public boolean changeMenuStatus(boolean isServing, String menuId) throws  SQLException{
         String sql ="EXEC changeMenuStatus "
         		+ "@IsServing = ?, "
         		+ "@MenuID = ?";
@@ -126,9 +174,9 @@ public class MenuDAO {
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1, isServing);
-                pm.setInt(2, menuId);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
+                pm.setString(2, menuId);
+                 pm.executeUpdate();
+
             }
         }
         catch (Exception e) {
@@ -140,14 +188,14 @@ public class MenuDAO {
         return false;
     }
 
-    public boolean deleteMenu( int menuId) throws  SQLException{
+    public boolean deleteMenu( String menuId) throws  SQLException{
         String sql ="EXEC deleteMenu "
         		+ "@MenuID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setInt(1, menuId);
+                pm.setString(1, menuId);
                 int n = pm.executeUpdate();
                 if ( n > 0) return true;
             }
@@ -160,153 +208,17 @@ public class MenuDAO {
         }
         return false;
     }
-
-    public Menu getMenuByID(int ID) throws SQLException {
-        String sql = "EXEC getMenuByID "
-        		+ "@MenuID = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setInt(1, ID);
-                rs = pm.executeQuery();
-                if (rs.next()) return new Menu(rs.getInt("HomeCookID"),
-                        ID,
-                        rs.getString("MenuName"),
-                        rs.getBoolean("IsServing"),
-                        rs.getString("HomeCookName"),
-                        null);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return null;
-    }
-
-    public List<Menu> getAllMenusByHomeCookID(int ID, int page) throws SQLException {
-        List list = new ArrayList<Menu>();
-        String sql = "EXEC getMenuByHomeCookID "
-        		+ "@HomeCookID = ?, "
-        		+ "@Page = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setInt(1, ID);
-                pm.setInt(2, page);
-                rs = pm.executeQuery();
-                while(rs.next()) list.add(new Menu(ID,rs.getInt("MenuID"),
-                        rs.getString("MenuName"),
-                        rs.getBoolean("IsServing"),
-                        rs.getString("HomeCookName"),
-                        null));
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return list;
-    }
-    public List<Menu> getAllMenusByHomeCookIDAndStatus(int ID, boolean isServing, int page) throws SQLException {
-        List list = new ArrayList<Menu>();
-        String sql = "EXEC getMenuByHomeCookIDAndStatus "
-        		+ "@HomeCookID = ?, "
-        		+ "@IsServing= ?, "
-        		+ "@Page = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setInt(1, ID);
-                pm.setBoolean(2, isServing);
-                pm.setInt(3, page);
-                rs = pm.executeQuery();
-                while(rs.next()) 
-                	list.add(new Menu(ID,rs.getInt("MenuID"),
-                        rs.getString("MenuName"),
-                        isServing,
-                        rs.getString("HomeCookName"),
-                        null));
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return list;
-    }
-
-    public List<Menu> getAllMenusByStatus(boolean isServing, int page) throws SQLException {
-        List list = new ArrayList<Menu>();
-        String sql = "EXEC getMenuByStatus "
-                + "@IsServing= ?, "
-                + "@Page = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setBoolean(1, isServing);
-                pm.setInt(2, page);
-                rs = pm.executeQuery();
-                while(rs.next())
-                    list.add(new Menu(rs.getInt("HomeCookID"),
-                            rs.getInt("MenuID"),
-                            rs.getString("MenuName"),
-                            isServing,
-                            rs.getString("HomeCookName"),
-                            null));
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return list;
-    }
-
-    public List<Dish> getAllDishesInMenu(int menuID, int page) throws SQLException {
-        List list = new ArrayList<Dish>();
-        String sql = "EXEC getAllDishesInMenu "
-        		+ "@MenuID = ?, "
-        		+ "@Page = ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setInt(1, menuID);
-                pm.setInt(2, page);
-                rs = pm.executeQuery();
-                DishDAO dishDAO=new DishDAO();
-                while(rs.next())
-                	list.add(dishDAO.getDishByID((rs.getInt("DishID"))));
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return list;
-    }
-
-
-
     public static void main(String[] args) throws SQLException {
     MenuDAO dao=new MenuDAO();
-    List<Menu> menus = dao.getAllMenusByHomeCookID(1,1);
-    String data = new Gson().toJson(menus);
-        System.out.println(data);
+//    dao.createMenu(new Menu("asdasdasdas",
+//            null,
+//            "B489E4B9-9ABC-41B9-88FC-380579FB3CC6",
+//            "Ngoc",
+//            true,
+//             null));
+   dao.deleteMenu("fee2cb76-89aa-4ccd-ab52-03c619b3366c");
+   // List<Menu> menus = dao.getAllMenusByHomeCookID("B489E4B9-9ABC-41B9-88FC-380579FB3CC6");
+    //String data = new Gson().toJson(menus);
+    //    System.out.println(data);
     }
 }

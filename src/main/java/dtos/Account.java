@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Account {
-    private int UserID;
+    private String UserID;
     private String Username, Password, Role, Email, FullName, Address, PhoneNumber;
     private boolean IsActive;
     java.util.Date DoB;
@@ -18,7 +18,7 @@ public class Account {
     	roleTable.put(3, "Admin");
     }
     
-    public Account(int userID, String username, String password, String role, String email, String fullName, java.util.Date doB, String address, String phoneNumber, boolean isActive) {
+    public Account(String userID, String username, String password, String role, String email, String fullName, java.util.Date doB, String address, String phoneNumber, boolean isActive) {
         UserID = userID;
         Username = username;
         Password = password;
@@ -34,11 +34,11 @@ public class Account {
     public Account() {
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return UserID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         UserID = userID;
     }
 
@@ -154,7 +154,7 @@ public class Account {
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
 		Account o = (Account) obj;
-		return this.UserID == o.UserID && this.IsActive == o.IsActive && this.Address.equals(o.Address)
+		return this.UserID.equals(o.UserID) && this.IsActive == o.IsActive && this.Address.equals(o.Address)
 	        	&& this.Email.equals(o.Email) && this.FullName.equals(o.FullName) && this.Username.equals(o.Username)
 	        	&& this.Password.equals(o.Password) && (this.DoB.compareTo(o.DoB)) == 0 
 	        	&& this.PhoneNumber.equals(o.PhoneNumber) && this.Role.equals(o.Role);

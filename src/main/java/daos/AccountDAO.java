@@ -27,7 +27,7 @@ public class AccountDAO {
 			ResultSet rs = prstm.executeQuery();
 
 			while (rs.next()) {
-				Account input = new Account (rs.getInt("UserID"), rs.getString("Username"),
+				Account input = new Account (rs.getString("AccountID"), rs.getString("Username"),
 						rs.getString("Password"), tempoResult.getRoleName(rs.getInt("RoleID")),
 						rs.getString("Email"), rs.getString("FullName"),
 						 new java.util.Date(rs.getDate("DoB").getTime()),
@@ -78,8 +78,7 @@ public class AccountDAO {
 		}
 		return false;
 	}
-
-	public boolean changeHomeCookStatus(int userID, boolean status) {
+	public boolean changeHomeCookStatus(String userID, boolean status) {
 		try {
 		Connection conn = DBContext.makeConnection();
 
@@ -90,7 +89,7 @@ public class AccountDAO {
 		PreparedStatement prstm = conn.prepareStatement(query);
 
 		prstm.setBoolean(1, status);
-		prstm.setInt(2, userID);
+		prstm.setString(2, userID);
 
 		return prstm.executeUpdate() == 1;
 	}
@@ -99,18 +98,17 @@ public class AccountDAO {
 	}
 	return false;
 	}
-
-	public Account getAccountByID(int ID) {
+	public Account getAccountByID(String ID) {
 		try {
 			Account result = new Account();
 			Connection conn = DBContext.makeConnection();
 			String query = "EXEC getAccountByID @UserID = ?";
 			PreparedStatement prstm = conn.prepareStatement(query);
-			prstm.setInt(1, ID);
+			prstm.setString(1, ID);
 			ResultSet rs = prstm.executeQuery();
 
 			while (rs.next()) {
-				result.setUserID(rs.getInt("UserID"));
+				result.setUserID(rs.getString("AccountID"));
 				result.setUsername(rs.getString("Username"));
 				result.setPassword(rs.getString("Password"));
 				result.setFullName(rs.getString("FullName"));
@@ -142,7 +140,7 @@ public class AccountDAO {
 			ResultSet rs = prstm.executeQuery();
 
 			while (rs.next()) {
-				result.setUserID(rs.getInt("UserID"));
+				result.setUserID(rs.getString("AccountID"));
 				result.setUsername(rs.getString("Username"));
 				result.setPassword(rs.getString("Password"));
 				result.setFullName(rs.getString("FullName"));
@@ -185,8 +183,7 @@ public class AccountDAO {
 			prstm.setDate(5, new java.sql.Date(input.DoBForDA()));
 			prstm.setString(6,  input.getAddress());
 			prstm.setString(7, input.getPhoneNumber());
-			prstm.setInt(8, input.getUserID());
-
+			prstm.setString(8, input.getUserID());
 			return prstm.executeUpdate() == 1;
 		}
 		catch (Exception e) {
@@ -196,16 +193,16 @@ public class AccountDAO {
 	}
 
 	public static void main(String[] args) {
-		AccountDAO tempo = new AccountDAO();
-		tempo.getAllAccountByRole("Customer", 2);
-		for (Account account : tempo.getAllAccountByRole("Customer",1)) {
-			System.out.println(account.toString());
-		}
-
-		tempo.changeHomeCookStatus(2, false);
-
-		System.out.println(tempo.getAccountByID(1));
-
-		tempo.updateAccountInfo(tempo.getAccountByID(10));
+//		AccountDAO tempo = new AccountDAO();
+//		tempo.getAllAccountByRole("Customer", 2);
+//		for (Account account : tempo.getAllAccountByRole("Customer",1)) {
+//			System.out.println(account.toString());
+//		}
+//
+//		tempo.changeHomeCookStatus(2, false);
+//
+//		System.out.println(tempo.getAccountByID(1));
+//
+//		tempo.updateAccountInfo(tempo.getAccountByID(10));
 	}
 }

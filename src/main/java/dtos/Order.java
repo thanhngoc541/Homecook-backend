@@ -3,7 +3,7 @@ package dtos;
 import java.util.*;
 
 public class Order {
-    int OrderID, HomeCookID, CustomerID;
+    String OrderID, HomeCookID, CustomerID;
     Date TimeStamp;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
@@ -21,7 +21,7 @@ public class Order {
         statusTable.put(7, "Cancelled");
     }
 
-    public Order(int orderID, int homecookID, int customerID, Date timeStamp, String status, String receiverPhone,
+    public Order(String orderID, String homecookID, String customerID, Date timeStamp, String status, String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         OrderID = orderID;
@@ -36,7 +36,7 @@ public class Order {
         Note= note;
         OrderItems= orderItems;
     }
-    public Order(int homecookID, int customerID, Date timeStamp, String status, String receiverPhone,
+    public Order(String homecookID, String customerID, Date timeStamp, String status, String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         HomeCookID=  homecookID;
@@ -51,7 +51,7 @@ public class Order {
         OrderItems= orderItems;
     }
 
-    public Order(int orderID, Date timeStamp, String status, double total, String note) {
+    public Order(String orderID, Date timeStamp, String status, double total, String note) {
         this.OrderID= orderID;
         this.TimeStamp= timeStamp;
         this.Status= status;
@@ -59,9 +59,9 @@ public class Order {
         this.Note= note;
     }
     public Order() {
-        OrderID = 0;
-        HomeCookID= 0;
-        CustomerID= 0;
+        OrderID = "";
+        HomeCookID= "";
+        CustomerID= "";
         TimeStamp= null;
         Status= null;
         ReceiverPhone= null;
@@ -72,27 +72,27 @@ public class Order {
         OrderItems= null;
     }
 
-    public int getOrderID() {
+    public String getOrderID() {
         return OrderID;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(String orderID) {
         OrderID = orderID;
     }
 
-    public int getHomeCookID() {
+    public String getHomeCookID() {
         return HomeCookID;
     }
 
-    public void setHomeCookID(int homeCookID) {
+    public void setHomeCookID(String homeCookID) {
         HomeCookID = homeCookID;
     }
 
-    public int getCustomerID() {
+    public String getCustomerID() {
         return CustomerID;
     }
 
-    public void setCustomerID(int customerID) {
+    public void setCustomerID(String customerID) {
         CustomerID = customerID;
     }
 
@@ -188,7 +188,7 @@ public class Order {
 	@Override
 	public boolean equals(Object obj) {
 		Order o = (Order) obj;
-		return this.CustomerID == o.CustomerID && this.HomeCookID == o.HomeCookID && this.OrderID == o.OrderID
+		return this.CustomerID.equals(o.CustomerID) && this.HomeCookID.equals(o.HomeCookID) && this.OrderID.equals(o.OrderID)
 				&& this.ReceiverAddress.equals(o.ReceiverAddress) && this.ReceiverName.equals(o.ReceiverName)
 				&& this.ReceiverPhone.equals(o.ReceiverPhone) && this.Note.equals(o.Note)
 				&& this.OrderItems.containsAll(o.OrderItems) && this.Status.equals(o.Status);

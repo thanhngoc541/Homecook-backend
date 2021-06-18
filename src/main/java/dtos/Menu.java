@@ -1,90 +1,71 @@
 package dtos;
 
 import java.util.ArrayList;
-
+import java.util.List;
 public class Menu {
-    int MenuID;
-    String MenuName;
-    boolean IsServing;
+    String MenuName, MenuID;
+    String HomeCookID;
     String HomeCookName;
-    ArrayList<Dish> Dishes;
-    int HomeCookID;
+    boolean IsServing;
+    List<Dish> Dishes;
+
     public Menu() {
     }
 
-    public Menu(int HomeCookID,int MenuID, String MenuName, boolean IsServing, String HomeCookName, ArrayList<Dish> Dishes) {
-        this.MenuID = MenuID;
-        this.HomeCookID=HomeCookID;
-        this.MenuName = MenuName;
-        this.IsServing = IsServing;
-        this.HomeCookName = HomeCookName;
-        this.Dishes = Dishes;
-    }
-
-    public int getMenuID() {
-        return MenuID;
-    }
-
-    public void setMenuID(int MenuID) {
-        this.MenuID = MenuID;
+    public Menu(String menuName, String menuID, String homeCookID, String homeCookName, boolean isServing, List<Dish> dishes) {
+        MenuName = menuName;
+        MenuID = menuID;
+        HomeCookID = homeCookID;
+        HomeCookName = homeCookName;
+        IsServing = isServing;
+        Dishes = dishes;
     }
 
     public String getMenuName() {
         return MenuName;
     }
 
-    public void setMenuName(String MenuName) {
-        this.MenuName = MenuName;
+    public void setMenuName(String menuName) {
+        MenuName = menuName;
     }
 
-    public boolean isServing() {
-        return IsServing;
+    public String getMenuID() {
+        return MenuID;
     }
 
-    public void setServing(boolean IsServing) {
-        this.IsServing = IsServing;
+    public void setMenuID(String menuID) {
+        MenuID = menuID;
+    }
+
+    public String getHomeCookID() {
+        return HomeCookID;
+    }
+
+    public void setHomeCookID(String homeCookID) {
+        HomeCookID = homeCookID;
     }
 
     public String getHomeCookName() {
         return HomeCookName;
     }
 
-    public void setHomeCookName(String HomeCookName) {
-        this.HomeCookName = HomeCookName;
+    public void setHomeCookName(String homeCookName) {
+        HomeCookName = homeCookName;
     }
 
-    public ArrayList<Dish> getDishes() {
+    public boolean isServing() {
+        return IsServing;
+    }
+
+    public void setServing(boolean serving) {
+        IsServing = serving;
+    }
+
+    public List<Dish> getDishes() {
         return Dishes;
     }
 
-    public void setDishes(ArrayList<Dish> Dishes) {
-        this.Dishes = Dishes;
+    public void setDishes(List<Dish> dishes) {
+        Dishes = dishes;
     }
-
-    public int getHomeCookID() {
-        return HomeCookID;
-    }
-
-    public void setHomeCookID(int HomeCookID) {
-        this.HomeCookID = HomeCookID;
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "MenuID=" + MenuID +
-                ", MenuName='" + MenuName + '\'' +
-                ", IsServing=" + IsServing +
-                ", Dishes=" + Dishes +
-                '}';
-    }
-
-	@Override
-	public boolean equals(Object obj) {
-		Menu m = (Menu) obj;
-		return this.IsServing == m.IsServing && this.MenuID == m.MenuID && this.MenuName.equals(m.MenuName)
-				&& this.HomeCookName.equals(m.HomeCookName) && this.Dishes.containsAll(m.Dishes);
-	}
-    
-    
 }
