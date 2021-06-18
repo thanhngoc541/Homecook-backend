@@ -1,7 +1,9 @@
 package dtos;
 
 public class Dish {
+
     String DishName, DishId, HomeCookID;
+
     double Price;
     boolean IsAvailable;
     String Description, ImageURL;
@@ -16,6 +18,7 @@ public class Dish {
         ImageURL = imageURL;
     }
 
+
     public Dish(String homeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
         DishId = "";
         HomeCookID = homeCookID;
@@ -25,6 +28,7 @@ public class Dish {
         Description = description;
         ImageURL = imageURL;
     }
+
 
     //Huy dung cho OrderDAO
     public Dish(String dishId, String homeCookID, String dishName, double price, String imgURL) {
