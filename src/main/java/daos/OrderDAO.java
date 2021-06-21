@@ -158,7 +158,6 @@ public class OrderDAO {
                     ord.setReceiverAddress(address);
                     ord.setReceiverName(name);
 
-                    System.out.println(ord.getOrderItems());
                     list.add(ord);
                 }
                 return list;
