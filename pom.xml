@@ -18,6 +18,7 @@
     </properties>
 
     <dependencies>
+<!--        tomcat embeded core, embed el, websocket-->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
@@ -39,6 +40,11 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
