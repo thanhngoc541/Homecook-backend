@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import dtos.Account;
 
 import Utils.DBContext;
+import Utils.encryption;
 
 
 public class AccountDAO {
@@ -59,17 +60,19 @@ public class AccountDAO {
 					+ "@FullName = ?, "
 					+ "@Date = ?, "
 					+ "@Address = ?, "
-					+ "@PhoneNumber = ?";
+					+ "@PhoneNumber = ?, "
+					+ "@SaltKey = ?";
 			PreparedStatement prstm = conn.prepareCall(query);
 
 			prstm.setString(1, input.getUsername());
-			prstm.setString(2, input.getPassword());
+			prstm.setString(2, input.hashPasswords());
 			prstm.setInt(3,  input.getRoleID(input.getRole()));
 			prstm.setString(4, input.getEmail());
 			prstm.setString(5, input.getFullName());
 			prstm.setDate(6, java.sql.Date.valueOf(input.getDoB()));
 			prstm.setString(7,  input.getAddress());
 			prstm.setString(8, input.getPhoneNumber());
+			prstm.setString(9, input.getSaltKey());
 
 			return prstm.executeUpdate() == 1;
 		}
@@ -111,7 +114,7 @@ public class AccountDAO {
 				result.setUserID(rs.getString("AccountID"));
 				result.setUsername(rs.getString("Username"));
 				result.setPassword(rs.getString("Password"));
-				result.setFullName(rs.getString("FullName"));
+				result.setFullName(rs.getString("FullName").trim());
 				result.setEmail(rs.getString("Email"));
 				result.setDoB(
 						new java.util.Date(rs.getDate("DoB").getTime()));
@@ -143,7 +146,7 @@ public class AccountDAO {
 				result.setUserID(rs.getString("AccountID"));
 				result.setUsername(rs.getString("Username"));
 				result.setPassword(rs.getString("Password"));
-				result.setFullName(rs.getString("FullName"));
+				result.setFullName(rs.getString("FullName").trim());
 				result.setEmail(rs.getString("Email"));
 				result.setDoB(
 						new java.util.Date(rs.getDate("DoB").getTime()));
@@ -193,16 +196,6 @@ public class AccountDAO {
 	}
 
 	public static void main(String[] args) {
-//		AccountDAO tempo = new AccountDAO();
-//		tempo.getAllAccountByRole("Customer", 2);
-//		for (Account account : tempo.getAllAccountByRole("Customer",1)) {
-//			System.out.println(account.toString());
-//		}
-//
-//		tempo.changeHomeCookStatus(2, false);
-//
-//		System.out.println(tempo.getAccountByID(1));
-//
-//		tempo.updateAccountInfo(tempo.getAccountByID(10));
+		
 	}
 }

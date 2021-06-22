@@ -83,6 +83,7 @@ public class MenuDAO {
         return list;
     }
     public List<Menu> getAllActiveMenus(int page) throws SQLException {
+
         List list = new ArrayList<Menu>();
         String sql = "EXEC getActiveMenu "
                 + "@Page = ?";

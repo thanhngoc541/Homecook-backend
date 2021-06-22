@@ -4,9 +4,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import Utils.encryption;
+
 public class Account {
-    private String UserID;
-    private String Username, Password, Role, Email, FullName, Address, PhoneNumber;
+    private String Username, Password, Role, Email, FullName, Address, PhoneNumber, UserID, SaltKey;
     private boolean IsActive;
     java.util.Date DoB;
     private Map<Integer, String> roleTable = new HashMap<Integer, String>();
@@ -24,14 +25,23 @@ public class Account {
         Password = password;
         Role = role;
         Email = email;
-        FullName = fullName;
+        FullName = fullName.trim();
         DoB = doB;
         Address = address;
         PhoneNumber = phoneNumber;
         IsActive = isActive;
+        SaltKey = encryption.saltKeyGenerate(fullName.trim());
     }
 
-    public Account() {
+    public String getSaltKey() {
+		return SaltKey;
+	}
+
+	public void setSaltKey(String saltKey) {
+		SaltKey = saltKey;
+	}
+
+	public Account() {
     }
 
     public String getUserID() {
@@ -160,5 +170,15 @@ public class Account {
 	        	&& this.PhoneNumber.equals(o.PhoneNumber) && this.Role.equals(o.Role);
 	}
     
+	public String hashPasswords() {
+		try {
+			String output = encryption.toHexString(encryption.getSHA(Password + SaltKey));
+			return output;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
     
 }
