@@ -1,10 +1,11 @@
 package dtos;
 
+import java.time.Instant;
 import java.util.*;
 
 public class Order {
     String OrderID, HomeCookID, CustomerID;
-    Date TimeStamp;
+    Instant TimeStamp;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
     ArrayList<OrderItem> OrderItems;
@@ -21,7 +22,7 @@ public class Order {
         statusTable.put(7, "Cancelled");
     }
 
-    public Order(String orderID, String homecookID, String customerID, Date timeStamp, String status, String receiverPhone,
+    public Order(String orderID, String homecookID, String customerID, Instant timeStamp, String status, String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         OrderID = orderID;
@@ -36,7 +37,7 @@ public class Order {
         Note= note;
         OrderItems= orderItems;
     }
-    public Order(String homecookID, String customerID, Date timeStamp, String status, String receiverPhone,
+    public Order(String homecookID, String customerID, Instant timeStamp, String status, String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         HomeCookID=  homecookID;
@@ -51,7 +52,7 @@ public class Order {
         OrderItems= orderItems;
     }
 
-    public Order(String orderID, Date timeStamp, String status, double total, String note) {
+    public Order(String orderID, Instant timeStamp, String status, double total, String note) {
         this.OrderID= orderID;
         this.TimeStamp= timeStamp;
         this.Status= status;
@@ -96,11 +97,11 @@ public class Order {
         CustomerID = customerID;
     }
 
-    public Date getTimeStamp() {
+    public Instant getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(Date timeStamp) {
+    public void setTimeStamp(Instant timeStamp) {
         TimeStamp = timeStamp;
     }
 

@@ -21,8 +21,8 @@ public class WorkerThreads extends Clock{
 	private final ZoneOffset zoneOffset;
 	private final Instant whenObjectCreatedInstant;
 	
-	private static final ClockTimeTravel timeTravel = new ClockTimeTravel(
-			LocalDateTime.parse("2021-06-12T01:00:00"), ZoneOffset.of("+00:00")
+	public static final ClockTimeTravel timeTravel = new ClockTimeTravel(
+			LocalDateTime.parse("2021-06-12T00:00:00"), ZoneOffset.of("-17:00")
 			);
   
   
@@ -60,9 +60,10 @@ public class WorkerThreads extends Clock{
 			         Instant now = Instant.now(timeTravel);
 			         long differ = 0;
 			         for (Order order : dao.getAllOrder()) {
-			        	 differ = now.toEpochMilli() - order.getTimeStamp().toInstant().toEpochMilli();
+			        	 differ = now.toEpochMilli() - order.getTimeStamp().toEpochMilli();
+			        	 System.out.println(order.getOrderID());
 			        	 System.out.println("currentTime: " + now);
-			        	 System.out.println("Order time: " + order.getTimeStamp().toInstant());
+			        	 System.out.println("Order time: " + order.getTimeStamp());
 			        	 System.out.println("Difference: " + differ);
 			        	 System.out.println("\n\n");
 						 if(differ >= 86400000 && differ <= 92000000) {
@@ -90,7 +91,7 @@ public class WorkerThreads extends Clock{
 					}
 			         
 			        try {
-						Thread.sleep(30000);
+						Thread.sleep(10000);
 			        }
 			        catch (Exception e)
 			        {
