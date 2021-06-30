@@ -36,7 +36,10 @@ public class MenuDAO {
                                 rs.getString("HomeCookID"),
                                 rs.getString("HomeCookName"),
                                 rs.getBoolean("IsServing"),
-                                dao.getAllDishesInMenu(ID));
+                                dao.getAllDishesInMenu(ID),
+                                rs.getFloat("Rating"),
+                                rs.getString("MenuURL"),
+                                rs.getString("MenuDescription"));
             }
         }
         catch (Exception e) {
@@ -65,7 +68,10 @@ public class MenuDAO {
                             ID,
                             rs.getString("HomeCookName"),
                             rs.getBoolean("IsServing"),
-                            dao.getAllDishesInMenu(ID)));
+                            dao.getAllDishesInMenu(ID),
+                            rs.getFloat("Rating"),
+                            rs.getString("MenuURL"),
+                            rs.getString("MenuDescription")));
             }
         }
         catch (Exception e) {
@@ -77,17 +83,17 @@ public class MenuDAO {
         return list;
     }
     public List<Menu> getAllActiveMenus(int page) throws SQLException {
-        List<Menu> list = new ArrayList<Menu>();
-        String sql = "EXEC getMenuByStatus "
-                + "@IsServing= ?, "
+
+        List list = new ArrayList<Menu>();
+        String sql = "EXEC getActiveMenu "
                 + "@Page = ?";
-        String menuId=null;
+
         try{
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setBoolean(1,true);
-                pm.setInt(2, page);
+
+                pm.setInt(1, page);
 
 
                 rs = pm.executeQuery();
@@ -95,14 +101,15 @@ public class MenuDAO {
                 DishInDAO dao = new DishInDAO();
 
                 while(rs.next()){
-                    menuId=rs.getString("MenuID");
-                    System.out.println(menuId);
                     list.add(new Menu(rs.getString("MenuName"),
-                            menuId,
+                            rs.getString("MenuID"),
                             rs.getString("HomeCookID"),
                             rs.getString("HomeCookName"),
                             true,
-                            dao.getAllDishesInMenu(menuId)));}
+                            null,
+                            rs.getFloat("Rating"),
+                            rs.getString("MenuURL"),
+                            rs.getString("MenuDescription")));}
             }
         }
         catch (Exception e) {
@@ -120,7 +127,10 @@ public class MenuDAO {
         		+ "@HomeCookID = ?, "
         		+ "@MenuName = ?, "
         		+ "@IsServing = ?, "
-        		+ "@HomeCookName = ?";
+        		+ "@HomeCookName = ?, "
+                + "@Rating = ?, "
+                + "@MenuURL = ?, "
+                + "@MenuDescription = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
