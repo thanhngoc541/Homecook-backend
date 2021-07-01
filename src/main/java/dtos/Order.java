@@ -1,10 +1,13 @@
 package dtos;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 public class Order {
     String OrderID, HomeCookID, CustomerID;
-    Date TimeStamp;
+    Instant TimeStamp;
+    Instant OrderDate;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
     ArrayList<OrderItem> OrderItems;
@@ -21,13 +24,15 @@ public class Order {
         statusTable.put(7, "Cancelled");
     }
 
-    public Order(String orderID, String homecookID, String customerID, Date timeStamp, String status, String receiverPhone,
+    public Order(String orderID, String homecookID, String customerID, Instant timeStamp,Instant orderDate, String status,
+                 String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         OrderID = orderID;
         HomeCookID=  homecookID;
         CustomerID= customerID;
         TimeStamp= timeStamp;
+        OrderDate= orderDate;
         Status= status;
         ReceiverPhone= receiverPhone;
         ReceiverAddress= receiverAddress;
@@ -36,7 +41,7 @@ public class Order {
         Note= note;
         OrderItems= orderItems;
     }
-    public Order(String homecookID, String customerID, Date timeStamp, String status, String receiverPhone,
+    public Order(String homecookID, String customerID, Instant timeStamp, String status, String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
         HomeCookID=  homecookID;
@@ -51,9 +56,10 @@ public class Order {
         OrderItems= orderItems;
     }
 
-    public Order(String orderID, Date timeStamp, String status, double total, String note) {
+    public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {
         this.OrderID= orderID;
         this.TimeStamp= timeStamp;
+        this.OrderDate= orderDate;
         this.Status= status;
         this.Total= total;
         this.Note= note;
@@ -63,6 +69,7 @@ public class Order {
         HomeCookID= "";
         CustomerID= "";
         TimeStamp= null;
+        OrderDate= null;
         Status= null;
         ReceiverPhone= null;
         ReceiverAddress= null;
@@ -96,12 +103,20 @@ public class Order {
         CustomerID = customerID;
     }
 
-    public Date getTimeStamp() {
+    public Instant getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(Date timeStamp) {
+    public void setTimeStamp(Instant timeStamp) {
         TimeStamp = timeStamp;
+    }
+
+    public Instant getOrderDate() {
+        return OrderDate;
+    }
+
+    public void setOrderDate(Instant orderDate) {
+        OrderDate = orderDate;
     }
 
     public void setStatus(String status) {
@@ -157,7 +172,6 @@ public class Order {
     public void setOrderItems(ArrayList<OrderItem> orderItems) {
         OrderItems = orderItems;
     }
-
     @Override
     public String toString() {
         return "\nOrder{" +
@@ -165,6 +179,7 @@ public class Order {
                 ", HomeCookID=" + HomeCookID +
                 ", CustomerID=" + CustomerID +
                 ", TimeStamp=" + TimeStamp +
+                ", OrderDate=" + OrderDate +
                 ", ReceiverPhone='" + ReceiverPhone + '\'' +
                 ", ReceiverAddress='" + ReceiverAddress + '\'' +
                 ", ReceiverName='" + ReceiverName + '\'' +

@@ -9,6 +9,7 @@ import dtos.OrderItem;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.Date;
 
@@ -49,8 +50,12 @@ public class OrderDAO {
                     //Doi tu sql Timestamp qua Date java
                     java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
                     java.util.Date timeStamp = new Date(tmpTime.getTime());
-                    //chuyen tu status id => name
+
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+
                     String homecookID = rs.getString("HomeCookID");
+                    //chuyen tu status id => name
                     String status = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
@@ -61,7 +66,8 @@ public class OrderDAO {
                     ord.setOrderID(orderID);
                     ord.setCustomerID(customerID);
                     ord.setHomeCookID(homecookID);
-                    ord.setTimeStamp(timeStamp);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
                     ord.setStatus(status);
                     ord.setTotal(total);
                     ord.setNote(note);
@@ -95,18 +101,22 @@ public class OrderDAO {
                 ps.setInt(2, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    Order ord = new Order("", null, null, 0, null);
+                    Order ord = new Order("", null, null,null, 0, null);
                     String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
                     java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
                     java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    //----------
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
                     //chuyen tu status id => name
                     String status = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
 
                     ord.setOrderID(orderID);
-                    ord.setTimeStamp(timeStamp);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
                     ord.setStatus(status);
                     ord.setTotal(total);
                     ord.setNote(note);
@@ -135,8 +145,7 @@ public class OrderDAO {
                     Order ord = new Order();
                     String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
-                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
-                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    Instant stamp = rs.getTimestamp("TimeStamp").toInstant();
                     //chuyen tu status id => name
                     String homecookID = rs.getString("HomeCookID");
                     String customerID= rs.getString("CustomerID");
@@ -150,7 +159,7 @@ public class OrderDAO {
                     ord.setOrderID(orderID);
                     ord.setCustomerID(customerID);
                     ord.setHomeCookID(homecookID);
-                    ord.setTimeStamp(timeStamp);
+                    ord.setTimeStamp(stamp);
                     ord.setStatus(status);
                     ord.setTotal(total);
                     ord.setNote(note);
@@ -184,11 +193,10 @@ public class OrderDAO {
                 ps.setInt(3, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    Order ord = new Order("", null, null, 0, null);
+                    Order ord = new Order("", null, null, null, 0, null);
                     String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
-                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
-                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    Instant timeStamp = rs.getTime("TimeStamp").toInstant();
                     //chuyen tu status id => name
                     String status = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
@@ -270,8 +278,6 @@ public class OrderDAO {
 
     public String createOrder(Order ord) throws SQLException {
         int statusID = ord.getStatusID(ord.getStatus());
-        java.util.Date objDate = new java.util.Date(ord.getTimeStamp().getTime());
-        java.sql.Timestamp timeStamp = new java.sql.Timestamp(objDate.getTime());
         String query = "EXEC createOrder "
         		+ "@HomeCookID = ?, "
         		+ "@CustomerID = ?,"
@@ -288,13 +294,14 @@ public class OrderDAO {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, ord.getHomeCookID());
                 ps.setString(2, ord.getCustomerID());
-                ps.setTimestamp(3, timeStamp);
-                ps.setInt(4, statusID);
-                ps.setString(5, ord.getReceiverPhone());
-                ps.setString(6, ord.getReceiverAddress());
-                ps.setString(7, ord.getReceiverName());
-                ps.setDouble(8, ord.getTotal());
-                ps.setString(9, ord.getNote());
+                ps.setTime(3, new Time(ord.getTimeStamp().toEpochMilli()));
+                ps.setTime(4, new Time(ord.getOrderDate().toEpochMilli()));
+                ps.setInt(5, statusID);
+                ps.setString(6, ord.getReceiverPhone());
+                ps.setString(7, ord.getReceiverAddress());
+                ps.setString(8, ord.getReceiverName());
+                ps.setDouble(9, ord.getTotal());
+                ps.setString(10, ord.getNote());
                 rs= ps.executeQuery();
                 while (rs.next()) {
                     ord.setOrderID(rs.getString("OrderID"));
@@ -308,14 +315,14 @@ public class OrderDAO {
         }
         return null;
     }
-    public boolean deleteOrder(int OrderID) {
+    public boolean deleteOrder(String OrderID) {
         String query= "EXEC deleteOrder" +
                 "@OrderID = ?";
         try {
             conn= DBContext.makeConnection();
             if (conn != null) {
                 ps= conn.prepareStatement(query);
-                ps.setInt(1, OrderID);
+                ps.setString(1, OrderID);
                 ps.executeUpdate();
                 return true;
             }
@@ -355,27 +362,11 @@ public class OrderDAO {
     
 
     public static void main(String[] args) throws ParseException, SQLException {
-        OrderDAO tempo = new OrderDAO();
-//		try {
-//			tempo.changeOrderStatus(4, "Finished");
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        String strDate = "2022-01-01 15:00:06.000";
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Date date = formatter.parse(strDate);
-//        Order ord = new Order("B489E4B9-9ABC-41B9-88FC-380579FB3CC6", "535340B1-8053-4819-8772-488577A10639", date, "Pending",
-//                "0901517531", "NTMK", "Ngokku", 500, "Ok Test", null);
-//        System.out.println(tempo.createOrder(ord));
-
-//        System.out.println(tempo.changeOrderStatus("BD89AAF7-6364-4C9E-897E-159E40DAF7B1", "Accept"));
-        System.out.println(tempo.getListItemByOrderID("D0B05EAC-8C40-416E-9283-F13B787FB908", 1));
-//        System.out.println(tempo.getAllOrder());
-//        ArrayList<Order> ord= tempo.getOrderByCustomerID(7, 1);
-//        Gson gson= new GsonBuilder().setPrettyPrinting().create();
-//        String json= gson.toJson(ord);
-//        System.out.println(json);
+        OrderDAO dao = new OrderDAO();
+        ArrayList<Order> list= dao.getOrderByCustomerID("535340B1-8053-4819-8772-488577A10639", 1);
+//        System.out.println(list);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        System.out.println(gson.toJson(list));
     }
 }
 

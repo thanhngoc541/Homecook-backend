@@ -39,7 +39,7 @@ public class DishDAO {
                 rs = pm.executeQuery();
                 while (rs.next()) {
                     list.add(new Dish(rs.getString("DishID"),
-
+                            rs.getString("HomeCookID"),
                             rs.getString("DishName"),
                             rs.getDouble("Price"),
                             rs.getBoolean("IsAvailable"),

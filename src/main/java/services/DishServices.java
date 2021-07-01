@@ -6,8 +6,10 @@ import daos.DishDAO;
 import dtos.Dish;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -19,7 +21,7 @@ public class DishServices {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
-    @Path("/cook/{id}")
+    @Path("/homecook/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllDishesByHomeCook(@PathParam("id") String id) throws SQLException {
         List<Dish> dishes = service.getAllDishesByHomeCook(id,1);
@@ -47,13 +49,15 @@ public class DishServices {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createDish(String data) throws SQLException, URISyntaxException {
+    public Response createDish(String data,@Context UriInfo uriInfo) throws SQLException, URISyntaxException {
 
         Dish dish = gson.fromJson(data, Dish.class);
-        String result = service.createDish(dish);
-
-        URI uri = new URI("/dish/"+dish.getDishId());
-
+        String resultID = service.createDish(dish);
+        URI uri = null;
+        if(!resultID.isEmpty()){
+             uri= new URI(uriInfo.getAbsolutePath()+"/dish/"+resultID);
+        }
+        System.out.println("uri:"+uri);
         return Response.created(uri).build();
     }
 
@@ -74,7 +78,4 @@ public class DishServices {
 
         return result ? Response.ok().build() : Response.notModified().build();
     }
-
-
-
 }
