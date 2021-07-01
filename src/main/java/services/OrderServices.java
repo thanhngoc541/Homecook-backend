@@ -14,16 +14,15 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-@Path("/orders")
+@Path("/order")
 public class OrderServices {
     private OrderDAO service= new OrderDAO();
-
+    private Gson gson= new GsonBuilder().setPrettyPrinting().create();
     @GET
     @Path("/customer/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByCustomerID(@PathParam("id") String id) throws SQLException {
         ArrayList<Order> orders= service.getOrderByCustomerID(id, 1);
-        Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(orders);
         return result;
     }
@@ -33,18 +32,16 @@ public class OrderServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByHomeCookID(@PathParam("id") String id) throws SQLException {
         ArrayList<Order> orders= service.getOrderByHomeCookID(id, 1);
-        Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(orders);
         return result;
     }
 
     //ORDER ITEMs
     @GET
-    @Path("/{orderID}")
+    @Path("/item/{orderID}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getListItems(@PathParam("orderID") String id) throws SQLException {
         ArrayList<OrderItem> items= service.getListItemByOrderID(id,1);
-        Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(items);
         return result;
     }
@@ -69,7 +66,7 @@ public class OrderServices {
 
     @DELETE
     @Path("{id}")
-    public Response deleteOrder(@PathParam("id") int id) {
+    public Response deleteOrder(@PathParam("id") String id) {
         if (service.deleteOrder(id)) {
             return Response.ok().build();
         }
