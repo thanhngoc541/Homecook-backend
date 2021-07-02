@@ -282,6 +282,7 @@ public class OrderDAO {
         		+ "@HomeCookID = ?, "
         		+ "@CustomerID = ?,"
         		+ "@TimeStamp = ?, "
+                + "@OrderDate = ?, "
         		+ "@StatusID = ?, " 
                 + "@ReceiverPhone = ?, "
                 + "@ReceiverAddress = ?, "
