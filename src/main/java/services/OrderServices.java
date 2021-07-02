@@ -1,18 +1,27 @@
 package services;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import daos.OrderDAO;
 import dtos.Order;
 import dtos.OrderItem;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/order")
 public class OrderServices {
@@ -23,6 +32,14 @@ public class OrderServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByCustomerID(@PathParam("id") String id) throws SQLException {
         ArrayList<Order> orders= service.getOrderByCustomerID(id, 1);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
+    @Path("/orders")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllOrder() {
+        ArrayList<Order> orders= service.getAllOrder();
         String result= gson.toJson(orders);
         return result;
     }
@@ -48,10 +65,35 @@ public class OrderServices {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createOrder(Order ord) throws SQLException, URISyntaxException {
-        service.createOrder(ord);
-        service.insertOrderItems(ord);
-        URI uri= new URI("/customer/");
+    public Response createOrder(String data, @Context UriInfo uriInfo) throws SQLException, URISyntaxException {
+        System.out.println(data);
+        final ObjectMapper mapper = new ObjectMapper();
+        ArrayList<OrderItem> items = null;
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map = mapper.readValue(data, new TypeReference<HashMap<String, Object>>() {
+            });
+            String itemsStr = map.get("OrderItems").toString();
+            Type orderType = new TypeToken<ArrayList<OrderItem>>() {
+            }.getType();
+            items = gson.fromJson(itemsStr, orderType);
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        
+
+        Order order = new Order();
+        order.setOrderItems(items);
+        //lam sao de extract cai order item ra khoi data string
+        order= gson.fromJson(data, Order.class);
+        String resultID = service.createOrder(order);
+        boolean resultID2 = service.insertOrderItems(order);
+        URI uri = null;
+        if (!resultID.isEmpty() && resultID2) {
+            uri = new URI(uriInfo.getAbsolutePath() + "/order/" + resultID);
+        }
         return Response.created(uri).build();
     }
 

@@ -15,6 +15,12 @@ public class OrderItem {
         Note = note;
         TotalPrice = totalPrice;
     }
+    public OrderItem(Dish dishItem, int quantity, String note, double totalPrice) {
+        Dish= dishItem;
+        Quantity= quantity;
+        Note= note;
+        TotalPrice= totalPrice;
+    }
 
     public OrderItem() {
         this.ItemID="";

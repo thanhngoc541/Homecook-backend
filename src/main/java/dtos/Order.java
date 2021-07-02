@@ -1,5 +1,7 @@
 package dtos;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -10,6 +12,7 @@ public class Order {
     Instant OrderDate;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
+    @SerializedName("OrderItems")
     ArrayList<OrderItem> OrderItems;
     //transient để json ko in ra cái status table
     transient Map<Integer, String>  statusTable= new HashMap<>();
