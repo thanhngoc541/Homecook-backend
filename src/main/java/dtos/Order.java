@@ -1,7 +1,6 @@
 package dtos;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;

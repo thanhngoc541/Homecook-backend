@@ -1,14 +1,14 @@
 package daos;
-import com.google.gson.Gson;
-import dtos.Dish;
-import dtos.Menu;
-import Utils.DBContext;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+        import com.google.gson.Gson;
+        import dtos.Dish;
+        import dtos.Menu;
+        import Utils.DBContext;
+        import java.sql.Connection;
+        import java.sql.PreparedStatement;
+        import java.sql.ResultSet;
+        import java.sql.SQLException;
+        import java.util.ArrayList;
+        import java.util.List;
 
 public class MenuDAO {
     private Connection con = null;
@@ -121,16 +121,16 @@ public class MenuDAO {
         return list;
     }
 
-    public boolean createMenu(Menu menu) throws SQLException {
+    public String createMenu(Menu menu) throws SQLException {
         System.out.println(menu.getMenuName());
         String sql = "EXEC createMenu "
-        		+ "@HomeCookID = ?, "
-        		+ "@MenuName = ?, "
-        		+ "@IsServing = ?, "
-        		+ "@HomeCookName = ?, "
-                + "@Rating = ?, "
-                + "@MenuURL = ?, "
-                + "@MenuDescription = ?";
+                + "@HomeCookID = ? , "
+                + "@MenuName = ? , "
+                + "@IsServing = ? , "
+                + "@HomeCookName = ? , "
+                + "@Rating = ? , "
+                + "@MenuURL = ? , "
+                + "@MenuDescription = ? ";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -139,8 +139,14 @@ public class MenuDAO {
                 pm.setString(2,menu.getMenuName());
                 pm.setBoolean(3, menu.isServing());
                 pm.setString(4,menu.getHomeCookName());
-                int n = pm.executeUpdate();
-                if (n > 0) return true;
+                pm.setFloat(5,menu.getRating());
+                pm.setString(6,menu.getMenuURL());
+                pm.setString(7,menu.getMenuDescription());
+                rs= pm.executeQuery();
+                if (rs.next()) {
+                    return rs.getString("MenuID");
+                }
+
             }
         }
         catch (Exception e) {
@@ -149,13 +155,13 @@ public class MenuDAO {
         finally {
             closeConnection();
         }
-        return false;
+        return null;
     }
 
     public boolean changeMenuName(String menuName, String menuId) throws  SQLException{
         String sql ="EXEC changeMenuName "
-        		+ "@MenuName = ?, "
-        		+ "@MenuID= ?";
+                + "@MenuName = ?, "
+                + "@MenuID= ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -177,15 +183,15 @@ public class MenuDAO {
 
     public boolean changeMenuStatus(boolean isServing, String menuId) throws  SQLException{
         String sql ="EXEC changeMenuStatus "
-        		+ "@IsServing = ?, "
-        		+ "@MenuID = ?";
+                + "@IsServing = ?, "
+                + "@MenuID = ?";
         try {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1, isServing);
                 pm.setString(2, menuId);
-                 pm.executeUpdate();
+                pm.executeUpdate();
 
             }
         }
@@ -200,7 +206,7 @@ public class MenuDAO {
 
     public boolean deleteMenu( String menuId) throws  SQLException{
         String sql ="EXEC deleteMenu "
-        		+ "@MenuID = ?";
+                + "@MenuID = ?";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -221,16 +227,20 @@ public class MenuDAO {
 
 
     public static void main(String[] args) throws SQLException {
-    MenuDAO dao=new MenuDAO();
-//    dao.createMenu(new Menu("asdasdasdas",
-//            null,
-//            "B489E4B9-9ABC-41B9-88FC-380579FB3CC6",
-//            "Ngoc",
-//            true,
-//             null));
-   dao.deleteMenu("fee2cb76-89aa-4ccd-ab52-03c619b3366c");
-   // List<Menu> menus = dao.getAllMenusByHomeCookID("B489E4B9-9ABC-41B9-88FC-380579FB3CC6");
-    //String data = new Gson().toJson(menus);
-    //    System.out.println(data);
+        MenuDAO dao=new MenuDAO();
+        String menu = dao.createMenu(new Menu("test",
+                null,
+                "B489E4B9-9ABC-41B9-88FC-380579FB3CC6",
+                "Ngoc",
+                false,
+                null,
+                4.5F
+                , null
+                , null));
+        System.out.println(menu);
+        //dao.deleteMenu("fee2cb76-89aa-4ccd-ab52-03c619b3366c");
+        // List<Menu> menus = dao.getAllMenusByHomeCookID("B489E4B9-9ABC-41B9-88FC-380579FB3CC6");
+        //String data = new Gson().toJson(menus);
+        //    System.out.println(data);
     }
 }

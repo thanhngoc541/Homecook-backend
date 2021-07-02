@@ -146,6 +146,7 @@ public class OrderDAO {
                     String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
                     Instant stamp = rs.getTimestamp("TimeStamp").toInstant();
+                    Instant orderDate= rs.getTimestamp("OrderDate").toInstant();
                     //chuyen tu status id => name
                     String homecookID = rs.getString("HomeCookID");
                     String customerID= rs.getString("CustomerID");
@@ -160,6 +161,7 @@ public class OrderDAO {
                     ord.setCustomerID(customerID);
                     ord.setHomeCookID(homecookID);
                     ord.setTimeStamp(stamp);
+                    ord.setOrderDate(orderDate);
                     ord.setStatus(status);
                     ord.setTotal(total);
                     ord.setNote(note);
@@ -282,6 +284,7 @@ public class OrderDAO {
         		+ "@HomeCookID = ?, "
         		+ "@CustomerID = ?,"
         		+ "@TimeStamp = ?, "
+                + "@OrderDate = ?, "
         		+ "@StatusID = ?, " 
                 + "@ReceiverPhone = ?, "
                 + "@ReceiverAddress = ?, "
