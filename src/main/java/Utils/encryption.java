@@ -17,7 +17,7 @@ public class encryption {
 			// and return array of byte
 			return md.digest(input.getBytes(StandardCharsets.UTF_8));
 		}
-		
+
 		public static String toHexString(byte[] hash)
 		{
 			// Convert byte array into signum representation
@@ -34,7 +34,7 @@ public class encryption {
 
 			return hexString.toString();
 		}
-		
+
 		public static String saltKeyGenerate(String fullname) {
 			String[] input = fullname.split(" ");
 			return input[0];

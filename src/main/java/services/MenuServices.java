@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import daos.DishInDAO;
 import daos.MenuDAO;
 import dtos.Dish;
+import dtos.DishIn;
 import dtos.Menu;
 import dtos.OrderItem;
 
@@ -37,21 +38,23 @@ public class MenuServices {
        // return Response.created(uri).build();
     }
 
-    @PUT
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/adddishtomenu/{menuid}/{dishid}")
     public Response addDishToMenu(@PathParam("menuid") String menuid, @PathParam("dishid") String dishid) throws SQLException {
-            if (dao.addDishToMenu(menuid,dishid)) {
+        DishIn dishIn = new DishIn(menuid,dishid);//gson.fromJson(data,DishIn.class);
+            if (dao.addDishToMenu(dishIn)) {
             return Response.ok().build();
         } else {
             return Response.notModified().build();
         }
     }
 
-    @DELETE
-    @Path("/removedishfrommenu/{menuid}/{dishid}")
+    @GET
+        @Path("/removedishfrommenu/{menuid}/{dishid}")
     public Response removedishfrommenu(@PathParam("menuid") String menuid, @PathParam("dishid") String dishid) throws SQLException {
-        if (dao.deleteDishFromMenu(menuid,dishid)) {
+        DishIn dishIn = new DishIn(menuid,dishid);
+        if (dao.deleteDishFromMenu(dishIn)) {
             return Response.ok().build();
         } else {
             return Response.notModified().build();

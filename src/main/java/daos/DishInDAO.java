@@ -2,6 +2,7 @@ package daos;
 
 import Utils.DBContext;
 import dtos.Dish;
+import dtos.DishIn;
 import dtos.Menu;
 
 import java.sql.Connection;
@@ -21,7 +22,7 @@ public class DishInDAO {
         if (pm != null) pm.close();
         if (con !=null) con.close();
     }
-    public boolean addDishToMenu(String menuID, String dishID) throws  SQLException{
+    public boolean addDishToMenu(DishIn dishIn) throws  SQLException{
         String sql ="EXEC addDishToMenu "
                 + "@MenuID = ?, "
                 + "@DishID = ?";
@@ -29,10 +30,10 @@ public class DishInDAO {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setString(1, menuID);
-                pm.setString(2, dishID);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
+                pm.setString(1, dishIn.getMenuID());
+                pm.setString(2, dishIn.getDishId());
+                pm.executeUpdate();
+                return true;
             }
         }
         catch (Exception e) {
@@ -44,7 +45,7 @@ public class DishInDAO {
         return false;
     }
 
-    public boolean deleteDishFromMenu(String menuID, String dishID) throws  SQLException{
+    public boolean deleteDishFromMenu(DishIn dishIn) throws  SQLException{
         String sql = "EXEC deleteDishFromMenu "
                 + "@MenuID = ?, "
                 + "@DishID = ?";
@@ -52,10 +53,10 @@ public class DishInDAO {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setString(1, menuID);
-                pm.setString(2, dishID);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
+                pm.setString(1, dishIn.getMenuID());
+                pm.setString(2, dishIn.getDishId());
+               pm.executeUpdate();
+            return true;
             }
         }
         catch (Exception e) {
@@ -93,7 +94,7 @@ public class DishInDAO {
     }
     public static void main(String[] args) throws SQLException {
         DishInDAO dao = new DishInDAO();
-        //dao.addDishToMenu("fee2cb76-89aa-4ccd-ab52-03c619b3366c","a8a7ee2f-b586-482b-9cfe-0342d99c8102");
+        System.out.println(dao.deleteDishFromMenu(new DishIn("D0EE1BF5-5C7F-4CC2-A95C-61C73FB366B9","821F056A-A896-4A6E-AB08-67583BF5A27E")));
 
     }
 }
