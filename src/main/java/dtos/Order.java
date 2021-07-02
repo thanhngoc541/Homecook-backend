@@ -43,19 +43,18 @@ public class Order {
         Note= note;
         OrderItems= orderItems;
     }
-    public Order(String homecookID, String customerID, Instant timeStamp, String status, String receiverPhone,
+    public Order(String homecookID, String customerID, Instant timeStamp, Instant orderDate, String receiverPhone,
                  String receiverAddress,
-                 String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
+                 String receiverName, double total, String note) {
         HomeCookID=  homecookID;
         CustomerID= customerID;
         TimeStamp= timeStamp;
-        Status= status;
+        OrderDate= orderDate;
         ReceiverPhone= receiverPhone;
         ReceiverAddress= receiverAddress;
         ReceiverName= receiverName;
         Total= total;
-        Note= note;
-        OrderItems= orderItems;
+        Note= note;;
     }
 
     public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {

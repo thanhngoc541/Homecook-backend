@@ -14,29 +14,29 @@ import daos.OrderDAO;
 import dtos.Order;
 
 public class WorkerThreads extends Clock{
-	
+
 	private final Instant t0Instant;
 	private final LocalDateTime t0LocalDateTime;
-	  
+
 	private final ZoneOffset zoneOffset;
 	private final Instant whenObjectCreatedInstant;
-	
+
 	public static final ClockTimeTravel timeTravel = new ClockTimeTravel(
 			LocalDateTime.parse("2021-06-12T00:00:00"), ZoneOffset.of("-17:00")
 			);
-  
-  
+
+
 	public WorkerThreads(LocalDateTime t0, ZoneOffset zoneOffset){
 		this.zoneOffset = zoneOffset;
 		this.t0LocalDateTime = t0;
 		this.t0Instant = t0.toInstant(zoneOffset);
 		this.whenObjectCreatedInstant = Instant.now(timeTravel);
 	}
-	
+
 	@Override public ZoneId getZone() {
 		return zoneOffset;
 	}
-  
+
 	/** The caller needs to actually pass a ZoneOffset object here. */
 	@Override public Clock withZone(ZoneId zone) {
 		return new ClockTimeTravel(t0LocalDateTime, (ZoneOffset)zone);
@@ -47,8 +47,8 @@ public class WorkerThreads extends Clock{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
+
 	/** Simple demo of the behaviour of this class. */
 	public static void main(String[] args) throws InterruptedException {
 
@@ -56,7 +56,7 @@ public class WorkerThreads extends Clock{
 			public void run() {
 		         while(Thread.currentThread().getState() != Thread.State.TIMED_WAITING) {
 		        	 OrderDAO dao = new OrderDAO();
-		        	 
+
 			         Instant now = Instant.now(timeTravel);
 			         long differ = 0;
 			         for (Order order : dao.getAllOrder()) {
@@ -72,13 +72,13 @@ public class WorkerThreads extends Clock{
 									+ "@StartTime = ?, "
 									+ "@EndTime = ?";
 					        java.sql.Timestamp startTime = new java.sql.Timestamp(now.toEpochMilli());
-					        
+
 					        java.sql.Timestamp endTime = new java.sql.Timestamp(now.toEpochMilli() + 92000000);
-							
+
 							try {
 								PreparedStatement stmt = conn.prepareStatement(sql);
 								stmt.setTimestamp(1, startTime);
-								stmt.setTimestamp(2, endTime);				
+								stmt.setTimestamp(2, endTime);
 								System.out.println(startTime);
 								System.out.println(endTime);
 								System.out.println(stmt.executeUpdate());
@@ -89,7 +89,7 @@ public class WorkerThreads extends Clock{
 							}
 						}
 					}
-			         
+
 			        try {
 						Thread.sleep(10000);
 			        }
@@ -98,7 +98,7 @@ public class WorkerThreads extends Clock{
 			        	e.printStackTrace();
 			        }
 		         }
-		         
+
 		    }
 		};
 

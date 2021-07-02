@@ -47,19 +47,19 @@ public class DishServices {
         return result;
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createDish(String data,@Context UriInfo uriInfo) throws SQLException, URISyntaxException {
+        @POST
+        @Consumes(MediaType.APPLICATION_JSON)
+        public Response createDish(String data,@Context UriInfo uriInfo) throws SQLException, URISyntaxException {
 
-        Dish dish = gson.fromJson(data, Dish.class);
-        String resultID = service.createDish(dish);
-        URI uri = null;
-        if(!resultID.isEmpty()){
-             uri= new URI(uriInfo.getAbsolutePath()+"/dish/"+resultID);
+            Dish dish = gson.fromJson(data, Dish.class);
+            String resultID = service.createDish(dish);
+            URI uri = null;
+            if(!resultID.isEmpty()){
+                 uri= new URI(uriInfo.getAbsolutePath()+"/dish/"+resultID);
+            }
+            System.out.println("uri:"+uri);
+            return Response.created(uri).build();
         }
-        System.out.println("uri:"+uri);
-        return Response.created(uri).build();
-    }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

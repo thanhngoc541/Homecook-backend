@@ -65,36 +65,36 @@ public class OrderServices {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createOrder(String data, @Context UriInfo uriInfo) throws SQLException, URISyntaxException {
+    public boolean createOrder(String data) throws SQLException, URISyntaxException {
         System.out.println(data);
-        final ObjectMapper mapper = new ObjectMapper();
-        ArrayList<OrderItem> items = null;
-        try {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map = mapper.readValue(data, new TypeReference<HashMap<String, Object>>() {
-            });
-            String itemsStr = map.get("OrderItems").toString();
-            Type orderType = new TypeToken<ArrayList<OrderItem>>() {
-            }.getType();
-            items = gson.fromJson(itemsStr, orderType);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+//        final ObjectMapper mapper = new ObjectMapper();
+//        ArrayList<OrderItem> items = null;
+//        try {
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            map = mapper.readValue(data, new TypeReference<HashMap<String, Object>>() {
+//            });
+//            String itemsStr = map.get("OrderItems").toString();
+//            Type orderType = new TypeToken<ArrayList<OrderItem>>() {
+//            }.getType();
+//            items = gson.fromJson(itemsStr, orderType);
+//        } catch (JsonMappingException e) {
+//            e.printStackTrace();
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
 
-
-        Order order = new Order();
-        order.setOrderItems(items);
         //lam sao de extract cai order item ra khoi data string
-        order= gson.fromJson(data, Order.class);
-        String resultID = service.createOrder(order);
-        boolean resultID2 = service.insertOrderItems(order);
-        URI uri = null;
-        if (!resultID.isEmpty() && resultID2) {
-            uri = new URI(uriInfo.getAbsolutePath() + "/order/" + resultID);
-        }
-        return Response.created(uri).build();
+        Order order= gson.fromJson(data, Order.class);
+        Order resultID = service.createOrder(order);
+        boolean resultItem= service.insertOrderItems(order);
+        System.out.println(resultID);
+        System.out.println(resultItem);
+        return resultItem;
+//        URI uri = null;
+//        if (!resultID.isEmpty()) {
+//            uri = new URI(uriInfo.getAbsolutePath() + "/order/" + resultID);
+//        }
+//        return Response.created(uri).build();
     }
 
     @PUT

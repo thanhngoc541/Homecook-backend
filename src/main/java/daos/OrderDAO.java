@@ -261,6 +261,7 @@ public class OrderDAO {
                 //when we query, the db will commit automatically => ko dung addBatch duoc
                 //Vay thi phai commit db manually
                 for (OrderItem item : ord.getOrderItems()) {
+                    item.setOrderID(ord.getOrderID());
                     ps.setString(1, item.getOrderID());
                     ps.setString(2, item.getDish().getDishId());
                     ps.setInt(3, item.getQuantity());
@@ -278,14 +279,12 @@ public class OrderDAO {
         return false;
     }
 
-    public String createOrder(Order ord) throws SQLException {
-        int statusID = ord.getStatusID(ord.getStatus());
+    public Order createOrder(Order ord) throws SQLException {
         String query = "EXEC createOrder "
         		+ "@HomeCookID = ?, "
         		+ "@CustomerID = ?,"
         		+ "@TimeStamp = ?, "
                 + "@OrderDate = ?, "
-        		+ "@StatusID = ?, " 
                 + "@ReceiverPhone = ?, "
                 + "@ReceiverAddress = ?, "
                 + "@ReceiverName = ?, "
@@ -294,22 +293,24 @@ public class OrderDAO {
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
+                Timestamp timeStamp= Timestamp.from(ord.getTimeStamp());
+                Timestamp orderDate= Timestamp.from(ord.getOrderDate());
                 ps = conn.prepareStatement(query);
                 ps.setString(1, ord.getHomeCookID());
                 ps.setString(2, ord.getCustomerID());
-                ps.setTime(3, new Time(ord.getTimeStamp().toEpochMilli()));
-                ps.setTime(4, new Time(ord.getOrderDate().toEpochMilli()));
-                ps.setInt(5, statusID);
-                ps.setString(6, ord.getReceiverPhone());
-                ps.setString(7, ord.getReceiverAddress());
-                ps.setString(8, ord.getReceiverName());
-                ps.setDouble(9, ord.getTotal());
-                ps.setString(10, ord.getNote());
+                ps.setTimestamp(3, timeStamp);
+                ps.setTimestamp(4, orderDate);
+                ps.setString(5, ord.getReceiverPhone());
+                ps.setString(6, ord.getReceiverAddress());
+                ps.setString(7, ord.getReceiverName());
+                ps.setDouble(8, ord.getTotal());
+                ps.setString(9, ord.getNote());
                 rs= ps.executeQuery();
-                while (rs.next()) {
+                if(rs.next()) {
+
                     ord.setOrderID(rs.getString("OrderID"));
+                    return ord;
                 }
-                return ord.getOrderID();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -366,10 +367,87 @@ public class OrderDAO {
 
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
-        ArrayList<Order> list= dao.getOrderByCustomerID("535340B1-8053-4819-8772-488577A10639", 1);
-//        System.out.println(list);
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(list));
+        Instant ts= Instant.ofEpochMilli(1621530000);
+        Instant od= Instant.ofEpochMilli(1621530000);
+
+        Timestamp TS= Timestamp.from(ts);
+        Timestamp OD= Timestamp.from(od);
+        //---------------------
+//        ArrayList<Order> list= dao.getOrderByCustomerID("535340B1-8053-4819-8772-488577A10639", 1);
+////        System.out.println(list);
+//        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+//        System.out.println(gson.toJson(list));
+        //-----------------------
+//        Order ord= new Order("6ABE8D62-72D2-4F13-B790-C35EA529365B", "6BB74684-993E-4286-B4BE-7E723BBA1614",
+//                ts,  od, "0909889029", "06 Tan Son Street, Ward 11, Go Vap District","Nguyen Le Kieu Tram", 7.0,
+//                "Test create order DAO" );
+
+//
+//        System.out.println(dao.insertOrderItems(ord));
+        //---------------------------
+//        Timestamp TS= Timestamp.from(ts);
+//        Timestamp OD= Timestamp.from(od);
+////        Time OD= new Time(od.toEpochMilli());
+//
+//        System.out.println(ts);
+//        System.out.println(od);
+//        System.out.println(TS);
+//        System.out.println(OD);
+//        ps.setTime(3, new Time(ord.getTimeStamp().toEpochMilli()));
+//        ps.setTime(4, new Time(ord.getOrderDate().toEpochMilli()));
+        //-------
+        String data= "{\n" +
+                "        \"HomeCookID\": \"6ABE8D62-72D2-4F13-B790-C35EA529365B\",\n" +
+                "        \"CustomerID\": \"6BB74684-993E-4286-B4BE-7E723BBA1614\",\n" +
+                "        \"TimeStamp\": {\n" +
+                "            \"seconds\": 1621530000,\n" +
+                "            \"nanos\": 0\n" +
+                "        },\n" +
+                "        \"OrderDate\": {\n" +
+                "            \"seconds\": 1624294800,\n" +
+                "            \"nanos\": 0\n" +
+                "        },\n" +
+                "        \"ReceiverPhone\": \"0909889029\",\n" +
+                "        \"ReceiverAddress\": \"06 Tan Son Street, Ward 11, Go Vap District, Ho Chi Minh City\",\n" +
+                "        \"ReceiverName\": \"Nguyen Le Kieu Tram\",\n" +
+                "        \"Total\": 13.5,\n" +
+                "        \"Note\": \"Test API lan 1\",\n" +
+                "        \"OrderItems\":\n" +
+                "            [\n" +
+                "              {\n" +
+                "                \"Quantity\": 1,\n" +
+                "                \"Note\":\"Item2\",\n" +
+                "                \"TotalPrice\": 3.5,\n" +
+                "                \"Dish\": {\n" +
+                "                    \"DishName\": \"Brown Rice Yogurt\",\n" +
+                "                    \"DishId\": \"9C61505A-82CE-4EC7-8BD6-B16004685E57\",\n" +
+                "                    \"HomeCookID\": \"6ABE8D62-72D2-4F13-B790-C35EA529365B\",\n" +
+                "                    \"Price\": 3.5,\n" +
+                "                    \"IsAvailable\": false,\n" +
+                "                    \"ImageURL\": \"https://www.tasteofhome.com/wp-content/uploads/2021/01/tasty-butter-chicken-curry-dish-from-indian-cuisine-1277362334.jpg\"\n" +
+                "                }\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"Quantity\": 3,\n" +
+                "                \"Note\":\"Item2\",\n" +
+                "                \"TotalPrice\": 3.5,\n" +
+                "                \"Dish\": {\n" +
+                "                    \"DishName\": \"Hu Tieu Chay\",\n" +
+                "                    \"DishId\": \"427DEE88-94C5-4872-B046-6815D6A6C552\",\n" +
+                "                    \"HomeCookID\": \"B489E4B9-9ABC-41B9-88FC-380579FB3CC6\",\n" +
+                "                    \"Price\": 3.5,\n" +
+                "                    \"IsAvailable\": true,\n" +
+                "                    \"ImageURL\": \"https://images.immediate.co.uk/production/volatile/sites/30/2020/08/mexican-chicken-burger_1-b5cca6f.jpg?quality=90&resize=440%2C400\"\n" +
+                "                }\n" +
+                "            }\n" +
+                "            ]   \n" +
+                "}\n";
+        Order order= gson.fromJson(data, Order.class);
+        System.out.println(dao.createOrder(order));
+        System.out.println(order.getOrderItems());
+        System.out.println(dao.insertOrderItems(order));
+
     }
 }
 
