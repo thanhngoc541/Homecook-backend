@@ -247,7 +247,7 @@ public class OrderDAO {
         return false;
     }
 
-    public boolean insertOrderItems(Order ord) throws SQLException {
+    public String insertOrderItems(Order ord) throws SQLException {
         String query = "EXEC insertOrderItems "
         		+ "@OrderID = ?, "
         		+ "@DishID = ?, "
@@ -268,15 +268,17 @@ public class OrderDAO {
                     ps.setString(4, item.getNote());
                     ps.setDouble(5, item.getTotalPrice());
                     ps.executeUpdate();
+                    item.setItemID(rs.getString("ItemID"));
                 }
-                return true;
+                return ord.getOrderID();
+
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
             closeConnection();
         }
-        return false;
+        return null;
     }
 
     public Order createOrder(Order ord) throws SQLException {
@@ -320,7 +322,7 @@ public class OrderDAO {
         return null;
     }
     public boolean deleteOrder(String OrderID) {
-        String query= "EXEC deleteOrder" +
+        String query= "EXEC deleteOrder " +
                 "@OrderID = ?";
         try {
             conn= DBContext.makeConnection();
@@ -368,11 +370,16 @@ public class OrderDAO {
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        Instant ts= Instant.ofEpochMilli(1621530000);
-        Instant od= Instant.ofEpochMilli(1621530000);
-
+        Instant ts= Instant.ofEpochSecond(1625450400);
+        Instant od= Instant.ofEpochSecond(1625282813);
+        System.out.println(ts);
+        System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
+
+        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));
+//        System.out.println(TS);
+//        System.out.println(OD);
         //---------------------
 //        ArrayList<Order> list= dao.getOrderByCustomerID("535340B1-8053-4819-8772-488577A10639", 1);
 ////        System.out.println(list);
@@ -397,57 +404,56 @@ public class OrderDAO {
 //        ps.setTime(3, new Time(ord.getTimeStamp().toEpochMilli()));
 //        ps.setTime(4, new Time(ord.getOrderDate().toEpochMilli()));
         //-------
-        String data= "{\n" +
-                "        \"HomeCookID\": \"6ABE8D62-72D2-4F13-B790-C35EA529365B\",\n" +
-                "        \"CustomerID\": \"6BB74684-993E-4286-B4BE-7E723BBA1614\",\n" +
-                "        \"TimeStamp\": {\n" +
-                "            \"seconds\": 1621530000,\n" +
-                "            \"nanos\": 0\n" +
-                "        },\n" +
-                "        \"OrderDate\": {\n" +
-                "            \"seconds\": 1624294800,\n" +
-                "            \"nanos\": 0\n" +
-                "        },\n" +
-                "        \"ReceiverPhone\": \"0909889029\",\n" +
-                "        \"ReceiverAddress\": \"06 Tan Son Street, Ward 11, Go Vap District, Ho Chi Minh City\",\n" +
-                "        \"ReceiverName\": \"Nguyen Le Kieu Tram\",\n" +
-                "        \"Total\": 13.5,\n" +
-                "        \"Note\": \"Test API lan 1\",\n" +
-                "        \"OrderItems\":\n" +
-                "            [\n" +
-                "              {\n" +
-                "                \"Quantity\": 1,\n" +
-                "                \"Note\":\"Item2\",\n" +
-                "                \"TotalPrice\": 3.5,\n" +
-                "                \"Dish\": {\n" +
-                "                    \"DishName\": \"Brown Rice Yogurt\",\n" +
-                "                    \"DishId\": \"9C61505A-82CE-4EC7-8BD6-B16004685E57\",\n" +
-                "                    \"HomeCookID\": \"6ABE8D62-72D2-4F13-B790-C35EA529365B\",\n" +
-                "                    \"Price\": 3.5,\n" +
-                "                    \"IsAvailable\": false,\n" +
-                "                    \"ImageURL\": \"https://www.tasteofhome.com/wp-content/uploads/2021/01/tasty-butter-chicken-curry-dish-from-indian-cuisine-1277362334.jpg\"\n" +
-                "                }\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"Quantity\": 3,\n" +
-                "                \"Note\":\"Item2\",\n" +
-                "                \"TotalPrice\": 3.5,\n" +
-                "                \"Dish\": {\n" +
-                "                    \"DishName\": \"Hu Tieu Chay\",\n" +
-                "                    \"DishId\": \"427DEE88-94C5-4872-B046-6815D6A6C552\",\n" +
-                "                    \"HomeCookID\": \"B489E4B9-9ABC-41B9-88FC-380579FB3CC6\",\n" +
-                "                    \"Price\": 3.5,\n" +
-                "                    \"IsAvailable\": true,\n" +
-                "                    \"ImageURL\": \"https://images.immediate.co.uk/production/volatile/sites/30/2020/08/mexican-chicken-burger_1-b5cca6f.jpg?quality=90&resize=440%2C400\"\n" +
-                "                }\n" +
-                "            }\n" +
-                "            ]   \n" +
-                "}\n";
-        Order order= gson.fromJson(data, Order.class);
-        System.out.println(dao.createOrder(order));
-        System.out.println(order.getOrderItems());
-        System.out.println(dao.insertOrderItems(order));
-
+//        String data= "{\n" +
+//                "        \"HomeCookID\": \"6ABE8D62-72D2-4F13-B790-C35EA529365B\",\n" +
+//                "        \"CustomerID\": \"6BB74684-993E-4286-B4BE-7E723BBA1614\",\n" +
+//                "        \"TimeStamp\": {\n" +
+//                "            \"seconds\": 1621530000,\n" +
+//                "            \"nanos\": 0\n" +
+//                "        },\n" +
+//                "        \"OrderDate\": {\n" +
+//                "            \"seconds\": 1624294800,\n" +
+//                "            \"nanos\": 0\n" +
+//                "        },\n" +
+//                "        \"ReceiverPhone\": \"0909889029\",\n" +
+//                "        \"ReceiverAddress\": \"06 Tan Son Street, Ward 11, Go Vap District, Ho Chi Minh City\",\n" +
+//                "        \"ReceiverName\": \"Nguyen Le Kieu Tram\",\n" +
+//                "        \"Total\": 13.5,\n" +
+//                "        \"Note\": \"Test API lan 1\",\n" +
+//                "        \"OrderItems\":\n" +
+//                "            [\n" +
+//                "              {\n" +
+//                "                \"Quantity\": 1,\n" +
+//                "                \"Note\":\"Item2\",\n" +
+//                "                \"TotalPrice\": 3.5,\n" +
+//                "                \"Dish\": {\n" +
+//                "                    \"DishName\": \"Brown Rice Yogurt\",\n" +
+//                "                    \"DishId\": \"9C61505A-82CE-4EC7-8BD6-B16004685E57\",\n" +
+//                "                    \"HomeCookID\": \"6ABE8D62-72D2-4F13-B790-C35EA529365B\",\n" +
+//                "                    \"Price\": 3.5,\n" +
+//                "                    \"IsAvailable\": false,\n" +
+//                "                    \"ImageURL\": \"https://www.tasteofhome.com/wp-content/uploads/2021/01/tasty-butter-chicken-curry-dish-from-indian-cuisine-1277362334.jpg\"\n" +
+//                "                }\n" +
+//                "            },\n" +
+//                "            {\n" +
+//                "                \"Quantity\": 3,\n" +
+//                "                \"Note\":\"Item2\",\n" +
+//                "                \"TotalPrice\": 3.5,\n" +
+//                "                \"Dish\": {\n" +
+//                "                    \"DishName\": \"Hu Tieu Chay\",\n" +
+//                "                    \"DishId\": \"427DEE88-94C5-4872-B046-6815D6A6C552\",\n" +
+//                "                    \"HomeCookID\": \"B489E4B9-9ABC-41B9-88FC-380579FB3CC6\",\n" +
+//                "                    \"Price\": 3.5,\n" +
+//                "                    \"IsAvailable\": true,\n" +
+//                "                    \"ImageURL\": \"https://images.immediate.co.uk/production/volatile/sites/30/2020/08/mexican-chicken-burger_1-b5cca6f.jpg?quality=90&resize=440%2C400\"\n" +
+//                "                }\n" +
+//                "            }\n" +
+//                "            ]   \n" +
+//                "}\n";
+//        Order order= gson.fromJson(data, Order.class);
+//        System.out.println(dao.createOrder(order));
+//        System.out.println(order.getOrderItems());
+//        System.out.println(dao.insertOrderItems(order));
     }
 }
 

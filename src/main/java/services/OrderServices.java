@@ -65,7 +65,7 @@ public class OrderServices {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public boolean createOrder(String data) throws SQLException, URISyntaxException {
+    public String createOrder(String data) throws SQLException, URISyntaxException {
         System.out.println(data);
 //        final ObjectMapper mapper = new ObjectMapper();
 //        ArrayList<OrderItem> items = null;
@@ -86,7 +86,7 @@ public class OrderServices {
         //lam sao de extract cai order item ra khoi data string
         Order order= gson.fromJson(data, Order.class);
         Order resultID = service.createOrder(order);
-        boolean resultItem= service.insertOrderItems(order);
+        String resultItem= service.insertOrderItems(order);
         System.out.println(resultID);
         System.out.println(resultItem);
         return resultItem;

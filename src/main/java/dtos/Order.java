@@ -11,7 +11,6 @@ public class Order {
     Instant OrderDate;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
-    @SerializedName("OrderItems")
     ArrayList<OrderItem> OrderItems;
     //transient để json ko in ra cái status table
     transient Map<Integer, String>  statusTable= new HashMap<>();
@@ -43,18 +42,20 @@ public class Order {
         Note= note;
         OrderItems= orderItems;
     }
-    public Order(String homecookID, String customerID, Instant timeStamp, Instant orderDate, String receiverPhone,
+    public Order(String homecookID, String customerID, long timeStamp, long orderDate, String receiverPhone,
                  String receiverAddress,
                  String receiverName, double total, String note) {
+        OrderID= null;
         HomeCookID=  homecookID;
         CustomerID= customerID;
-        TimeStamp= timeStamp;
-        OrderDate= orderDate;
+        TimeStamp= Instant.ofEpochMilli(timeStamp);
+        OrderDate= Instant.ofEpochMilli(timeStamp);
         ReceiverPhone= receiverPhone;
         ReceiverAddress= receiverAddress;
         ReceiverName= receiverName;
         Total= total;
-        Note= note;;
+        Note= note;
+        OrderItems= null;
     }
 
     public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {
