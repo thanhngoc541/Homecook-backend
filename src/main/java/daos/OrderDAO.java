@@ -247,7 +247,7 @@ public class OrderDAO {
         return false;
     }
 
-    public String insertOrderItems(Order ord) throws SQLException {
+    public String insertOrderItems(OrderItem item) throws SQLException {
         String query = "EXEC insertOrderItems "
         		+ "@OrderID = ?, "
         		+ "@DishID = ?, "
@@ -260,8 +260,6 @@ public class OrderDAO {
                 ps = conn.prepareStatement(query);
                 //when we query, the db will commit automatically => ko dung addBatch duoc
                 //Vay thi phai commit db manually
-                for (OrderItem item : ord.getOrderItems()) {
-                    item.setOrderID(ord.getOrderID());
                     ps.setString(1, item.getOrderID());
                     ps.setString(2, item.getDish().getDishId());
                     ps.setInt(3, item.getQuantity());
@@ -269,8 +267,7 @@ public class OrderDAO {
                     ps.setDouble(5, item.getTotalPrice());
                     ps.executeUpdate();
                     item.setItemID(rs.getString("ItemID"));
-                }
-                return ord.getOrderID();
+                return item.getItemID();
 
             }
         } catch (SQLException throwables) {

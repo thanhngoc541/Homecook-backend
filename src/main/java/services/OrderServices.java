@@ -86,10 +86,12 @@ public class OrderServices {
         //lam sao de extract cai order item ra khoi data string
         Order order= gson.fromJson(data, Order.class);
         Order resultID = service.createOrder(order);
-        String resultItem= service.insertOrderItems(order);
         System.out.println(resultID);
-        System.out.println(resultItem);
-        return resultItem;
+        for (OrderItem item : order.getOrderItems()) {
+            String resultItem= service.insertOrderItems(item);
+            System.out.println(resultItem);
+        }
+        return order.getOrderID();
 //        URI uri = null;
 //        if (!resultID.isEmpty()) {
 //            uri = new URI(uriInfo.getAbsolutePath() + "/order/" + resultID);
