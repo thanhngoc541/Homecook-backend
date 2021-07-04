@@ -266,7 +266,9 @@ public class OrderDAO {
                     ps.setString(4, item.getNote());
                     ps.setDouble(5, item.getTotalPrice());
                     ps.executeUpdate();
-//                    item.setItemID(rs.getString("ItemID"));
+                    if (rs.next()) {
+                        item.setItemID(rs.getString("ItemID"));
+                    }
                 return item.getItemID();
 
             }
