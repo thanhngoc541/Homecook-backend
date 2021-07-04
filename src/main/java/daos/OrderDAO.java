@@ -266,7 +266,7 @@ public class OrderDAO {
                     ps.setString(4, item.getNote());
                     ps.setDouble(5, item.getTotalPrice());
                     ps.executeUpdate();
-                    item.setItemID(rs.getString("ItemID"));
+//                    item.setItemID(rs.getString("ItemID"));
                 return item.getItemID();
 
             }
@@ -306,7 +306,6 @@ public class OrderDAO {
                 ps.setString(9, ord.getNote());
                 rs= ps.executeQuery();
                 if(rs.next()) {
-
                     ord.setOrderID(rs.getString("OrderID"));
                     return ord;
                 }

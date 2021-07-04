@@ -66,7 +66,6 @@ public class OrderServices {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public String createOrder(String data) throws SQLException, URISyntaxException {
-        System.out.println(data);
 //        final ObjectMapper mapper = new ObjectMapper();
 //        ArrayList<OrderItem> items = null;
 //        try {
@@ -87,7 +86,8 @@ public class OrderServices {
         Order order= gson.fromJson(data, Order.class);
         Order resultID = service.createOrder(order);
         System.out.println(resultID);
-        for (OrderItem item : order.getOrderItems()) {
+        for (OrderItem item : resultID.getOrderItems()) {
+            item.setOrderID(order.getOrderID());
             String resultItem= service.insertOrderItems(item);
             System.out.println(resultItem);
         }
