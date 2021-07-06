@@ -1,15 +1,11 @@
 package services;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import daos.OrderDAO;
 import dtos.Order;
 import dtos.OrderItem;
-import org.glassfish.jersey.server.Uri;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,8 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Path("/order")
 public class OrderServices {
@@ -104,25 +98,4 @@ public class OrderServices {
         }
         else return Response.notModified().build();
     }
-
-
-//    @POST
-//    @Path("customer")
-//    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    public Order createOrder(Order ord) throws SQLException {
-//        System.out.println(ord);
-//        service.createOrder(ord);
-//        return ord;
-//    }
-//
-//    @PUT
-//    @Path("customer")
-//    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-//    public Order updateOrder (Order ord, String status) throws SQLException {
-//        System.out.println(ord);
-//        if (service.changeOrderStatus(ord.getOrderID(), "Finished") == true) return ord;
-//        return null;
-//    }
 }
