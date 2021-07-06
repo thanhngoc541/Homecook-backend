@@ -28,60 +28,6 @@ public class MenuServices {
     private MenuDAO service = new MenuDAO();
     private DishInDAO dao = new DishInDAO();
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String createMenu(String data) throws URISyntaxException ,SQLException{
-        Menu menu = gson.fromJson(data, Menu.class);
-        String result = service.createMenu(menu);
-        return result;
-      //  URI uri = new URI("/menu/"+menuID);
-       // return Response.created(uri).build();
-    }
-
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/adddishtomenu/{menuid}/{dishid}")
-    public Response addDishToMenu(@PathParam("menuid") String menuid, @PathParam("dishid") String dishid) throws SQLException {
-        DishIn dishIn = new DishIn(menuid,dishid);//gson.fromJson(data,DishIn.class);
-            if (dao.addDishToMenu(dishIn)) {
-            return Response.ok().build();
-        } else {
-            return Response.notModified().build();
-        }
-    }
-
-    @GET
-        @Path("/removedishfrommenu/{menuid}/{dishid}")
-    public Response removedishfrommenu(@PathParam("menuid") String menuid, @PathParam("dishid") String dishid) throws SQLException {
-        DishIn dishIn = new DishIn(menuid,dishid);
-        if (dao.deleteDishFromMenu(dishIn)) {
-            return Response.ok().build();
-        } else {
-            return Response.notModified().build();
-        }
-    }
-
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/changename/{id}/{name}")
-    public Response changename(@PathParam("id") String id, @PathParam("name") String name) throws SQLException {
-        if (service.changeMenuName(name,id)) {
-            return Response.ok().build();
-        } else {
-            return Response.notModified().build();
-        }
-    }
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/changestatus/{id}/{status}")
-    public Response changstatus(@PathParam("id") String id, @PathParam("status") boolean status) throws SQLException {
-        if (service.changeMenuStatus(status,id)) {
-            return Response.ok().build();
-        } else {
-            return Response.notModified().build();
-        }
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String list() throws  SQLException{
@@ -90,6 +36,79 @@ public class MenuServices {
         String result= gson.toJson(items);
         return result;
     }
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getMenuByID(@PathParam("id") String id) throws SQLException {
+        Menu menu= service.getMenuByID(id);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result= gson.toJson(menu);
+        return result;
+    }
+    @GET
+    @Path("homecook/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getMenuByHomeCookID(@PathParam("id") String id) throws SQLException {
+        List<Menu> items= service.getAllMenusByHomeCookID(id);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result= gson.toJson(items);
+        return result;
+    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String createMenu(String data) throws URISyntaxException ,SQLException{
+        Menu menu = gson.fromJson(data, Menu.class);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result = gson.toJson(service.createMenu(menu));
+        return result;
+    }
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateMenu(String data) throws URISyntaxException ,SQLException{
+        Menu menu = gson.fromJson(data, Menu.class);
+        if (service.updateMenu(menu)) {
+            return Response.ok().build();
+        } else {
+            return Response.notModified().build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/dish")
+    public Response addDishToMenu(String data) throws SQLException {
+        DishIn dishIn = gson.fromJson(data,DishIn.class);
+        if (dao.addDishToMenu(dishIn)) {
+            return Response.ok().build();
+        } else {
+            return Response.notModified().build();
+        }
+    }
+
+
+
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Path("/changename/{id}/{name}")
+//    public Response changename(@PathParam("id") String id, @PathParam("name") String name) throws SQLException {
+//        if (service.changeMenuName(name,id)) {
+//            return Response.ok().build();
+//        } else {
+//            return Response.notModified().build();
+//        }
+//    }
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Path("/changestatus/{id}/{status}")
+//    public Response changstatus(@PathParam("id") String id, @PathParam("status") boolean status) throws SQLException {
+//        if (service.changeMenuStatus(status,id)) {
+//            return Response.ok().build();
+//        } else {
+//            return Response.notModified().build();
+//        }
+//    }
+//
+
 
     @DELETE
     @Path("/{id}")
@@ -100,26 +119,20 @@ public class MenuServices {
             return Response.notModified().build();
         }
     }
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getMenuByID(@PathParam("id") String id) throws SQLException {
-        Menu menu= service.getMenuByID(id);
-        Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        String result= gson.toJson(menu);
-        return result;
+    @DELETE
+    @Path("/dish")
+    public Response removedishfrommenu(String data) throws SQLException {
+        DishIn dishIn = gson.fromJson(data,DishIn.class);
+        if (dao.deleteDishFromMenu(dishIn)) {
+            return Response.ok().build();
+        } else {
+            return Response.notModified().build();
+        }
     }
 
-    @GET
-    @Path("homecook/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getMenuByHomeCookID(@PathParam("id") String id) throws SQLException {
-        List<Menu> items= service.getAllMenusByHomeCookID(id);
-        Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        String result= gson.toJson(items);
-        return result;
-    }
+
+
+
 
 
 
