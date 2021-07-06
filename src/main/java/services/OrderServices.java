@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import daos.OrderDAO;
 import dtos.Order;
 import dtos.OrderItem;
+import org.glassfish.jersey.server.Uri;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
