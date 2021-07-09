@@ -57,6 +57,22 @@ public class Order {
         Note= note;
         OrderItems= null;
     }
+    public Order(String orderID, String homecookID, String customerID, Instant orderDate, Instant timeStamp,
+                 String status, String receiverName, String receiverPhone, String receiverAddress, double total,
+                 String note) {
+        OrderID= orderID;
+        HomeCookID= homecookID;
+        CustomerID= customerID;
+        OrderDate= orderDate;
+        TimeStamp= timeStamp;
+        Status= status;
+        ReceiverName= receiverName;
+        ReceiverPhone= receiverPhone;
+        ReceiverAddress= receiverAddress;
+        Total= total;
+        Note= note;
+
+    }
 
     public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {
         this.OrderID= orderID;

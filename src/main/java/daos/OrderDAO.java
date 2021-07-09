@@ -133,6 +133,31 @@ public class OrderDAO {
         return null;
     }
     //lay AllOrder (admin)
+    //-----------
+    public Order getOrderById(String orderID) {
+        String query= "SELECT * FROM Orders WHERE OrderID = ?";
+        Order ord= new Order();
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1, orderID);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    Instant stamp = rs.getTimestamp("TimeStamp").toInstant();
+                    Instant orderDate= rs.getTimestamp("OrderDate").toInstant();
+                    String status = ord.getStatusName(rs.getInt("StatusID"));
+                   ord= new Order(rs.getString("OrderID"), rs.getString("HomeCookID"), rs.getString("CustomerID"),
+                           orderDate, stamp, status, rs.getString("ReceiverName"), rs.getString("ReceiverPhone"),
+                           rs.getString("ReceiverAddress"), rs.getDouble("Total"), rs.getString("Note"));
+                }
+                return ord;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
     public ArrayList<Order> getAllOrder() {
         ArrayList<Order> list= new ArrayList<>();
         String query= "EXEC getAllOrder";
@@ -266,10 +291,7 @@ public class OrderDAO {
                     ps.setString(4, item.getNote());
                     ps.setDouble(5, item.getTotalPrice());
                     ps.executeUpdate();
-                    if (rs.next()) {
-                        item.setItemID(rs.getString("ItemID"));
-                    }
-                return item.getItemID();
+                return item.getDish().getDishId();
 
             }
         } catch (SQLException throwables) {
@@ -374,8 +396,10 @@ public class OrderDAO {
         System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
-
-        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));
+        System.out.println(dao.changeOrderStatus("b8ca9e69-9ccc-4a41-912f-3e463badff49", "Pending"));
+//        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
+//        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
+//        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));
 //        System.out.println(TS);
 //        System.out.println(OD);
         //---------------------

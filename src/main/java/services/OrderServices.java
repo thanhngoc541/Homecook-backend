@@ -38,6 +38,14 @@ public class OrderServices {
         String result= gson.toJson(orders);
         return result;
     }
+    @GET
+    @Path("/byId/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByID(@PathParam("id") String id) {
+        Order order= service.getOrderById(id);
+        String result= gson.toJson(order);
+        return result;
+    }
 
     @GET
     @Path("/homecook/{id}")

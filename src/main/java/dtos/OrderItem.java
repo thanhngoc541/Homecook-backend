@@ -84,7 +84,7 @@ public class OrderItem {
         return "\nOrderItem{" +
                 "ItemID=" + ItemID +
                 ", OrderID=" + OrderID +
-                ", Dish=" + Dish.getDishId() +
+                ", Dish=" +Dish +
                 ", Quantity=" + Quantity +
                 ", Note='" + Note + '\'' +
                 ", TotalPrice=" + TotalPrice +
