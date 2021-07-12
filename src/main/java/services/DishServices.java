@@ -23,50 +23,51 @@ public class DishServices {
     @GET
     @Path("/homecook/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllDishesByHomeCook(@PathParam("id") String id) throws SQLException {
+    public Response getAllDishesByHomeCook(@PathParam("id") String id) throws SQLException {
         List<Dish> dishes = service.getAllDishesByHomeCook(id,1);
-        String result = gson.toJson(dishes);
-        return result;
+        if (dishes.size()>0){
+            return Response.status(Response.Status.OK).entity(gson.toJson(dishes)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @GET
     @Path("/dish/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getDishByID(@PathParam("id")String id) throws SQLException {
+    public Response getDishByID(@PathParam("id")String id) throws SQLException {
         Dish d = service.getDishByID(id);
-        String result = gson.toJson(d);
-        return result;
+        if (d != null){
+            return Response.status(Response.Status.OK).entity(gson.toJson(d)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @GET
     @Path("/status/{status}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllDishesByStatus(@PathParam("status")boolean status) throws SQLException {
+    public Response getAllDishesByStatus(@PathParam("status")boolean status) throws SQLException {
         List<Dish> d = service.getAllDishesByStatus(status,1);
-        String result = gson.toJson(d);
-        return result;
+        if (d.size()>0){
+            return Response.status(Response.Status.OK).entity(gson.toJson(d)).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-        @POST
-        @Consumes(MediaType.APPLICATION_JSON)
-        public Response createDish(String data,@Context UriInfo uriInfo) throws SQLException, URISyntaxException {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createDish(String data,@Context UriInfo uriInfo) throws SQLException, URISyntaxException {
 
-            Dish dish = gson.fromJson(data, Dish.class);
-            String resultID = service.createDish(dish);
-            URI uri = null;
-            if(!resultID.isEmpty()){
-                 uri= new URI(uriInfo.getAbsolutePath()+"/dish/"+resultID);
-            }
-            System.out.println("uri:"+uri);
-            return Response.status(Response.Status.OK).entity(resultID).build();
-        }
+        Dish dish = gson.fromJson(data, Dish.class);
+        String resultID = service.createDish(dish);
+        return Response.status(Response.Status.OK).entity(resultID).build();
+    }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateDish(String data) throws SQLException {
         Dish dish = gson.fromJson(data, Dish.class);
         boolean result = service.updateDish(dish);
-        return result ? Response.ok().build() : Response.notModified().build();
+        return result ? Response.status(Response.Status.OK).entity(dish.getDishId()).build() : Response.notModified().build();
     }
 
     @DELETE
@@ -74,7 +75,6 @@ public class DishServices {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteDish(@PathParam("id")String id) throws SQLException {
         boolean result = service.deleteDish(id);
-
-        return result ? Response.ok().build() : Response.notModified().build();
+        return result ? Response.status(Response.Status.OK).entity(id).build() : Response.notModified().build();
     }
 }
