@@ -112,12 +112,9 @@ public class MenuServices {
 
     @DELETE
     @Path("/{id}")
-    public Response deleteMenu(@PathParam("id") String id) throws SQLException {
-        if (service.deleteMenu(id)) {
-            return Response.ok().build();
-        } else {
-            return Response.notModified().build();
-        }
+    public boolean deleteMenu(@PathParam("id") String id) throws SQLException {
+        return service.deleteMenu(id);
+
     }
     @DELETE
     @Path("/dish")

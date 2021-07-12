@@ -237,8 +237,8 @@ public class MenuDAO {
             if (con != null){
                 pm = con.prepareStatement(sql);
                 pm.setString(1, menuId);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
+                pm.executeUpdate();
+                return true;
             }
         }
         catch (Exception e) {
