@@ -7,16 +7,17 @@ import java.util.Map;
 import Utils.encryption;
 
 public class Account {
-    private String Username, Password, Role, Email, FullName, Address, PhoneNumber, UserID, SaltKey;
+    private String Username, Role, Email, FullName, Address, PhoneNumber, UserID, SaltKey;
+    private String Password;
     private boolean IsActive;
     java.util.Date DoB;
-    private Map<Integer, String> roleTable = new HashMap<Integer, String>();
+    final private transient Map<Integer, String> roleTable = new HashMap<>();
 
     //Initiate the roles in the table: 
     {
-    	roleTable.put(1, "Customer");
-    	roleTable.put(2, "HomeCook");
-    	roleTable.put(3, "Admin");
+    	roleTable.put(1, "customer");
+    	roleTable.put(2, "homecook");
+    	roleTable.put(3, "admin");
     }
     
     public Account(String userID, String username, String password, String role, String email, String fullName, java.util.Date doB, String address, String phoneNumber, boolean isActive) {
@@ -92,8 +93,8 @@ public class Account {
         FullName = fullName;
     }
 
-    public String getDoB() {
-        return String.valueOf(DoB);
+    public Date getDoB() {
+        return DoB;
     }
 
     public void setDoB(Date doB) {

@@ -58,7 +58,7 @@ public class DishServices {
                  uri= new URI(uriInfo.getAbsolutePath()+"/dish/"+resultID);
             }
             System.out.println("uri:"+uri);
-            return Response.created(uri).build();
+            return Response.status(Response.Status.OK).entity(resultID).build();
         }
 
     @PUT
@@ -66,7 +66,6 @@ public class DishServices {
     public Response updateDish(String data) throws SQLException {
         Dish dish = gson.fromJson(data, Dish.class);
         boolean result = service.updateDish(dish);
-
         return result ? Response.ok().build() : Response.notModified().build();
     }
 

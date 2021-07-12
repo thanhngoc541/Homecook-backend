@@ -13,19 +13,34 @@ import Utils.encryption;
 
 
 public class AccountDAO {
+	private Connection conn = null;
+	private PreparedStatement ps = null;
+	private ResultSet rs = null;
 
-	public ArrayList<Account> getAllAccountByRole(String role, int page){
+	private void closeConnection() throws SQLException {
+		if (rs != null) {
+			rs.close();
+		}
+		if (ps != null) {
+			ps.close();
+		}
+		if (conn != null) {
+			conn.close();
+		}
+	}
+
+	public ArrayList<Account> getAllAccountByRole(String role, int page) throws SQLException  {
 		try {
 			ArrayList<Account> result = new ArrayList<Account>();
 			Account tempoResult = new Account();
-			Connection conn = DBContext.makeConnection();
+			conn = DBContext.makeConnection();
 
 			String query = "getAccountByRoleID @page=?, @RoleID = ?";
 
-			PreparedStatement prstm = conn.prepareCall(query);
-			prstm.setInt(1, page);
-			prstm.setInt(2,  tempoResult.getRoleID(role));
-			ResultSet rs = prstm.executeQuery();
+			 ps = conn.prepareCall(query);
+			ps.setInt(1, page);
+			ps.setInt(2,  tempoResult.getRoleID(role));
+			 rs = ps.executeQuery();
 
 			while (rs.next()) {
 				Account input = new Account (rs.getString("AccountID"), rs.getString("Username"),
@@ -37,137 +52,161 @@ public class AccountDAO {
 
 				result.add(input);
 			}
-			conn.close();
 			return result;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		finally {
+			closeConnection();
+		}
 		return null;
 	}
 
-	/**
-	 * @param input
-	 * @return
-	 */
-	public boolean createAccount(Account input) {
+	public Account getAccountByID(String ID) throws SQLException {
 		try {
-			Connection conn = DBContext.makeConnection();
-			String query = "EXEC createAccount @Username = ?, "
-					+ "@Password = ?, "
-					+ "@RoleID = ?, "
-					+ "@Email= ?, "
-					+ "@FullName = ?, "
-					+ "@Date = ?, "
-					+ "@Address = ?, "
-					+ "@PhoneNumber = ?, "
-					+ "@SaltKey = ?";
-			PreparedStatement prstm = conn.prepareCall(query);
+			Account result = new Account();
+			 conn = DBContext.makeConnection();
+			String query = "EXEC getAccountByID @UserID = ?";
+			if (conn != null) {
+				ps = conn.prepareStatement(query);
+				ps.setString(1, ID);
+				rs = ps.executeQuery();
 
-			prstm.setString(1, input.getUsername());
-			prstm.setString(2, input.hashPasswords());
-			prstm.setInt(3,  input.getRoleID(input.getRole()));
-			prstm.setString(4, input.getEmail());
-			prstm.setString(5, input.getFullName());
-			prstm.setDate(6, java.sql.Date.valueOf(input.getDoB()));
-			prstm.setString(7,  input.getAddress());
-			prstm.setString(8, input.getPhoneNumber());
-			prstm.setString(9, input.getSaltKey());
-
-			return prstm.executeUpdate() == 1;
+				while (rs.next()) {
+					result.setUserID(rs.getString("AccountID"));
+					result.setUsername(rs.getString("Username"));
+					result.setPassword(rs.getString("Password"));
+					result.setFullName(rs.getString("FullName").trim());
+					result.setEmail(rs.getString("Email"));
+					result.setDoB(
+							new java.util.Date(rs.getDate("DoB").getTime()));
+					result.setAddress(rs.getString("Address"));
+					result.setPhoneNumber(rs.getString("PhoneNumber"));
+					result.setActive(rs.getBoolean("IsActive"));
+					result.setRole(result.getRoleName(rs.getInt("RoleID")));
+				}
+				return result;
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		return null;
+	}
+
+	public Account getAccountByUName(String username) throws SQLException{
+		try {
+			Account result = new Account();
+			 conn = DBContext.makeConnection();
+			String query =
+					"EXEC getAccountByUName @Username = ?";
+			assert conn != null;
+			 ps = conn.prepareStatement(query);
+			ps.setString(1, username);
+			 rs = ps.executeQuery();
+
+			while (rs.next()) {
+				result.setUserID(rs.getString("AccountID"));
+				result.setUsername(rs.getString("Username"));
+				result.setPassword(rs.getString("Password"));
+				result.setFullName(rs.getString("FullName").trim());
+				result.setEmail(rs.getString("Email"));
+				result.setDoB(
+						new java.util.Date(rs.getDate("DoB").getTime()));
+				result.setAddress(rs.getString("Address"));
+				result.setPhoneNumber(rs.getString("PhoneNumber"));
+				result.setActive(rs.getBoolean("IsActive"));
+				result.setRole(result.getRoleName(rs.getInt("RoleID")));
+			}
+			conn.close();
+			return result;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		return null;
+	}
+
+
+	public boolean createAccount(Account input) throws SQLException{
+		try {
+			conn = DBContext.makeConnection();
+			if (conn != null){
+				String query = "EXEC createAccount @Username = ?, "
+						+ "@Password = ?, "
+						+ "@RoleID = ?, "
+						+ "@Email= ?, "
+						+ "@FullName = ?, "
+						+ "@Date = ?, "
+						+ "@Address = ?, "
+						+ "@PhoneNumber = ?, "
+						+ "@SaltKey = ?";
+				ps = conn.prepareStatement(query);
+
+				ps.setString(1, input.getUsername());
+				ps.setString(2, input.hashPasswords());
+				ps.setInt(3,  input.getRoleID(input.getRole()));
+				ps.setString(4, input.getEmail());
+				ps.setString(5, input.getFullName());
+
+				java.sql.Date tempDob = new java.sql.Date(input.getDoB().getTime());
+				ps.setDate(6, tempDob);
+
+				ps.setString(7,  input.getAddress());
+				ps.setString(8, input.getPhoneNumber());
+				ps.setString(9, input.getSaltKey());
+
+				rs = ps.executeQuery();
+				if (rs.next()){
+					String UserID = rs.getString("AccountID");
+					System.out.println(UserID);
+				}
+				return true;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
 		}
 		return false;
 	}
-	public boolean changeHomeCookStatus(String userID, boolean status) {
-		try {
-		Connection conn = DBContext.makeConnection();
 
-		String query =	"EXEC changeHomeCookStatus "
-				+ "@IsActive = ?, "
-				+ "@UserID = ?";
+	public boolean changeHomeCookStatus(String userID, boolean status) throws SQLException{
+		Account usr = getAccountByID(userID);
+		if (usr.getRole().equals("homecook")){
+			try {
+				conn = DBContext.makeConnection();
+				if(conn != null){
+					String query =	"EXEC changeHomeCookStatus "
+							+ "@IsActive = ?, "
+							+ "@UserID = ?";
 
-		PreparedStatement prstm = conn.prepareStatement(query);
+					ps = conn.prepareStatement(query);
 
-		prstm.setBoolean(1, status);
-		prstm.setString(2, userID);
+					ps.setBoolean(1, status);
+					ps.setString(2, userID);
 
-		return prstm.executeUpdate() == 1;
-	}
-	catch (Exception e) {
-		e.printStackTrace();
-	}
-	return false;
-	}
-	public Account getAccountByID(String ID) {
-		try {
-			Account result = new Account();
-			Connection conn = DBContext.makeConnection();
-			String query = "EXEC getAccountByID @UserID = ?";
-			PreparedStatement prstm = conn.prepareStatement(query);
-			prstm.setString(1, ID);
-			ResultSet rs = prstm.executeQuery();
-
-			while (rs.next()) {
-				result.setUserID(rs.getString("AccountID"));
-				result.setUsername(rs.getString("Username"));
-				result.setPassword(rs.getString("Password"));
-				result.setFullName(rs.getString("FullName").trim());
-				result.setEmail(rs.getString("Email"));
-				result.setDoB(
-						new java.util.Date(rs.getDate("DoB").getTime()));
-				result.setAddress(rs.getString("Address"));
-				result.setPhoneNumber(rs.getString("PhoneNumber"));
-				result.setActive(rs.getBoolean("IsActive"));
-				result.setRole(result.getRoleName(rs.getInt("RoleID")));
+					ps.executeUpdate();
+					return true;
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				closeConnection();
 			}
-			conn.close();
-			return result;
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		return false;
 	}
 
-	public Account getAccountByUName(String username) {
+	public boolean updateAccountInfo(Account input) throws SQLException{
 		try {
-			Account result = new Account();
-			Connection conn = DBContext.makeConnection();
-			String query =
-					"EXEC getAccountByUName @Username = ?";
-			PreparedStatement prstm = conn.prepareStatement(query);
-			prstm.setString(1, username);
-			ResultSet rs = prstm.executeQuery();
-
-			while (rs.next()) {
-				result.setUserID(rs.getString("AccountID"));
-				result.setUsername(rs.getString("Username"));
-				result.setPassword(rs.getString("Password"));
-				result.setFullName(rs.getString("FullName").trim());
-				result.setEmail(rs.getString("Email"));
-				result.setDoB(
-						new java.util.Date(rs.getDate("DoB").getTime()));
-				result.setAddress(rs.getString("Address"));
-				result.setPhoneNumber(rs.getString("PhoneNumber"));
-				result.setActive(rs.getBoolean("IsActive"));
-				result.setRole(result.getRoleName(rs.getInt("RoleID")));
-			}
-			conn.close();
-			return result;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-
-	public boolean updateAccountInfo(Account input) {
-		try {
-			Connection conn = DBContext.makeConnection();
+			 conn = DBContext.makeConnection();
 			String query ="EXEC updateAccountInfo "
 					+ "@Username = ?,"
 					+ "@Password = ?,"
@@ -177,25 +216,24 @@ public class AccountDAO {
 					+ "@Address = ?,"
 					+ "@PhoneNumber = ?,"
 					+ "@UserID = ?";
-			PreparedStatement prstm = conn.prepareStatement(query);
+			 ps = conn.prepareStatement(query);
 
-			prstm.setString(1, input.getUsername());
-			prstm.setString(2, input.getPassword());
-			prstm.setString(3, input.getEmail());
-			prstm.setString(4, input.getFullName());
-			prstm.setDate(5, new java.sql.Date(input.DoBForDA()));
-			prstm.setString(6,  input.getAddress());
-			prstm.setString(7, input.getPhoneNumber());
-			prstm.setString(8, input.getUserID());
-			return prstm.executeUpdate() == 1;
+			ps.setString(1, input.getUsername());
+			ps.setString(2, input.getPassword());
+			ps.setString(3, input.getEmail());
+			ps.setString(4, input.getFullName());
+			ps.setDate(5, new java.sql.Date(input.DoBForDA()));
+			ps.setString(6,  input.getAddress());
+			ps.setString(7, input.getPhoneNumber());
+			ps.setString(8, input.getUserID());
+			ps.executeUpdate();
+			return true;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			closeConnection();
 		}
 		return false;
-	}
-
-	public static void main(String[] args) {
-		
 	}
 }
