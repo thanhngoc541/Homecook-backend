@@ -32,7 +32,7 @@ public class DishServices {
     }
 
     @GET
-    @Path("/dish/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDishByID(@PathParam("id")String id) throws SQLException {
         Dish d = service.getDishByID(id);
@@ -55,8 +55,7 @@ public class DishServices {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createDish(String data,@Context UriInfo uriInfo) throws SQLException, URISyntaxException {
-
+    public Response createDish(String data) throws SQLException, URISyntaxException {
         Dish dish = gson.fromJson(data, Dish.class);
         String resultID = service.createDish(dish);
         return Response.status(Response.Status.OK).entity(resultID).build();
@@ -71,7 +70,7 @@ public class DishServices {
     }
 
     @DELETE
-    @Path("/dish/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteDish(@PathParam("id")String id) throws SQLException {
         boolean result = service.deleteDish(id);
