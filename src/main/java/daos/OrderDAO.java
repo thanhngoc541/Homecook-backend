@@ -158,20 +158,44 @@ public class OrderDAO {
         }
         return null;
     }
-    public ArrayList<Order> getAllOrder() {
+    public int getTotalOfOrder() {
+        int count= 0;
+        ArrayList<String> orderID= new ArrayList<String>();
+        String query="EXEC getTotalOfOrder";
+        try{
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    String orderId= rs.getString("OrderID");
+                    orderID.add(orderId);
+                }
+                return orderID.size();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+    public ArrayList<Order> getAllOrder(int page) {
         ArrayList<Order> list= new ArrayList<>();
-        String query= "EXEC getAllOrder";
+        String query= "EXEC getAllOrder " +
+                "@Page = ?";
         try {
             conn= DBContext.makeConnection();
             if (conn != null) {
                 ps= conn.prepareStatement(query);
+                ps.setInt(1, page);
                 rs=ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
                     String orderID = rs.getString("OrderID");
-                    //Doi tu sql Timestamp qua Date java
-                    Instant stamp = rs.getTimestamp("TimeStamp").toInstant();
-                    Instant orderDate= rs.getTimestamp("OrderDate").toInstant();
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
                     //chuyen tu status id => name
                     String homecookID = rs.getString("HomeCookID");
                     String customerID= rs.getString("CustomerID");
@@ -185,8 +209,8 @@ public class OrderDAO {
                     ord.setOrderID(orderID);
                     ord.setCustomerID(customerID);
                     ord.setHomeCookID(homecookID);
-                    ord.setTimeStamp(stamp);
-                    ord.setOrderDate(orderDate);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
                     ord.setStatus(status);
                     ord.setTotal(total);
                     ord.setNote(note);
@@ -390,13 +414,16 @@ public class OrderDAO {
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        java.util.Date date= new Date();
+        java.sql.Date sqldate= new java.sql.Date(date.getTime());
         Instant ts= Instant.ofEpochSecond(1625450400);
         Instant od= Instant.ofEpochSecond(1625282813);
         System.out.println(ts);
         System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
-        System.out.println(dao.changeOrderStatus("b8ca9e69-9ccc-4a41-912f-3e463badff49", "Pending"));
+        System.out.println(dao.getTotalOfOrder());
+//        System.out.println(dao.changeOrderStatus("b8ca9e69-9ccc-4a41-912f-3e463badff49", "Pending"));
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
 //        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));

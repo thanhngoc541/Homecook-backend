@@ -59,7 +59,7 @@ public class WorkerThreads extends Clock{
 
 			         Instant now = Instant.now(timeTravel);
 			         long differ = 0;
-			         for (Order order : dao.getAllOrder()) {
+			         for (Order order : dao.getAllOrder(1)) {
 			        	 differ = now.toEpochMilli() - order.getTimeStamp().toEpochMilli();
 			        	 System.out.println(order.getOrderID());
 			        	 System.out.println("currentTime: " + now);

@@ -32,10 +32,10 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/orders")
+    @Path("/orders/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllOrder() {
-        ArrayList<Order> orders= service.getAllOrder();
+    public String getAllOrder(@PathParam("page") int page) {
+        ArrayList<Order> orders= service.getAllOrder(page);
         String result= gson.toJson(orders);
         return result;
     }
@@ -56,7 +56,13 @@ public class OrderServices {
         String result= gson.toJson(orders);
         return result;
     }
-
+    @GET
+    @Path("/count/")
+    public String getTotalOrder() {
+        int total= service.getTotalOfOrder();
+        String result= gson.toJson(total);
+        return result;
+    }
     //ORDER ITEMs
     @GET
     @Path("/item/{orderID}")
@@ -93,14 +99,13 @@ public class OrderServices {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/updateStatus/{id}/{status}")
-    public Response updateOrder(@PathParam("id") String id, @PathParam("status") String status) throws SQLException {
-        if (service.changeOrderStatus(id, status))
-            return Response.ok().build();
-        else return Response.notModified().build();
+    public Response updateOrder02(String data) throws SQLException {
+        Order order= gson.fromJson(data, Order.class);
+        boolean result= service.changeOrderStatus(order.getOrderID(), order.getStatus());
+        return result ? Response.ok().build() : Response.notModified().build();
     }
-
     @DELETE
-    @Path("{id}")
+    @Path("/{id}")
     public Response deleteOrder(@PathParam("id") String id) {
         if (service.deleteOrder(id)) {
             return Response.ok().build();
