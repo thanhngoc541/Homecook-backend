@@ -69,6 +69,18 @@ public class AccountServices {
         return user !=null ? Response.status(Response.Status.OK).entity(user.getUserID()).build() : Response.serverError().build();
     }
 
+    @POST
+    @Path("/login")
+     public Response login(String data)throws SQLException{
+        Account account = gson.fromJson(data, Account.class);
+
+        System.out.println(account.hashPasswords());
+
+        Account user = service.login(account.getUsername(), account.hashPasswords());
+        return user != null ? Response.status(Response.Status.OK).entity(user).build() : Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateAccountInfo(String data)throws SQLException{

@@ -257,8 +257,16 @@ public class AccountDAO {
 		return false;
 	}
 
-	public static void main(String[] args) {
-		AccountDAO dao= new AccountDAO();
-		System.out.println(dao.countByRole("admin"));
+	public Account login(String username, String password) throws SQLException {
+		try{
+			Account a = getAccountByUName(username);
+		 	if (a.getPassword().equalsIgnoreCase(password)){
+		 		return a;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return null;
 	}
+
 }
