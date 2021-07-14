@@ -57,7 +57,15 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/count/")
+    @Path(("/first"))
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getFirstSevenOrder() {
+        ArrayList<Order> orders= service.getSevenOrder();
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
+    @Path("/count")
     public String getTotalOrder() {
         int total= service.getTotalOfOrder();
         String result= gson.toJson(total);

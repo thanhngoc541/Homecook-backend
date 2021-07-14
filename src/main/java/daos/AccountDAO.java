@@ -28,7 +28,27 @@ public class AccountDAO {
 			conn.close();
 		}
 	}
-
+	public int countByRole(String roleID) {
+		int count=0;
+		String query= "EXEC countByRole " +
+				"@RoleID= ?";
+		Account account= new Account();
+		try {
+			conn= DBContext.makeConnection();
+			if (conn != null) {
+				ps= conn.prepareStatement(query);
+				ps.setInt(1, account.getRoleID(roleID));
+				rs = ps.executeQuery();
+				while(rs.next()) {
+					count = rs.getInt("Total");
+				}
+				return count;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return 0;
+	}
 	public ArrayList<Account> getAllAccountByRole(String role, int page) throws SQLException  {
 		try {
 			ArrayList<Account> result = new ArrayList<Account>();
@@ -235,5 +255,10 @@ public class AccountDAO {
 			closeConnection();
 		}
 		return false;
+	}
+
+	public static void main(String[] args) {
+		AccountDAO dao= new AccountDAO();
+		System.out.println(dao.countByRole("admin"));
 	}
 }

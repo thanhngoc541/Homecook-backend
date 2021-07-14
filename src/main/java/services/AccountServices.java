@@ -28,7 +28,14 @@ public class AccountServices {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
+    @GET
+    @Path("/{role}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public String countByRole(@PathParam("role") String role) {
+        int count= service.countByRole(role);
+        String result= gson.toJson(count);
+        return result;
+    }
     @GET
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_JSON)

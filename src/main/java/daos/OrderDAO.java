@@ -178,6 +178,34 @@ public class OrderDAO {
         }
         return count;
     }
+    public ArrayList<Order> getSevenOrder() {
+        ArrayList<Order> orderList= new ArrayList<Order>();
+        String query= "EXEC getFirstSevenOrder";
+        try{
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                rs= ps.executeQuery();
+                while(rs.next()) {
+                    Order ord= new Order();
+
+
+                    ord.setOrderID(rs.getString("OrderID"));
+
+                    ord.setReceiverAddress(rs.getString("ReceiverAddress"));
+                    ord.setReceiverName(rs.getString("ReceiverName"));
+                    ord.setReceiverPhone(rs.getString("ReceiverPhone"));
+                    ord.setStatus(ord.getStatusName(rs.getInt("StatusID")));
+                    ord.setTotal(rs.getDouble("Total"));
+                    orderList.add(ord);
+                }
+                return orderList;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
     public ArrayList<Order> getAllOrder(int page) {
         ArrayList<Order> list= new ArrayList<>();
         String query= "EXEC getAllOrder " +
@@ -190,30 +218,22 @@ public class OrderDAO {
                 rs=ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
-                    String orderID = rs.getString("OrderID");
-                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
-                    java.util.Date timeStamp = new Date(tmpTime.getTime());
-
+                    //chuyen tu status id => name
                     java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
                     Date orderDate= new Date(tmpOrderDate.getTime());
-                    //chuyen tu status id => name
                     String homecookID = rs.getString("HomeCookID");
-                    String customerID= rs.getString("CustomerID");
+                    String orderID= rs.getString("OrderID");
                     String status = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
-                    String note = rs.getString("Note");
                     String phone = rs.getString("ReceiverPhone");
                     String address = rs.getString("ReceiverAddress");
                     String name = rs.getString("ReceiverName");
 
                     ord.setOrderID(orderID);
-                    ord.setCustomerID(customerID);
-                    ord.setHomeCookID(homecookID);
-                    ord.setTimeStamp(timeStamp.toInstant());
                     ord.setOrderDate(orderDate.toInstant());
+                    ord.setHomeCookID(homecookID);
                     ord.setStatus(status);
                     ord.setTotal(total);
-                    ord.setNote(note);
                     ord.setReceiverPhone(phone);
                     ord.setReceiverAddress(address);
                     ord.setReceiverName(name);
@@ -422,7 +442,7 @@ public class OrderDAO {
         System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
-        System.out.println(dao.getTotalOfOrder());
+        System.out.println(dao.getListItemByOrderID("8B185BFB-6252-47DF-9105-DA8ACC0168D9",1));
 //        System.out.println(dao.changeOrderStatus("b8ca9e69-9ccc-4a41-912f-3e463badff49", "Pending"));
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
