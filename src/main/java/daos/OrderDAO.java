@@ -347,6 +347,7 @@ public class OrderDAO {
     }
 
     public Order createOrder(Order ord) throws SQLException {
+        double total =0;
         String query = "EXEC createOrder "
         		+ "@HomeCookID = ?, "
         		+ "@CustomerID = ?,"
@@ -363,6 +364,12 @@ public class OrderDAO {
                 Timestamp timeStamp= Timestamp.from(ord.getTimeStamp());
                 Timestamp orderDate= Timestamp.from(ord.getOrderDate());
                 ps = conn.prepareStatement(query);
+                if (ord.getOrderItems() != null) {
+                    for (OrderItem item : ord.getOrderItems()) {
+                        total += item.getTotalPrice();
+                    }
+                    ord.setTotal(total);
+                }
                 ps.setString(1, ord.getHomeCookID());
                 ps.setString(2, ord.getCustomerID());
                 ps.setTimestamp(3, timeStamp);
@@ -375,8 +382,8 @@ public class OrderDAO {
                 rs= ps.executeQuery();
                 if(rs.next()) {
                     ord.setOrderID(rs.getString("OrderID"));
-                    return ord;
                 }
+                return ord;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -429,7 +436,6 @@ public class OrderDAO {
         }
         return null;
     }
-    
 
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
@@ -442,8 +448,6 @@ public class OrderDAO {
         System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
-        System.out.println(dao.getListItemByOrderID("8B185BFB-6252-47DF-9105-DA8ACC0168D9",1));
-//        System.out.println(dao.changeOrderStatus("b8ca9e69-9ccc-4a41-912f-3e463badff49", "Pending"));
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
 //        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));

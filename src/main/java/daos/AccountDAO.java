@@ -27,7 +27,7 @@ public class AccountDAO {
 			conn.close();
 		}
 	}
-	public int countByRole(String roleID) {
+	public int countByRole(String roleName) {
 		int count=0;
 		String query= "EXEC countByRole " +
 				"@RoleID= ?";
@@ -36,7 +36,7 @@ public class AccountDAO {
 			conn= DBContext.makeConnection();
 			if (conn != null) {
 				ps= conn.prepareStatement(query);
-				ps.setInt(1, account.getRoleID(roleID));
+				ps.setInt(1, account.getRoleID(roleName));
 				rs = ps.executeQuery();
 				while(rs.next()) {
 					count = rs.getInt("Total");
@@ -271,6 +271,47 @@ public class AccountDAO {
 			throwables.printStackTrace();
 		}
 		return null;
+	}
+	public int getCustomerCount() {
+		int count=0;
+		String query= "EXEC getCustomerCount";
+		try {
+			conn = DBContext.makeConnection();
+			if (conn != null) {
+				ps= conn.prepareStatement(query);
+				rs= ps.executeQuery();
+				while (rs.next()) {
+					count= rs.getInt("Total");
+				}
+				return count;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return 0;
+	}
+	public int getHomecookCount() {
+		int count=0;
+		String query= "EXEC getHomecookCount";
+		try {
+			conn = DBContext.makeConnection();
+			if (conn != null) {
+				ps= conn.prepareStatement(query);
+				rs= ps.executeQuery();
+				while (rs.next()) {
+					count= rs.getInt("Total");
+				}
+				return count;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return 0;
+	}
+
+	public static void main(String[] args) {
+		AccountDAO dao= new AccountDAO();
+		System.out.println(dao.getHomecookCount());
 	}
 
 }

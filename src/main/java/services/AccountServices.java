@@ -60,7 +60,13 @@ public class AccountServices {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
+    @GET
+    @Path("/count")
+    public String getTotalAccount(String role) {
+        int total= service.countByRole(role);
+        String result= gson.toJson(total);
+        return result;
+    }
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAccount(String data)throws SQLException{
