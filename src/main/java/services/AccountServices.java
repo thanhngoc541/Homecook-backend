@@ -1,5 +1,6 @@
 package services;
 
+import Utils.encryption;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import daos.AccountDAO;
@@ -64,14 +65,17 @@ public class AccountServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAccount(String data)throws SQLException{
         Account account = gson.fromJson(data, Account.class);
-        service.createAccount(account);
-        Account user = service.getAccountByUName(account.getUsername());
-        return user !=null ? Response.status(Response.Status.OK).entity(user.getUserID()).build() : Response.serverError().build();
+        account.setSaltKey(encryption.saltKeyGenerate(account.getFullName().trim()));
+
+        boolean rs = service.createAccount(account);
+
+        return rs ? Response.status(Response.Status.OK).entity(gson.toJson(account)).build() : Response.serverError().build();
     }
 
     @POST
     @Path("/login")
      public Response login(String data)throws SQLException{
+        System.out.println(data);
         Account account = gson.fromJson(data, Account.class);
         Account user = service.login(account.getUsername(), account.getPassword());
         return user != null ? Response.status(Response.Status.OK).entity(gson.toJson(user)).build() : Response.status(Response.Status.NO_CONTENT).build();
