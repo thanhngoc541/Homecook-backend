@@ -1,5 +1,6 @@
 package daos;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -105,6 +106,7 @@ public class AccountDAO {
 					result.setPhoneNumber(rs.getString("PhoneNumber"));
 					result.setActive(rs.getBoolean("IsActive"));
 					result.setRole(result.getRoleName(rs.getInt("RoleID")));
+					result.setSaltKey(rs.getString("SaltKey"));
 				}
 				return result;
 			}
@@ -140,6 +142,7 @@ public class AccountDAO {
 				result.setPhoneNumber(rs.getString("PhoneNumber"));
 				result.setActive(rs.getBoolean("IsActive"));
 				result.setRole(result.getRoleName(rs.getInt("RoleID")));
+				result.setSaltKey(rs.getString("SaltKey"));
 			}
 			conn.close();
 			return result;
@@ -260,10 +263,11 @@ public class AccountDAO {
 	public Account login(String username, String password) throws SQLException {
 		try{
 			Account a = getAccountByUName(username);
-		 	if (a.getPassword().equalsIgnoreCase(password)){
-		 		return a;
+			if (a.getPassword().equalsIgnoreCase(Utils.encryption.toHexString(Utils.encryption.getSHA(password + a.getSaltKey())))) {
+				return a;
 			}
-		} catch (SQLException throwables) {
+
+		} catch (SQLException | NoSuchAlgorithmException throwables) {
 			throwables.printStackTrace();
 		}
 		return null;

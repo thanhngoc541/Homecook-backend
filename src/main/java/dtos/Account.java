@@ -9,7 +9,7 @@ import Utils.encryption;
 public class Account {
     private String Username, Role, Email, FullName, Address, PhoneNumber, UserID;
     private String Password;
-    private String SaltKey;
+    private transient String SaltKey;
     private boolean IsActive;
     java.util.Date DoB;
     final private transient Map<Integer, String> roleTable = new HashMap<>();
