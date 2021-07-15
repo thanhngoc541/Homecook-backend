@@ -266,7 +266,6 @@ public class AccountDAO {
 			if (a.getPassword().equalsIgnoreCase(Utils.encryption.toHexString(Utils.encryption.getSHA(password + a.getSaltKey())))) {
 				return a;
 			}
-
 		} catch (SQLException | NoSuchAlgorithmException throwables) {
 			throwables.printStackTrace();
 		}
