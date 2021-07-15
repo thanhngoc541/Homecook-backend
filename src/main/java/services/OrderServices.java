@@ -47,7 +47,28 @@ public class OrderServices {
         String result= gson.toJson(order);
         return result;
     }
-
+    @GET
+    @Path("/homecook/{id}/{status}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByHomeCookIDAndStatus(@PathParam("id") String homecookID,
+                                                @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
+        Order order= new Order();
+        int stat= order.getStatusID(status);
+        ArrayList<Order> orders= service.getOrderByHomeCookIDAndStatus(homecookID, stat, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
+    @Path("/customer/{id}/{status}/{page}/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByCustomerIDAndStatus(@PathParam("id") String customerID, @PathParam("status") String status,
+                                                @PathParam("page") int page) throws SQLException {
+        Order order= new Order();
+        int stat= order.getStatusID(status);
+        ArrayList<Order> orders= service.getOrderByCustomerIDAndStatus(customerID, stat, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
     @GET
     @Path("/homecook/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,7 +122,6 @@ public class OrderServices {
         }
         System.out.println("uri: " + uri);
         return Response.created(uri).build();
-
     }
 
     @PUT

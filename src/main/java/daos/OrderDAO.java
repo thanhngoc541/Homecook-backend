@@ -87,6 +87,109 @@ public class OrderDAO {
         }
         return null;
     }
+    public ArrayList<Order> getOrderByCustomerIDAndStatus(String customerID,int status, int page) throws SQLException {
+        ArrayList<Order> list = new ArrayList<>();
+        String query = "EXEC getOrderByCustomerIDAndStatus "
+                + "@CustomerID = ?, "
+                + "@StatusID= ?, "
+                + "@Page = ?";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                ps.setString(1, customerID);
+                ps.setInt(2, status);
+                ps.setInt(3, page);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Order ord = new Order();
+                    String orderID = rs.getString("OrderID");
+                    //Doi tu sql Timestamp qua Date java
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+
+                    String homecookID = rs.getString("HomeCookID");
+                    //chuyen tu status id => name
+                    String stat = ord.getStatusName(rs.getInt("StatusID"));
+                    double total = rs.getDouble("Total");
+                    String note = rs.getString("Note");
+                    String phone = rs.getString("ReceiverPhone");
+                    String address = rs.getString("ReceiverAddress");
+                    String name = rs.getString("ReceiverName");
+
+                    ord.setOrderID(orderID);
+                    ord.setCustomerID(customerID);
+                    ord.setHomeCookID(homecookID);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
+                    ord.setStatus(stat);
+                    ord.setTotal(total);
+                    ord.setNote(note);
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverAddress(address);
+                    ord.setReceiverName(name);
+
+                    list.add(ord);
+
+                }
+                return list;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return null;
+    }
+    public ArrayList<Order> getOrderByHomeCookIDAndStatus(String homecookID, int status, int page) throws SQLException {
+        ArrayList<Order> list = new ArrayList<>();
+        String query = "EXEC getOrderByHomeCookIDAndStatus "
+                + "@HomeCookID = ?, "
+                + "@StatusID= ?, "
+                + "@Page = ?";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                ps.setString(1, homecookID);
+                ps.setInt(2, status);
+                ps.setInt(3, page);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Order ord = new Order("", null, null,null, 0, null);
+                    String orderID = rs.getString("OrderID");
+                    //Doi tu sql Timestamp qua Date java
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    //----------
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+                    //chuyen tu status id => name
+                    String stat = ord.getStatusName(rs.getInt("StatusID"));
+                    double total = rs.getDouble("Total");
+                    String note = rs.getString("Note");
+
+                    ord.setOrderID(orderID);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
+                    ord.setStatus(stat);
+                    ord.setTotal(total);
+                    ord.setNote(note);
+
+                    list.add(ord);
+                }
+                return list;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return null;
+    }
     //lay order cua homecook (HomeCook View)
     public ArrayList<Order> getOrderByHomeCookID(String homecookID, int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
@@ -448,6 +551,7 @@ public class OrderDAO {
         System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
+        System.out.println(dao.getOrderByCustomerIDAndStatus("535340B1-8053-4819-8772-488577A10639", 1, 1));
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
 //        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));
