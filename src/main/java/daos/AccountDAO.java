@@ -2,7 +2,6 @@ package daos;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import dtos.Account;
 
 import Utils.DBContext;
-import Utils.encryption;
 
 
 public class AccountDAO {
@@ -200,9 +198,9 @@ public class AccountDAO {
 		return false;
 	}
 
-	public boolean changeHomeCookStatus(String userID, boolean status) throws SQLException{
+	public boolean changeAccountStatus(String userID, boolean status) throws SQLException{
 		Account usr = getAccountByID(userID);
-		if (usr.getRole().equals("homecook")){
+		if (!usr.getRole().equalsIgnoreCase("admin")){
 			try {
 				conn = DBContext.makeConnection();
 				if(conn != null){
@@ -224,6 +222,8 @@ public class AccountDAO {
 				closeConnection();
 			}
 		}
+
+
 		return false;
 	}
 

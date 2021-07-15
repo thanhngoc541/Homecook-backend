@@ -93,8 +93,8 @@ public class AccountServices {
     @PUT
     @Path("/{userID}/{status}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response changeHomeCookStatus(@PathParam("userID")String userID, @PathParam("status")boolean status)throws SQLException{
-        var result = service.changeHomeCookStatus(userID,status);
+    public Response changeAccountStatus(@PathParam("userID")String userID, @PathParam("status")boolean status)throws SQLException{
+        var result = service.changeAccountStatus(userID,status);
         return result ? Response.status(Response.Status.OK).entity(userID).build() : Response.notModified().build();
     }
 }
