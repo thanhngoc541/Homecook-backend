@@ -20,6 +20,7 @@ public class MenuDAO {
         if (pm != null) pm.close();
         if (con !=null) con.close();
     }
+<<<<<<< HEAD
     public int getTotalSearchedMenu(String name) {
         int count= 0;
 
@@ -42,6 +43,8 @@ public class MenuDAO {
         }
         return count;
     }
+=======
+>>>>>>> 1978652 (editapi)
     public int getTotalHomeCookMenu(String HomeCookID) {
         int count= 0;
 
