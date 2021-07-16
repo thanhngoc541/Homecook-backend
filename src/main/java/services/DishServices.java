@@ -36,17 +36,18 @@ public class DishServices {
         return -1;
     }
 
+    //--------
     @GET
-    @Path("/homecook/{id}/{page}")
+    @Path("/homecook/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllDishesByHomeCook(@PathParam("id") String id,@PathParam("page") int page) throws SQLException {
-        List<Dish> dishes = service.getAllDishesByHomeCook(id,page);
+    public Response getAllDishesByHomeCook(@PathParam("id") String id) throws SQLException {
+        List<Dish> dishes = service.getAllDishesByHomeCook(id,1);
         if (dishes.size()>0){
             return Response.status(Response.Status.OK).entity(gson.toJson(dishes)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
-
+    //-------------
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
