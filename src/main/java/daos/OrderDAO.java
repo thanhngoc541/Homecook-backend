@@ -700,7 +700,7 @@ public class OrderDAO {
         OrderDAO dao = new OrderDAO();
         System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B",1,1));
 
-
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
 
 
 
@@ -716,6 +716,17 @@ public class OrderDAO {
 //        System.out.println(dao.getOrderByCustomerIDAndStatus("535340B1-8053-4819-8772-488577A10639", 1, 1));
         System.out.println(dao.getOrderByStatus("Pending",1));
 
+
+//        java.util.Date date= new Date();
+//        java.sql.Date sqldate= new java.sql.Date(date.getTime());
+//        Instant ts= Instant.ofEpochSecond(1625450400);
+//        Instant od= Instant.ofEpochSecond(1625282813);
+//        System.out.println(ts);
+//        System.out.println(od);
+//        Timestamp TS= Timestamp.from(ts);
+//        Timestamp OD= Timestamp.from(od);
+
+        System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B", 1, 1));
 
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
