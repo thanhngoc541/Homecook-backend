@@ -29,6 +29,13 @@ public class MenuServices {
     private DishInDAO dao = new DishInDAO();
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @GET
+    @Path("/count/homecook/{id}")
+    public String getTotalHomeCookMenu(@PathParam("id") String id) {
+        int total= service.getTotalHomeCookMenu(id);
+        String result= gson.toJson(total);
+        return result;
+    }
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String list() throws  SQLException{
         List<Menu> items= service.getAllActiveMenus(1);

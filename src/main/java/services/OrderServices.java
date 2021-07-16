@@ -92,6 +92,13 @@ public class OrderServices {
         String result= gson.toJson(total);
         return result;
     }
+    @GET
+    @Path("/count/homecook/{id}")
+    public String getTotalHomeCookOrder(@PathParam("id") String id) {
+        int total= service.getTotalHomeCookOrder(id);
+        String result= gson.toJson(total);
+        return result;
+    }
     //ORDER ITEMs
     @GET
     @Path("/item/{orderID}")

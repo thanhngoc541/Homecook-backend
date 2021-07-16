@@ -20,6 +20,28 @@ public class MenuDAO {
         if (pm != null) pm.close();
         if (con !=null) con.close();
     }
+    public int getTotalHomeCookMenu(String HomeCookID) {
+        int count= 0;
+
+        String query = "EXEC getTotalHomeCookMenu "
+                + "@HomeCookID = ? ";
+        try{
+            con= DBContext.makeConnection();
+            if (con != null) {
+                pm= con.prepareStatement(query);
+                pm.setString(1, HomeCookID);
+                rs= pm.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("total");
+
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
     public Menu getMenuByID(String ID) throws SQLException {
         String sql = "EXEC getMenuByID "
                 + "@MenuID = ?";
@@ -252,7 +274,8 @@ public class MenuDAO {
 
 
     public static void main(String[] args) throws SQLException {
-//        MenuDAO dao=new MenuDAO();
+   MenuDAO dao=new MenuDAO();
+        System.out.println(dao.getTotalHomeCookMenu("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
 //        String menu = dao.createMenu(new Menu("test",
 //                null,
 //                "B489E4B9-9ABC-41B9-88FC-380579FB3CC6",

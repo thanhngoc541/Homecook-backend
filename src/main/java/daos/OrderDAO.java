@@ -171,7 +171,11 @@ public class OrderDAO {
                     String stat = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
-
+                    ord.setCustomerID(rs.getString("CustomerID"));
+                    ord.setHomeCookID(rs.getString("HomeCookID"));
+                    ord.setReceiverName(rs.getString("ReceiverName"));
+                    ord.setReceiverPhone(rs.getString("ReceiverPhone"));
+                    ord.setReceiverAddress(rs.getString("ReceiverAddress"));
                     ord.setOrderID(orderID);
                     ord.setTimeStamp(timeStamp.toInstant());
                     ord.setOrderDate(orderDate.toInstant());
@@ -275,6 +279,28 @@ public class OrderDAO {
                     orderID.add(orderId);
                 }
                 return orderID.size();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+    public int getTotalHomeCookOrder(String HomeCookID) {
+        int count= 0;
+
+        String query = "EXEC getTotalHomeCookOrder "
+                + "@HomeCookID = ? ";
+        try{
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1, HomeCookID);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("total");
+
+                }
+                return count;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -542,16 +568,17 @@ public class OrderDAO {
 
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
+        System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B",1,1));
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        java.util.Date date= new Date();
-        java.sql.Date sqldate= new java.sql.Date(date.getTime());
-        Instant ts= Instant.ofEpochSecond(1625450400);
-        Instant od= Instant.ofEpochSecond(1625282813);
-        System.out.println(ts);
-        System.out.println(od);
-        Timestamp TS= Timestamp.from(ts);
-        Timestamp OD= Timestamp.from(od);
-        System.out.println(dao.getOrderByCustomerIDAndStatus("535340B1-8053-4819-8772-488577A10639", 1, 1));
+//        java.util.Date date= new Date();
+//        java.sql.Date sqldate= new java.sql.Date(date.getTime());
+//        Instant ts= Instant.ofEpochSecond(1625450400);
+//        Instant od= Instant.ofEpochSecond(1625282813);
+//        System.out.println(ts);
+//        System.out.println(od);
+//        Timestamp TS= Timestamp.from(ts);
+//        Timestamp OD= Timestamp.from(od);
+        System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B", 1, 1));
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
 //        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));

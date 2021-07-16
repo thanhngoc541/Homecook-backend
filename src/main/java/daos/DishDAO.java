@@ -24,6 +24,29 @@ public class DishDAO {
         if (con != null) con.close();
     }
 
+    public int getTotalHomeCookDish(String HomeCookID) {
+        int count= 0;
+
+        String query = "EXEC getTotalHomeCookDish "
+                + "@HomeCookID = ? ";
+        try{
+            con= DBContext.makeConnection();
+            if (con != null) {
+                pm= con.prepareStatement(query);
+                pm.setString(1, HomeCookID);
+                rs= pm.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("total");
+
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+
     public List<Dish> getAllDishesByHomeCook(String homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
         String sql = "EXEC getAllDishesByHomeCook "
@@ -106,7 +129,7 @@ public class DishDAO {
         return null;
     }
 
-    public String createDish(Dish dish) throws SQLException {
+    public Dish createDish(Dish dish) throws SQLException {
         String sql = "EXEC createDish "
                 + "@HomeCookID = ?, "
                 + "@DishName = ?, "
@@ -125,7 +148,11 @@ public class DishDAO {
                 pm.setString(5, dish.getDescription());
                 pm.setString(6, dish.getImageURL());
                 rs = pm.executeQuery();
-                if(rs.next()) return rs.getString("DishID");
+                if(rs.next())
+                {
+                    dish.setDishId(rs.getString("DishID"));
+                    return dish;
+                }
             }
         } finally {
             closeConnection();
@@ -206,8 +233,10 @@ public class DishDAO {
     }
 
 
-//     public static void main(String[] args) throws SQLException {
-//         DishDAO dishdao = new DishDAO();
+     public static void main(String[] args) throws SQLException {
+         DishDAO dishdao = new DishDAO();
+         System.out.println(dishdao.getTotalHomeCookDish("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
+     }
 //         for (Dish d : dishdao.getAllDishesByHomeCook("6ABE8D62-72D2-4F13-B790-C35EA529365B",1)){
 //             System.out.println(d);
 //         }

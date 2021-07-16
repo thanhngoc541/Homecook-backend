@@ -19,7 +19,13 @@ import java.util.List;
 public class DishServices {
     private DishDAO service = new DishDAO();
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    @GET
+    @Path("/count/homecook/{id}")
+    public String getTotalHomeCookDish(@PathParam("id") String id) {
+        int total= service.getTotalHomeCookDish(id);
+        String result= gson.toJson(total);
+        return result;
+    }
     @GET
     @Path("/homecook/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,10 +61,9 @@ public class DishServices {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createDish(String data) throws SQLException, URISyntaxException {
+    public String createDish(String data) throws SQLException, URISyntaxException {
         Dish dish = gson.fromJson(data, Dish.class);
-        String resultID = service.createDish(dish);
-        return Response.status(Response.Status.OK).entity(resultID).build();
+        return gson.toJson(service.createDish(dish));
     }
 
     @PUT

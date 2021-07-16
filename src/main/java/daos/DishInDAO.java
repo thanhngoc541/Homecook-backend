@@ -67,6 +67,26 @@ public class DishInDAO {
         }
         return false;
     }
+    public boolean removeAllDishesFromMenu(String MenuID) throws  SQLException{
+        String sql = "EXEC removeAllDishesFromMenu "
+                + "@MenuID = ? ";
+        try{
+            con = DBContext.makeConnection();
+            if (con != null){
+                pm = con.prepareStatement(sql);
+                pm.setString(1, MenuID);
+                pm.executeUpdate();
+                return true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            closeConnection();
+        }
+        return false;
+    }
 
 
     public List<Dish> getAllDishesInMenu(String menuID) throws SQLException {
