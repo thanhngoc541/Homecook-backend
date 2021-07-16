@@ -23,6 +23,22 @@ public class DishDAO {
         if (pm != null) pm.close();
         if (con != null) con.close();
     }
+    public int countAllDishesByStatus(boolean status) throws SQLException {
+        String sql ="EXEC countAllDishesByStatus" +
+                " @Status = ?";
+        try {
+            con = DBContext.makeConnection();
+            if (con != null){
+                pm = con.prepareStatement(sql);
+                pm.setBoolean(1, status);
+                rs = pm.executeQuery();
+                if (rs.next()) return rs.getInt("totalDishes");
+            }
+        }finally {
+            closeConnection();
+        }
+        return -1;
+    }
 
     public int getTotalHomeCookDish(String HomeCookID) {
         int count= 0;

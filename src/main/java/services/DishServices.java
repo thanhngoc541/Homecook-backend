@@ -26,11 +26,21 @@ public class DishServices {
         String result= gson.toJson(total);
         return result;
     }
+
+
     @GET
-    @Path("/homecook/{id}")
+    @Path("/count/{status}")
+    public int countAllDishes(@PathParam("status") boolean status) throws SQLException {
+        int count = service.countAllDishesByStatus(status);
+        if (count > 0) return count;
+        return -1;
+    }
+
+    @GET
+    @Path("/homecook/{id}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllDishesByHomeCook(@PathParam("id") String id) throws SQLException {
-        List<Dish> dishes = service.getAllDishesByHomeCook(id,1);
+    public Response getAllDishesByHomeCook(@PathParam("id") String id,@PathParam("page") int page) throws SQLException {
+        List<Dish> dishes = service.getAllDishesByHomeCook(id,page);
         if (dishes.size()>0){
             return Response.status(Response.Status.OK).entity(gson.toJson(dishes)).build();
         }
@@ -49,10 +59,10 @@ public class DishServices {
     }
 
     @GET
-    @Path("/status/{status}")
+    @Path("/status/{status}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllDishesByStatus(@PathParam("status")boolean status) throws SQLException {
-        List<Dish> d = service.getAllDishesByStatus(status,1);
+    public Response getAllDishesByStatus(@PathParam("status")boolean status,@PathParam("page") int page) throws SQLException {
+        List<Dish> d = service.getAllDishesByStatus(status,page);
         if (d.size()>0){
             return Response.status(Response.Status.OK).entity(gson.toJson(d)).build();
         }
