@@ -40,6 +40,14 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/orders/{status}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllOrderByStatus(@PathParam("status") String status, @PathParam("page")int page) {
+        ArrayList<Order> orders= service.getOrderByStatus(status, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
     @Path("/byId/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByID(@PathParam("id") String id) {
@@ -90,6 +98,14 @@ public class OrderServices {
     public String getTotalOrder() {
         int total= service.getTotalOfOrder();
         String result= gson.toJson(total);
+        return result;
+    }
+    @GET
+    @Path("/count/orders/{status}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countAllOrderByStatus(@PathParam("status")String status) {
+        int count = service.countAllOrderByStatus(status);
+        String result= gson.toJson(count);
         return result;
     }
     @GET
