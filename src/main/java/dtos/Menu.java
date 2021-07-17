@@ -9,21 +9,29 @@ public class Menu {
     boolean IsServing;
     List<Dish> Dishes;
     String MenuURL,MenuDescription;
+    float Rating;
     public Menu() {
     }
 
-    public Menu(String menuName, String menuID, String homeCookID, String homeCookName, boolean isServing, List<Dish> dishes, String menuURL, String menuDescription) {
+    public Menu(String menuName, String menuID, String homeCookID, String homeCookName, boolean isServing, List<Dish> dishes, String menuURL, String menuDescription, float rating) {
         MenuName = menuName;
         MenuID = menuID;
         HomeCookID = homeCookID;
         HomeCookName = homeCookName;
         IsServing = isServing;
         Dishes = dishes;
-
+        Rating = rating;
         MenuURL = menuURL;
         MenuDescription = menuDescription;
     }
 
+    public float getRating() {
+        return Rating;
+    }
+
+    public void setRating(float rating) {
+        Rating = rating;
+    }
 
     public String getMenuURL() {
         return MenuURL;

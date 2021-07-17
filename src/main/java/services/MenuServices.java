@@ -36,13 +36,35 @@ public class MenuServices {
         return result;
     }
     @GET
+    @Path("/count/{name}")
+    public String getTotalSearchedMenu(@PathParam("name") String name) {
+        if (name.equals("all")) name="";
+        int total= service.getTotalSearchedMenu(name);
+        String result= gson.toJson(total);
+        return result;
+    }
+    @GET
+    @Path("/top")
     @Produces(MediaType.APPLICATION_JSON)
-    public String list() throws  SQLException{
-        List<Menu> items= service.getAllActiveMenus(1);
+    public String getTopMenu() throws  SQLException{
+        List<Menu> items= service.getTopMenu();
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(items);
         return result;
     }
+    @GET
+    @Path("/{name}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getSearchedMenu(@PathParam("name") String name,@PathParam("page") int page) throws  SQLException{
+        if (name.equals("all")) name="";
+        List<Menu> items= service.getSearchedMenu(name,page);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result= gson.toJson(items);
+
+        return result;
+    }
+
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -91,30 +113,6 @@ public class MenuServices {
             return Response.notModified().build();
         }
     }
-
-
-
-//    @PUT
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Path("/changename/{id}/{name}")
-//    public Response changename(@PathParam("id") String id, @PathParam("name") String name) throws SQLException {
-//        if (service.changeMenuName(name,id)) {
-//            return Response.ok().build();
-//        } else {
-//            return Response.notModified().build();
-//        }
-//    }
-//    @PUT
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Path("/changestatus/{id}/{status}")
-//    public Response changstatus(@PathParam("id") String id, @PathParam("status") boolean status) throws SQLException {
-//        if (service.changeMenuStatus(status,id)) {
-//            return Response.ok().build();
-//        } else {
-//            return Response.notModified().build();
-//        }
-//    }
-//
 
 
     @DELETE
