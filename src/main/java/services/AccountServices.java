@@ -84,6 +84,7 @@ public class AccountServices {
         System.out.println(data);
         Account account = gson.fromJson(data, Account.class);
         Account user = service.login(account.getUsername(), account.getPassword());
+        user.setPassword("");
         return user != null ? Response.status(Response.Status.OK).entity(gson.toJson(user)).build() : Response.status(Response.Status.NO_CONTENT).build();
     }
 
