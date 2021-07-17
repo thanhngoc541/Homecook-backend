@@ -93,6 +93,20 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/count/customer/{id}/{status}")
+    public String countCustomerOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
+        int count= service.countCustomerOrderByIDAndStatus(id, status);
+        String result = gson.toJson(count);
+        return result;
+    }
+    @GET
+    @Path("/count/homecook/{id}/{status}")
+    public String countHomeCookOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
+        int count= service.countHomeCookOrderByIDAndStatus(id, status);
+        String result = gson.toJson(count);
+        return result;
+    }
+    @GET
     @Path("/count/homecook/{id}")
     public String getTotalHomeCookOrder(@PathParam("id") String id) {
         int total= service.getTotalHomeCookOrder(id);

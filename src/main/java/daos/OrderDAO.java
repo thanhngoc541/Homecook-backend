@@ -307,6 +307,54 @@ public class OrderDAO {
         }
         return count;
     }
+    public int countCustomerOrderByIDAndStatus(String customerID, String status) {
+        int count= 0;
+        Order order= new Order();
+        String query = "EXEC countCustomerOrderByIDAndStatus " +
+                "@CustomerID = ?, " +
+                "@StatusID = ?";
+        int stat= order.getStatusID(status);
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1,customerID);
+                ps.setInt(2, stat);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    count= rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+    public int countHomeCookOrderByIDAndStatus(String homecookID, String status) {
+        int count= 0;
+        Order order= new Order();
+        String query = "EXEC countHomeCookOrderByIDAndStatus " +
+                "@HomeCookID = ?, " +
+                "@StatusID = ?";
+        int stat= order.getStatusID(status);
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1,homecookID);
+                ps.setInt(2, stat);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    count= rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
     public ArrayList<Order> getSevenOrder() {
         ArrayList<Order> orderList= new ArrayList<Order>();
         String query= "EXEC getFirstSevenOrder";
@@ -568,7 +616,6 @@ public class OrderDAO {
 
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
-        System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B",1,1));
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
 //        java.util.Date date= new Date();
 //        java.sql.Date sqldate= new java.sql.Date(date.getTime());
@@ -658,6 +705,7 @@ public class OrderDAO {
 //        System.out.println(dao.createOrder(order));
 //        System.out.println(order.getOrderItems());
 //        System.out.println(dao.insertOrderItems(order));
+
     }
 }
 
