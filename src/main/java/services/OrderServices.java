@@ -17,6 +17,8 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 
 @Path("/order")
@@ -82,6 +84,29 @@ public class OrderServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByHomeCookID(@PathParam("id") String id) throws SQLException {
         ArrayList<Order> orders= service.getOrderByHomeCookID(id, 1);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
+    @Path("/orders/{fromDate}/{toDate}/{status}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByTimeRangeAndStatus(@PathParam("fromDate") String fromDate,
+                                              @PathParam("toDate") String toDate,
+                                      @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
+        Instant from= Instant.parse(fromDate);
+        Instant to= Instant.parse(toDate);
+        ArrayList<Order> orders= service.getOrderByTimeRangeAndStatus(from, to, status, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
+    @Path("/orders/{fromDate}/{toDate}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByTimeRange(@PathParam("fromDate") String fromDate, @PathParam("toDate") String toDate,
+                                       @PathParam("page") int page) throws SQLException {
+        Instant from= Instant.ofEpochSecond(Integer.parseInt(fromDate));
+        Instant to= Instant.ofEpochSecond(Integer.parseInt(toDate));
+        ArrayList<Order> orders= service.getOrderByTimeRange(from, to, page);
         String result= gson.toJson(orders);
         return result;
     }
