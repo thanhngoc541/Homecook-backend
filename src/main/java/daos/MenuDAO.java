@@ -134,17 +134,20 @@ public class MenuDAO {
                 pm = con.prepareStatement(sql);
                 pm.setString(1, ID);
                 rs = pm.executeQuery();
+                DishInDAO dao = new DishInDAO();
+                String menuID="";
+                while(rs.next()){
+                    menuID=rs.getString("MenuID");
 
-                while(rs.next())
                     list.add(new Menu(rs.getString("MenuName"),
-                            rs.getString("MenuID"),
+                            menuID,
                             ID,
                             rs.getString("HomeCookName"),
                             rs.getBoolean("IsServing"),
                             null,
                             rs.getString("MenuURL"),
                             rs.getString("MenuDescription"),
-                            rs.getFloat("Rating")));
+                            rs.getFloat("Rating")));}
             }
         }
         catch (Exception e) {

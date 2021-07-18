@@ -100,8 +100,10 @@ public class DishInDAO {
                 pm.setString(1, menuID);
                 rs = pm.executeQuery();
                 DishDAO dishDAO=new DishDAO();
-                while(rs.next())
+                while(rs.next()) {
+                    System.out.println("abc");
                     list.add(dishDAO.getDishByID((rs.getString("DishID"))));
+                }
             }
         }
         catch (Exception e) {
