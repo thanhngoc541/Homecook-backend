@@ -134,11 +134,10 @@ public class MenuDAO {
                 pm = con.prepareStatement(sql);
                 pm.setString(1, ID);
                 rs = pm.executeQuery();
-                DishInDAO dao= new DishInDAO();
-                String menuID=rs.getString("MenuID");
+
                 while(rs.next())
                     list.add(new Menu(rs.getString("MenuName"),
-                            menuID,
+                            rs.getString("MenuID"),
                             ID,
                             rs.getString("HomeCookName"),
                             rs.getBoolean("IsServing"),
@@ -342,7 +341,7 @@ public class MenuDAO {
 //                , null));
 //        System.out.println(menu);
         //dao.deleteMenu("fee2cb76-89aa-4ccd-ab52-03c619b3366c");
-         List<Menu> menus = dao.getSearchedMenu("",1);
+         List<Menu> menus = dao.getAllMenusByHomeCookID("A0E6A64E-CF5E-4DFD-A674-BD9163419CF3");
         String data = new Gson().toJson(menus);
             System.out.println(data);
     }

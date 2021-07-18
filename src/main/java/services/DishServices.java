@@ -26,11 +26,6 @@ public class DishServices {
         String result= gson.toJson(total);
         return result;
     }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 1978652 (editapi)
     @GET
     @Path("/count/{status}")
     public int countAllDishes(@PathParam("status") boolean status) throws SQLException {
