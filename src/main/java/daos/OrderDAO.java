@@ -699,18 +699,9 @@ public class OrderDAO {
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
         System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B",1,1));
-<<<<<<< HEAD
 
-=======
->>>>>>> e028607 (editapi)
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
 
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> e028607 (editapi)
         java.util.Date date= new Date();
         java.sql.Date sqldate= new java.sql.Date(date.getTime());
         Instant ts= Instant.ofEpochSecond(1625450400);
@@ -721,6 +712,7 @@ public class OrderDAO {
         Timestamp OD= Timestamp.from(od);
 //        System.out.println(dao.getOrderByCustomerIDAndStatus("535340B1-8053-4819-8772-488577A10639", 1, 1));
         System.out.println(dao.getOrderByStatus("Pending",1));
+
 
 
 //        java.util.Date date= new Date();

@@ -40,6 +40,7 @@ public class DishDAO {
         return -1;
     }
 
+<<<<<<< HEAD
 
 
     public int getTotalHomeCookDish(String HomeCookID) {
@@ -67,26 +68,9 @@ public class DishDAO {
 
     public int getTotalHomeCookDish(String HomeCookID) {
         int count= 0;
+=======
+>>>>>>> 95802a5 (merge)
 
-        String query = "EXEC getTotalHomeCookDish "
-                + "@HomeCookID = ? ";
-        try{
-            con= DBContext.makeConnection();
-            if (con != null) {
-                pm= con.prepareStatement(query);
-                pm.setString(1, HomeCookID);
-                rs= pm.executeQuery();
-                while (rs.next()) {
-                    count = rs.getInt("total");
-
-                }
-                return count;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return count;
-    }
 
     public int getTotalHomeCookDish(String HomeCookID) {
         int count= 0;

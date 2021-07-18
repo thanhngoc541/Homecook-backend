@@ -137,13 +137,18 @@ public class MenuDAO {
                 pm = con.prepareStatement(sql);
                 pm.setString(1, ID);
                 rs = pm.executeQuery();
+<<<<<<< HEAD
                 DishInDAO dao = new DishInDAO();
                 String menuID="";
                 while(rs.next()){
                     menuID=rs.getString("MenuID");
 
+=======
+
+                while(rs.next())
+>>>>>>> 95802a5 (merge)
                     list.add(new Menu(rs.getString("MenuName"),
-                            menuID,
+                            rs.getString("MenuID"),
                             ID,
                             rs.getString("HomeCookName"),
                             rs.getBoolean("IsServing"),
