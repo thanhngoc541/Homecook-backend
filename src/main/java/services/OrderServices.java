@@ -40,6 +40,14 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/orders/{status}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllOrderByStatus(@PathParam("status") String status, @PathParam("page")int page) {
+        ArrayList<Order> orders= service.getOrderByStatus(status, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
     @Path("/byId/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByID(@PathParam("id") String id) {
@@ -93,6 +101,28 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/count/orders/{status}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countAllOrderByStatus(@PathParam("status")String status) {
+        int count = service.countAllOrderByStatus(status);
+        String result= gson.toJson(count);
+        return result;
+    }
+    @GET
+    @Path("/count/customer/{id}/{status}")
+    public String countCustomerOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
+        int count= service.countCustomerOrderByIDAndStatus(id, status);
+        String result = gson.toJson(count);
+        return result;
+    }
+    @GET
+    @Path("/count/homecook/{id}/{status}")
+    public String countHomeCookOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
+        int count= service.countHomeCookOrderByIDAndStatus(id, status);
+        String result = gson.toJson(count);
+        return result;
+    }
+    @GET
     @Path("/count/homecook/{id}")
     public String getTotalHomeCookOrder(@PathParam("id") String id) {
         int total= service.getTotalHomeCookOrder(id);
@@ -134,9 +164,11 @@ public class OrderServices {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/updateStatus/{id}/{status}")
-    public Response updateOrder02(String data) throws SQLException {
-        Order order= gson.fromJson(data, Order.class);
-        boolean result= service.changeOrderStatus(order.getOrderID(), order.getStatus());
+    public Response updateOrder02(@PathParam("id") String orderID, @PathParam("status") String status) throws SQLException {
+//        Order order= gson.fromJson(data, Order.class);
+//        Order order= new Order();
+//        int stat=order.getStatusID(status);
+        boolean result= service.changeOrderStatus(orderID, status);
         return result ? Response.ok().build() : Response.notModified().build();
     }
     @DELETE

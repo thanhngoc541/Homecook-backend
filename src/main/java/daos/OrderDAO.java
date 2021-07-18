@@ -208,7 +208,7 @@ public class OrderDAO {
                 ps.setInt(2, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    Order ord = new Order("", null, null,null, 0, null);
+                    Order ord = new Order();
                     String orderID = rs.getString("OrderID");
                     //Doi tu sql Timestamp qua Date java
                     java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
@@ -216,14 +216,21 @@ public class OrderDAO {
                     //----------
                     java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
                     Date orderDate= new Date(tmpOrderDate.getTime());
+
                     //chuyen tu status id => name
                     String status = ord.getStatusName(rs.getInt("StatusID"));
+                    String address= rs.getString("ReceiverAddress");
+                    String phone = rs.getString("ReceiverPhone");
+                    String name= rs.getString("ReceiverName");
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
 
                     ord.setOrderID(orderID);
                     ord.setTimeStamp(timeStamp.toInstant());
                     ord.setOrderDate(orderDate.toInstant());
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverName(name);
+                    ord.setReceiverAddress(address);
                     ord.setStatus(status);
                     ord.setTotal(total);
                     ord.setNote(note);
@@ -241,6 +248,59 @@ public class OrderDAO {
     }
     //lay AllOrder (admin)
     //-----------
+    public ArrayList<Order> getOrderByStatus(String status, int page) {
+        ArrayList<Order> orders= new ArrayList<Order>();
+        Order order= new Order();
+        int stat= order.getStatusID(status);
+        String query= "EXEC getOrderByStatus " +
+                "@Status = ?, " +
+                "@Page = ?";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setInt(1, stat);
+                ps.setInt(2, page);
+                rs= ps.executeQuery();
+                while(rs.next()) {
+                    Order ord= new Order();
+                    String orderID = rs.getString("OrderID");
+                    //Doi tu sql Timestamp qua Date java
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    String customerID= rs.getString("CustomerID");
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+
+                    String homecookID = rs.getString("HomeCookID");
+                    //chuyen tu status id => name
+                    double total = rs.getDouble("Total");
+                    String note = rs.getString("Note");
+                    String phone = rs.getString("ReceiverPhone");
+                    String address = rs.getString("ReceiverAddress");
+                    String name = rs.getString("ReceiverName");
+
+                    ord.setOrderID(orderID);
+                    ord.setCustomerID(customerID);
+                    ord.setHomeCookID(homecookID);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
+                    ord.setStatus(status);
+                    ord.setTotal(total);
+                    ord.setNote(note);
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverAddress(address);
+                    ord.setReceiverName(name);
+
+                    orders.add(ord);
+                }
+                return orders;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
     public Order getOrderById(String orderID) {
         String query= "SELECT * FROM Orders WHERE OrderID = ?";
         Order ord= new Order();
@@ -306,6 +366,76 @@ public class OrderDAO {
             throwables.printStackTrace();
         }
         return count;
+    }
+    public int countCustomerOrderByIDAndStatus(String customerID, String status) {
+        int count= 0;
+        Order order= new Order();
+        String query = "EXEC countCustomerOrderByIDAndStatus " +
+                "@CustomerID = ?, " +
+                "@StatusID = ?";
+        int stat= order.getStatusID(status);
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1,customerID);
+                ps.setInt(2, stat);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    count= rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+    public int countHomeCookOrderByIDAndStatus(String homecookID, String status) {
+        int count= 0;
+        Order order= new Order();
+        String query = "EXEC countHomeCookOrderByIDAndStatus " +
+                "@HomeCookID = ?, " +
+                "@StatusID = ?";
+        int stat= order.getStatusID(status);
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1,homecookID);
+                ps.setInt(2, stat);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    count= rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+    public int countAllOrderByStatus(String status) {
+        int count =0;
+        Order order= new Order();
+        String query ="EXEC countAllOrderByStatus " +
+                "@StatusID = ?";
+        int stat= order.getStatusID(status);
+        try {
+            conn= DBContext.makeConnection();
+            if (conn!= null ) {
+                ps = conn.prepareStatement(query);
+                ps.setInt(1, stat);
+                rs= ps.executeQuery();
+                while(rs.next()) {
+                    count= rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return 0;
     }
     public ArrayList<Order> getSevenOrder() {
         ArrayList<Order> orderList= new ArrayList<Order>();
@@ -570,6 +700,26 @@ public class OrderDAO {
         OrderDAO dao = new OrderDAO();
         System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B",1,1));
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+
+
+        java.util.Date date= new Date();
+        java.sql.Date sqldate= new java.sql.Date(date.getTime());
+        Instant ts= Instant.ofEpochSecond(1625450400);
+        Instant od= Instant.ofEpochSecond(1625282813);
+        System.out.println(ts);
+        System.out.println(od);
+        Timestamp TS= Timestamp.from(ts);
+        Timestamp OD= Timestamp.from(od);
+//        System.out.println(dao.getOrderByCustomerIDAndStatus("535340B1-8053-4819-8772-488577A10639", 1, 1));
+        System.out.println(dao.getOrderByStatus("Pending",1));
+
+=======
+>>>>>>> 277486b (editapi)
+>>>>>>> 526adfa (editapi)
 //        java.util.Date date= new Date();
 //        java.sql.Date sqldate= new java.sql.Date(date.getTime());
 //        Instant ts= Instant.ofEpochSecond(1625450400);
@@ -578,7 +728,11 @@ public class OrderDAO {
 //        System.out.println(od);
 //        Timestamp TS= Timestamp.from(ts);
 //        Timestamp OD= Timestamp.from(od);
+<<<<<<< HEAD
+
+=======
         System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B", 1, 1));
+>>>>>>> 277486b (editapi)
 //        System.out.println(dao.getListItemByOrderID("c91ea670-a247-4dd8-84e8-89a028595068", 1));
 //        System.out.println(dao.getOrderById("d58bf7d7-da43-42e9-9d51-b4215101a488"));
 //        System.out.println(dao.deleteOrder("c4781043-71e9-4fb5-93c2-482cae9782e8"));
@@ -658,6 +812,7 @@ public class OrderDAO {
 //        System.out.println(dao.createOrder(order));
 //        System.out.println(order.getOrderItems());
 //        System.out.println(dao.insertOrderItems(order));
+
     }
 }
 

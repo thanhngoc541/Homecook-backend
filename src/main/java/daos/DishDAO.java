@@ -63,6 +63,29 @@ public class DishDAO {
         return count;
     }
 
+    public int getTotalHomeCookDish(String HomeCookID) {
+        int count= 0;
+
+        String query = "EXEC getTotalHomeCookDish "
+                + "@HomeCookID = ? ";
+        try{
+            con= DBContext.makeConnection();
+            if (con != null) {
+                pm= con.prepareStatement(query);
+                pm.setString(1, HomeCookID);
+                rs= pm.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("total");
+
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
+
     public List<Dish> getAllDishesByHomeCook(String homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
         String sql = "EXEC getAllDishesByHomeCook "
