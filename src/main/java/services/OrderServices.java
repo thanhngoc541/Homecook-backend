@@ -93,8 +93,8 @@ public class OrderServices {
     public String getOrderByTimeRangeAndStatus(@PathParam("fromDate") String fromDate,
                                               @PathParam("toDate") String toDate,
                                       @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
-        Instant from= Instant.parse(fromDate);
-        Instant to= Instant.parse(toDate);
+        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
         ArrayList<Order> orders= service.getOrderByTimeRangeAndStatus(from, to, status, page);
         String result= gson.toJson(orders);
         return result;
@@ -104,8 +104,8 @@ public class OrderServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByTimeRange(@PathParam("fromDate") String fromDate, @PathParam("toDate") String toDate,
                                        @PathParam("page") int page) throws SQLException {
-        Instant from= Instant.ofEpochSecond(Integer.parseInt(fromDate));
-        Instant to= Instant.ofEpochSecond(Integer.parseInt(toDate));
+        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
         ArrayList<Order> orders= service.getOrderByTimeRange(from, to, page);
         String result= gson.toJson(orders);
         return result;
@@ -123,6 +123,18 @@ public class OrderServices {
     public String getTotalOrder() {
         int total= service.getTotalOfOrder();
         String result= gson.toJson(total);
+        return result;
+    }
+    @GET
+    @Path("/count/orders/{fromDate}/{toDate}/{status}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countOrderByDateRangeAndStatus(@PathParam("fromDate")  String fromDate,
+                                                 @PathParam("toDate") String toDate,
+                                                 @PathParam("status") String status) {
+        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
+        int count= service.countOrderByDateRangeAndStatus(from, to, status);
+        String result= gson.toJson(count);
         return result;
     }
     @GET

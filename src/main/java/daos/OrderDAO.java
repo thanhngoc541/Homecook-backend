@@ -367,6 +367,35 @@ public class OrderDAO {
         }
         return count;
     }
+    public int countOrderByDateRangeAndStatus (Instant fromDate, Instant toDate, String status) {
+        int count =0;
+        Order order= new Order();
+        int stat= order.getStatusID(status);
+
+        String query= "EXEC countOrderByDateRangeAndStatus " +
+                "@FromDate = ? , " +
+                "@ToDate = ? ," +
+                "@StatusID = ?";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                Timestamp from= Timestamp.from(fromDate);
+                Timestamp to= Timestamp.from(toDate);
+                ps = conn.prepareStatement(query);
+                ps.setTimestamp(1, from);
+                ps.setTimestamp(2, to);
+                ps.setInt(3, stat);
+                rs= ps.executeQuery();
+                if (rs.next()) {
+                    count = rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return 0;
+    }
     public int countCustomerOrderByIDAndStatus(String customerID, String status) {
         int count= 0;
         Order order= new Order();
@@ -581,7 +610,7 @@ public class OrderDAO {
                 ps.setTimestamp(1, from);
                 ps.setTimestamp(2, to);
                 ps.setInt(3, stat);
-                ps.setInt(3, page);
+                ps.setInt(4, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Order ord= new Order();
@@ -779,14 +808,18 @@ public class OrderDAO {
 
         java.util.Date date= new Date();
         java.sql.Date sqldate= new java.sql.Date(date.getTime());
-        Instant ts= Instant.ofEpochSecond(1625450400);
-        Instant od= Instant.ofEpochSecond(1625282813);
+        Instant ts= Instant.ofEpochSecond(1624726800);
+        Instant od= Instant.ofEpochSecond(1626282000);
         System.out.println(ts);
         System.out.println(od);
         Timestamp TS= Timestamp.from(ts);
         Timestamp OD= Timestamp.from(od);
         System.out.println(TS);
+        System.out.println(OD);
 
+//        System.out.println(dao.getOrderByTimeRangeAndStatus(ts,od,"Pending", 1));
+        System.out.println(dao.countAllOrderByStatus("Pending"));
+        System.out.println(dao.countOrderByDateRangeAndStatus(ts, od, "Pending"));
 
     }
 }
