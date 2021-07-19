@@ -20,7 +20,6 @@ public class MenuDAO {
         if (pm != null) pm.close();
         if (con !=null) con.close();
     }
-<<<<<<< HEAD
     public int getTotalSearchedMenu(String name) {
         int count= 0;
 
@@ -43,8 +42,7 @@ public class MenuDAO {
         }
         return count;
     }
-=======
->>>>>>> 1978652 (editapi)
+
     public int getTotalHomeCookMenu(String HomeCookID) {
         int count= 0;
 
@@ -137,16 +135,10 @@ public class MenuDAO {
                 pm = con.prepareStatement(sql);
                 pm.setString(1, ID);
                 rs = pm.executeQuery();
-<<<<<<< HEAD
                 DishInDAO dao = new DishInDAO();
                 String menuID="";
                 while(rs.next()){
                     menuID=rs.getString("MenuID");
-
-=======
-
-                while(rs.next())
->>>>>>> 95802a5 (merge)
                     list.add(new Menu(rs.getString("MenuName"),
                             rs.getString("MenuID"),
                             ID,
