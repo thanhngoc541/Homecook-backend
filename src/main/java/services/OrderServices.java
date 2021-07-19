@@ -126,6 +126,14 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/count/{id}/items")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countOrderItem(@PathParam("id") String id) {
+        int count = service.countOrderItem(id);
+        String result= gson.toJson(count);
+        return result;
+    }
+    @GET
     @Path("/count/orders/{fromDate}/{toDate}/{status}")
     @Produces(MediaType.APPLICATION_JSON)
     public String countOrderByDateRangeAndStatus(@PathParam("fromDate")  String fromDate,

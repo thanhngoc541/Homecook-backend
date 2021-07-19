@@ -5,6 +5,7 @@ public class OrderItem {
     int Quantity;
     String Note;
     Dish Dish;
+
     double TotalPrice;
 
     public OrderItem(String itemID, String orderID, Dish dishItem, int quantity, String note, double totalPrice) {

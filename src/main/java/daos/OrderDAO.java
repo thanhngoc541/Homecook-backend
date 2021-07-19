@@ -367,6 +367,26 @@ public class OrderDAO {
         }
         return count;
     }
+    public int countOrderItem(String orderID) {
+        int count =0;
+        String query= "EXEC countOrderItem " +
+                "@OrderID = ? ";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                ps.setString(1, orderID);
+                rs= ps.executeQuery();
+                if (rs.next()) {
+                    count= rs.getInt("Total");
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return 0;
+    }
     public int countOrderByDateRangeAndStatus (Instant fromDate, Instant toDate, String status) {
         int count =0;
         Order order= new Order();
@@ -509,6 +529,9 @@ public class OrderDAO {
                     //chuyen tu status id => name
                     java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
                     Date orderDate= new Date(tmpOrderDate.getTime());
+                    //-----------
+                    java.sql.Timestamp tmpTimeStamp= new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    Date timeStamp= new Date(tmpOrderDate.getTime());
                     String homecookID = rs.getString("HomeCookID");
                     String orderID= rs.getString("OrderID");
                     String status = ord.getStatusName(rs.getInt("StatusID"));
@@ -519,6 +542,7 @@ public class OrderDAO {
 
                     ord.setOrderID(orderID);
                     ord.setOrderDate(orderDate.toInstant());
+                    ord.setTimeStamp(timeStamp.toInstant());
                     ord.setHomeCookID(homecookID);
                     ord.setStatus(status);
                     ord.setTotal(total);
