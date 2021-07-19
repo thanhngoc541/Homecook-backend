@@ -40,7 +40,28 @@ public class DishDAO {
         return -1;
     }
 
+    public int getTotalHomeCookDish(String HomeCookID) {
+        int count= 0;
 
+        String query = "EXEC getTotalHomeCookDish "
+                + "@HomeCookID = ? ";
+        try{
+            con= DBContext.makeConnection();
+            if (con != null) {
+                pm= con.prepareStatement(query);
+                pm.setString(1, HomeCookID);
+                rs= pm.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("total");
+
+                }
+                return count;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
 
 
 
@@ -231,8 +252,8 @@ public class DishDAO {
 
 
      public static void main(String[] args) throws SQLException {
-         DishDAO dishdao = new DishDAO();
-         System.out.println(dishdao.getTotalHomeCookDish("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
+//         DishDAO dishdao = new DishDAO();
+//         System.out.println(dishdao.getTotalHomeCookDish("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
      }
 //         for (Dish d : dishdao.getAllDishesByHomeCook("6ABE8D62-72D2-4F13-B790-C35EA529365B",1)){
 //             System.out.println(d);
