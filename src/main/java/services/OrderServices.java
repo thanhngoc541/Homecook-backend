@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import daos.OrderDAO;
+import daos.OrderMenuDAO;
 import dtos.Order;
 import dtos.OrderItem;
+import dtos.OrderMenu;
 import org.glassfish.jersey.server.Uri;
 
 import javax.ws.rs.*;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 
 @Path("/order")
 public class OrderServices {
+    private OrderMenuDAO serviceMenu= new OrderMenuDAO();
     private OrderDAO service= new OrderDAO();
     private Gson gson= new GsonBuilder().setPrettyPrinting().create();
     @GET
@@ -179,25 +182,48 @@ public class OrderServices {
     @Path("/item/{orderID}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getListItems(@PathParam("orderID") String id) throws SQLException {
-        ArrayList<OrderItem> items= service.getListItemByOrderID(id,1);
-        String result= gson.toJson(items);
+        Order order= service.getOrderById(id);
+        String result= "";
+        if (order.isMenu()) {
+            ArrayList<OrderMenu> menus = serviceMenu.getOrderMenuByOrderID(id, 1);
+             result= gson.toJson(menus);
+        }
+        else {
+            ArrayList<OrderItem> items= service.getListItemByOrderID(id,1);
+             result= gson.toJson(items);
+        }
         return result;
     }
 
+    //-----------GetList menu
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createOrder(String data, @Context UriInfo uriInfo) throws SQLException, URISyntaxException {
         //lam sao de extract cai order item ra khoi data string
+        Order resultID = new Order();
         Order order= gson.fromJson(data, Order.class);
-        Order resultID = service.createOrder(order);
-        System.out.println(resultID);
-        if (resultID.getOrderItems() != null) {
-            for (OrderItem item : resultID.getOrderItems()) {
-                item.setOrderID(order.getOrderID());
-                String resultItem= service.insertOrderItems(item);
-                System.out.println(resultItem);
+        if (!order.isMenu()) {
+             resultID = service.createOrder(order);
+            System.out.println(resultID);
+            if (resultID.getOrderItems() != null) {
+                for (OrderItem item : resultID.getOrderItems()) {
+                    item.setOrderID(order.getOrderID());
+                    String resultItem= service.insertOrderItems(item);
+                    System.out.println(resultItem);
+                }
+            }
+        } else {
+             resultID= service.createOrder(order);
+            System.out.println(resultID);
+            if (resultID.getOrderMenus() != null) {
+                for (OrderMenu menu : resultID.getOrderMenus()) {
+                    menu.setOrderID(order.getOrderID());
+                    String resultItem = serviceMenu.insertOrderMenu(menu);
+                    System.out.println(resultItem);
+                }
             }
         }
+
         URI uri= null;
         if (!resultID.getOrderID().isEmpty()) {
             uri= new URI(uriInfo.getAbsolutePath() +"/"+ resultID.getOrderID());

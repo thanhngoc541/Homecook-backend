@@ -10,10 +10,10 @@ public class Order {
     Instant TimeStamp;
     Instant OrderDate;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
+    boolean IsMenu;
     double Total;
-    //Chua Menu ID hoac null
-    String IsMenuOrder;
     ArrayList<OrderItem> OrderItems;
+    ArrayList<OrderMenu> OrderMenus;
     //transient để json ko in ra cái status table
     transient Map<Integer, String>  statusTable= new HashMap<>();
     //Status table
@@ -76,7 +76,7 @@ public class Order {
     //Nay dung cho Order co menu
     public Order(String orderID, String homecookID, String customerID, Instant orderDate, Instant timeStamp,
                  String status, String receiverName, String receiverPhone, String receiverAddress, double total,
-                 String note, String isMenuOrder) {
+                 String note, boolean isMenu) {
         OrderID= orderID;
         HomeCookID= homecookID;
         CustomerID= customerID;
@@ -88,7 +88,7 @@ public class Order {
         ReceiverAddress= receiverAddress;
         Total= total;
         Note= note;
-        IsMenuOrder= isMenuOrder;
+        IsMenu= isMenu;
     }
 
     public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {
@@ -112,6 +112,7 @@ public class Order {
         Total= 0;
         Note= null;
         OrderItems= null;
+        OrderMenus= null;
     }
 
     public String getOrderID() {
@@ -184,12 +185,28 @@ public class Order {
         ReceiverName = receiverName;
     }
 
+    public ArrayList<OrderMenu> getOrderMenus() {
+        return OrderMenus;
+    }
+
+    public void setOrderMenus(ArrayList<OrderMenu> orderMenus) {
+        OrderMenus = orderMenus;
+    }
+
     public String getNote() {
         return Note;
     }
 
     public void setNote(String note) {
         Note = note;
+    }
+
+    public boolean isMenu() {
+        return IsMenu;
+    }
+
+    public void setMenu(boolean menu) {
+        IsMenu = menu;
     }
 
     public double getTotal() {
@@ -222,6 +239,8 @@ public class Order {
                 ", Status='" + Status + '\'' +
                 ", Total=" + Total +
                 ", OrderItems=" + OrderItems +
+                ", OrderMenus=" + OrderMenus +
+                ", IsMenu=" +IsMenu +
                 '}';
     }
 
@@ -241,7 +260,7 @@ public class Order {
 		return this.CustomerID.equals(o.CustomerID) && this.HomeCookID.equals(o.HomeCookID) && this.OrderID.equals(o.OrderID)
 				&& this.ReceiverAddress.equals(o.ReceiverAddress) && this.ReceiverName.equals(o.ReceiverName)
 				&& this.ReceiverPhone.equals(o.ReceiverPhone) && this.Note.equals(o.Note)
-				&& this.OrderItems.containsAll(o.OrderItems) && this.Status.equals(o.Status);
+				&& this.OrderItems.containsAll(o.OrderItems) && this.OrderMenus.containsAll(o.OrderMenus) && this.Status.equals(o.Status);
 	}
     private class Orders {
         List<Order> orders= new ArrayList<>();
