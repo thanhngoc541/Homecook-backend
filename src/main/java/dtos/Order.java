@@ -11,6 +11,8 @@ public class Order {
     Instant OrderDate;
     String ReceiverPhone, ReceiverAddress, ReceiverName, Note, Status;
     double Total;
+    //Chua Menu ID hoac null
+    String IsMenuOrder;
     ArrayList<OrderItem> OrderItems;
     //transient để json ko in ra cái status table
     transient Map<Integer, String>  statusTable= new HashMap<>();
@@ -24,7 +26,6 @@ public class Order {
         statusTable.put(6, "Rejected");
         statusTable.put(7, "Cancelled");
     }
-
     public Order(String orderID, String homecookID, String customerID, Instant timeStamp,Instant orderDate, String status,
                  String receiverPhone,
                  String receiverAddress,
@@ -71,7 +72,23 @@ public class Order {
         ReceiverAddress= receiverAddress;
         Total= total;
         Note= note;
-
+    }
+    //Nay dung cho Order co menu
+    public Order(String orderID, String homecookID, String customerID, Instant orderDate, Instant timeStamp,
+                 String status, String receiverName, String receiverPhone, String receiverAddress, double total,
+                 String note, String isMenuOrder) {
+        OrderID= orderID;
+        HomeCookID= homecookID;
+        CustomerID= customerID;
+        OrderDate= orderDate;
+        TimeStamp= timeStamp;
+        Status= status;
+        ReceiverName= receiverName;
+        ReceiverPhone= receiverPhone;
+        ReceiverAddress= receiverAddress;
+        Total= total;
+        Note= note;
+        IsMenuOrder= isMenuOrder;
     }
 
     public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {

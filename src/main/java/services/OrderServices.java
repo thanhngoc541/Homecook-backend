@@ -17,6 +17,8 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 
 @Path("/order")
@@ -86,6 +88,29 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/orders/{fromDate}/{toDate}/{status}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByTimeRangeAndStatus(@PathParam("fromDate") String fromDate,
+                                              @PathParam("toDate") String toDate,
+                                      @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
+        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
+        ArrayList<Order> orders= service.getOrderByTimeRangeAndStatus(from, to, status, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
+    @Path("/orders/{fromDate}/{toDate}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByTimeRange(@PathParam("fromDate") String fromDate, @PathParam("toDate") String toDate,
+                                       @PathParam("page") int page) throws SQLException {
+        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
+        ArrayList<Order> orders= service.getOrderByTimeRange(from, to, page);
+        String result= gson.toJson(orders);
+        return result;
+    }
+    @GET
     @Path(("/first"))
     @Produces(MediaType.APPLICATION_JSON)
     public String getFirstSevenOrder() {
@@ -98,6 +123,26 @@ public class OrderServices {
     public String getTotalOrder() {
         int total= service.getTotalOfOrder();
         String result= gson.toJson(total);
+        return result;
+    }
+    @GET
+    @Path("/count/{id}/items")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countOrderItem(@PathParam("id") String id) {
+        int count = service.countOrderItem(id);
+        String result= gson.toJson(count);
+        return result;
+    }
+    @GET
+    @Path("/count/orders/{fromDate}/{toDate}/{status}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countOrderByDateRangeAndStatus(@PathParam("fromDate")  String fromDate,
+                                                 @PathParam("toDate") String toDate,
+                                                 @PathParam("status") String status) {
+        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
+        int count= service.countOrderByDateRangeAndStatus(from, to, status);
+        String result= gson.toJson(count);
         return result;
     }
     @GET

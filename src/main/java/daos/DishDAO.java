@@ -40,8 +40,6 @@ public class DishDAO {
         return -1;
     }
 
-
-
     public int getTotalHomeCookDish(String HomeCookID) {
         int count= 0;
 
@@ -64,6 +62,8 @@ public class DishDAO {
         }
         return count;
     }
+
+
 
     public List<Dish> getAllDishesByHomeCook(String homeCookID, int page) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
@@ -262,8 +262,8 @@ public class DishDAO {
 
 
      public static void main(String[] args) throws SQLException {
-         DishDAO dishdao = new DishDAO();
-         System.out.println(dishdao.getTotalHomeCookDish("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
+//         DishDAO dishdao = new DishDAO();
+//         System.out.println(dishdao.getTotalHomeCookDish("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
      }
 //         for (Dish d : dishdao.getAllDishesByHomeCook("6ABE8D62-72D2-4F13-B790-C35EA529365B",1)){
 //             System.out.println(d);

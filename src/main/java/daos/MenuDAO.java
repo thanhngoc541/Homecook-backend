@@ -42,6 +42,7 @@ public class MenuDAO {
         }
         return count;
     }
+
     public int getTotalHomeCookMenu(String HomeCookID) {
         int count= 0;
 
@@ -142,9 +143,8 @@ public class MenuDAO {
                 String menuID="";
                 while(rs.next()){
                     menuID=rs.getString("MenuID");
-
                     list.add(new Menu(rs.getString("MenuName"),
-                            menuID,
+                            rs.getString("MenuID"),
                             ID,
                             rs.getString("HomeCookName"),
                             rs.getBoolean("IsServing"),
