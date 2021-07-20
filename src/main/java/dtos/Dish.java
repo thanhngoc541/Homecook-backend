@@ -7,12 +7,33 @@ public class Dish {
     double Price;
     boolean IsAvailable;
     String Description, ImageURL;
+    String Servings;
+    float Rating;
 
     public Dish() {
         super();
     }
 
-    public Dish(String dishId, String HomeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
+    public String getServings() {
+        return Servings;
+    }
+
+    public void setServings(String servings) {
+        Servings = servings;
+    }
+
+    public float getRating() {
+        return Rating;
+    }
+
+    public void setRating(float rating) {
+        Rating = rating;
+    }
+
+    public Dish(String dishId, String HomeCookID, String dishName, double price,
+                boolean isAvailable, String description, String imageURL, float rating, String servings) {
+        Rating=rating;
+        Servings=servings;
         DishId = dishId;
         this.HomeCookID = HomeCookID;
         DishName = dishName;
@@ -21,18 +42,6 @@ public class Dish {
         Description = description;
         ImageURL = imageURL;
     }
-
-
-    public Dish(String homeCookID, String dishName, double price, boolean isAvailable, String description, String imageURL) {
-        DishId = "";
-        HomeCookID = homeCookID;
-        DishName = dishName;
-        Price = price;
-        IsAvailable = isAvailable;
-        Description = description;
-        ImageURL = imageURL;
-    }
-
 
     //Huy dung cho OrderDAO
     public Dish(String dishId, String homeCookID, String dishName, double price, String imgURL) {

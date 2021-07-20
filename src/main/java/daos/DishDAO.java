@@ -85,7 +85,9 @@ public class DishDAO {
                             rs.getDouble("Price"),
                             rs.getBoolean("IsAvailable"),
                             rs.getString("Description"),
-                            rs.getString("ImageURL")));
+                            rs.getString("ImageURL"),
+                            rs.getFloat("Rating"),
+                            rs.getString("Servings")));
                 }
             }
         } finally {
@@ -113,7 +115,9 @@ public class DishDAO {
                             rs.getDouble("Price"),
                             status,
                             rs.getString("Description"),
-                            rs.getString("ImageURL")));
+                            rs.getString("ImageURL"),
+                            rs.getFloat("Rating"),
+                            rs.getString("Servings")));
                 }
             }
         } finally {
@@ -139,7 +143,9 @@ public class DishDAO {
                         rs.getDouble("Price"),
                         rs.getBoolean("IsAvailable"),
                         rs.getString("Description"),
-                        rs.getString("ImageURL"));
+                        rs.getString("ImageURL"),
+                        rs.getFloat("Rating"),
+                        rs.getString("Servings"));
             }
         } finally {
             closeConnection();
@@ -154,6 +160,7 @@ public class DishDAO {
                 + "@Price = ?, "
                 + "@IsAvailable = ?, "
                 + "@Description = ?, "
+                + "@Servings = ?, "
                 + "@ImageURL = ?";
         try {
             con = DBContext.makeConnection();
@@ -164,7 +171,8 @@ public class DishDAO {
                 pm.setFloat(3, (float) dish.getPrice());
                 pm.setBoolean(4, dish.isAvailable());
                 pm.setString(5, dish.getDescription());
-                pm.setString(6, dish.getImageURL());
+                pm.setString(6, dish.getServings());
+                pm.setString(7, dish.getImageURL());
                 rs = pm.executeQuery();
                 if(rs.next())
                 {
@@ -186,6 +194,7 @@ public class DishDAO {
         		+ "@IsAvailable = ?, "
         		+ "@Description = ?, "
         		+ "@ImageURL = ? ,"
+                + "@Servings = ?, "
         		+ "@DishID= ?";
         try{
 
@@ -197,7 +206,8 @@ public class DishDAO {
                 pm.setBoolean(3, dish.isAvailable());
                 pm.setString(4, dish.getDescription());
                 pm.setString(5, dish.getImageURL());
-                pm.setString(6, dish.getDishId());
+                pm.setString(6, dish.getServings());
+                pm.setString(7, dish.getImageURL());
 
                 pm.executeUpdate();
                 return true;

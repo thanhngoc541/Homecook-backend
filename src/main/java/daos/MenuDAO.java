@@ -83,7 +83,9 @@ public class MenuDAO {
                                 dao.getAllDishesInMenu(ID),
                                 rs.getString("MenuURL"),
                                 rs.getString("MenuDescription"),
-                                rs.getFloat("Rating"));
+                                rs.getFloat("Rating"),
+                                rs.getString("Servings"),
+                                rs.getFloat("Price"));
             }
         }
         catch (Exception e) {
@@ -113,7 +115,9 @@ public class MenuDAO {
                             null,
                             rs.getString("MenuURL"),
                             rs.getString("MenuDescription"),
-                            rs.getFloat("Rating")));
+                            rs.getFloat("Rating"),
+                            rs.getString("Servings"),
+                            rs.getFloat("Price")));
             }
         }
         catch (Exception e) {
@@ -147,7 +151,9 @@ public class MenuDAO {
                             null,
                             rs.getString("MenuURL"),
                             rs.getString("MenuDescription"),
-                            rs.getFloat("Rating")));}
+                            rs.getFloat("Rating"),
+                            rs.getString("Servings"),
+                            rs.getFloat("Price")));}
             }
         }
         catch (Exception e) {
@@ -186,7 +192,9 @@ public class MenuDAO {
                             null,
                             rs.getString("MenuURL"),
                             rs.getString("MenuDescription"),
-                            rs.getFloat("Rating")));}
+                            rs.getFloat("Rating"),
+                            rs.getString("Servings"),
+                            rs.getFloat("Price")));}
             }
         }
         catch (Exception e) {
@@ -205,8 +213,10 @@ public class MenuDAO {
                 + "@MenuName = ? , "
                 + "@IsServing = ? , "
                 + "@HomeCookName = ? , "
+                + "@Servings = ? , "
+                + "@Price = ? , "
                 + "@MenuURL = ? , "
-                + "@MenuDescription = ? ";
+                + "@MenuDescription = ? ,";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -215,8 +225,10 @@ public class MenuDAO {
                 pm.setString(2,menu.getMenuName());
                 pm.setBoolean(3, menu.isServing());
                 pm.setString(4,menu.getHomeCookName());
-                pm.setString(5,menu.getMenuURL());
-                pm.setString(6,menu.getMenuDescription());
+                pm.setString(5,menu.getServings());
+                pm.setFloat(6,menu.getPrice());
+                pm.setString(7,menu.getMenuURL());
+                pm.setString(8,menu.getMenuDescription());
                 rs= pm.executeQuery();
                 if (rs.next()) {
                     menu.setMenuID(rs.getString("MenuID"));
@@ -240,7 +252,9 @@ public class MenuDAO {
                 + "@MenuName = ? , "
                 + "@IsServing = ? , "
                 + "@MenuURL = ? , "
-                + "@MenuDescription = ? ";
+                + "@MenuDescription = ? "
+                + "@Servings = ? , "
+                + "@Price = ? , ";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -250,31 +264,10 @@ public class MenuDAO {
                 pm.setBoolean(3, menu.isServing());
                 pm.setString(4,menu.getMenuURL());
                 pm.setString(5,menu.getMenuDescription());
+                pm.setString(6, menu.getServings());
+                pm.setFloat(7,menu.getPrice());
                 pm.executeUpdate();
                 return true;
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            closeConnection();
-        }
-        return false;
-    }
-
-    public boolean changeMenuName(String menuName, String menuId) throws  SQLException{
-        String sql ="EXEC changeMenuName "
-                + "@MenuName = ?, "
-                + "@MenuID= ?";
-        try{
-            con = DBContext.makeConnection();
-            if (con != null){
-                pm = con.prepareStatement(sql);
-                pm.setString(1, menuName);
-                pm.setString(2, menuId);
-                int n = pm.executeUpdate();
-                if ( n > 0) return true;
             }
         }
         catch (Exception e) {

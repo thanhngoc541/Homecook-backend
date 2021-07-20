@@ -82,6 +82,16 @@ public class DishServices {
         boolean result = service.updateDish(dish);
         return result ? Response.status(Response.Status.OK).entity(dish.getDishId()).build() : Response.notModified().build();
     }
+    @PUT
+    @Path("/{DishID}/{Status}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changeStatus(@PathParam("DishID") String DishID,@PathParam("Status") String Status) throws URISyntaxException ,SQLException{
+        if (service.changeDishStatus(DishID,Status.equals("true"))) {
+            return Response.ok().build();
+        } else {
+            return Response.notModified().build();
+        }
+    }
 
     @DELETE
     @Path("/{id}")

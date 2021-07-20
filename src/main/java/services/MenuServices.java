@@ -101,6 +101,16 @@ public class MenuServices {
             return Response.notModified().build();
         }
     }
+    @PUT
+    @Path("/{MenuID}/{Status}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changeStatus(@PathParam("MenuID") String menuId,@PathParam("Status") String Status) throws URISyntaxException ,SQLException{
+        if (service.changeMenuStatus(Status.equals("true"),menuId)) {
+            return Response.ok().build();
+        } else {
+            return Response.notModified().build();
+        }
+    }
 
 
     @POST
@@ -124,7 +134,7 @@ public class MenuServices {
     }
     @DELETE
     @Path("/dish")
-    public Response removedishfrommenu(String data) throws SQLException {
+    public Response removeDishFromMenu(String data) throws SQLException {
         DishIn dishIn = gson.fromJson(data,DishIn.class);
         if (dao.deleteDishFromMenu(dishIn)) {
             return Response.ok().build();

@@ -10,19 +10,39 @@ public class Menu {
     List<Dish> Dishes;
     String MenuURL,MenuDescription;
     float Rating;
+    String Servings;
+    float Price;
     public Menu() {
     }
 
-    public Menu(String menuName, String menuID, String homeCookID, String homeCookName, boolean isServing, List<Dish> dishes, String menuURL, String menuDescription, float rating) {
+    public Menu(String menuName, String menuID, String homeCookID, String homeCookName, boolean isServing, List<Dish> dishes, String menuURL, String menuDescription, float rating, String servings, float price) {
         MenuName = menuName;
         MenuID = menuID;
         HomeCookID = homeCookID;
         HomeCookName = homeCookName;
         IsServing = isServing;
         Dishes = dishes;
-        Rating = rating;
         MenuURL = menuURL;
         MenuDescription = menuDescription;
+        Rating = rating;
+        Servings = servings;
+        Price = price;
+    }
+
+    public String getServings() {
+        return Servings;
+    }
+
+    public void setServings(String servings) {
+        Servings = servings;
+    }
+
+    public float getPrice() {
+        return Price;
+    }
+
+    public void setPrice(float price) {
+        Price = price;
     }
 
     public float getRating() {
