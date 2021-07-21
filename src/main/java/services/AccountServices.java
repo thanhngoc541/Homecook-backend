@@ -60,6 +60,14 @@ public class AccountServices {
         return result;
     }
     @GET
+    @Path("/count/{role}/{username}")
+    public String getTotalSearchedAccount(@PathParam("role") String role ,@PathParam("username") String username) {
+        if (username.equals("all")) username="";
+        int total= service.getTotalSearchedAccount(username);
+        String result= gson.toJson(total);
+        return result;
+    }
+    @GET
     @Path("/username/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAccountByUName(@PathParam("username")String username)throws SQLException{

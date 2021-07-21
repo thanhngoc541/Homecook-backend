@@ -144,11 +144,12 @@ public class OrderDAO {
         }
         return null;
     }
-    public ArrayList<Order> getOrderByHomeCookIDAndStatus(String homecookID, int status, int page) throws SQLException {
+    public ArrayList<Order> getOrderByHomeCookIDAndStatus(String homecookID, String search, int status, int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
         String query = "EXEC getOrderByHomeCookIDAndStatus "
                 + "@HomeCookID = ?, "
-                + "@StatusID= ?, "
+                + "@StatusID= ?, " +
+                "@searchPhrase = ?, "
                 + "@Page = ?";
         try {
             conn = DBContext.makeConnection();
@@ -156,7 +157,8 @@ public class OrderDAO {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, homecookID);
                 ps.setInt(2, status);
-                ps.setInt(3, page);
+                ps.setString(3, search);
+                ps.setInt(4, page);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order("", null, null,null, 0, null);
@@ -195,17 +197,19 @@ public class OrderDAO {
         return null;
     }
     //lay order cua homecook (HomeCook View)
-    public ArrayList<Order> getOrderByHomeCookID(String homecookID, int page) throws SQLException {
+    public ArrayList<Order> getOrderByHomeCookID(String homecookID, String input, int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
         String query = "EXEC getOrderByHomeCookID "
         		+ "@HomeCookID = ?, "
-        		+ "@Page = ?";
+        		+ "@Page = ?, " +
+                "@searchPhrase = ?";
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, homecookID);
                 ps.setInt(2, page);
+                ps.setString(3, input);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
@@ -248,19 +252,21 @@ public class OrderDAO {
     }
     //lay AllOrder (admin)
     //-----------
-    public ArrayList<Order> getOrderByStatus(String status, int page) {
+    public ArrayList<Order> getOrderByStatus(String status, int page, String input) {
         ArrayList<Order> orders= new ArrayList<Order>();
         Order order= new Order();
         int stat= order.getStatusID(status);
         String query= "EXEC getOrderByStatus " +
                 "@Status = ?, " +
-                "@Page = ?";
+                "@Page = ?, " +
+                "@searchPhrase = ?";
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps= conn.prepareStatement(query);
                 ps.setInt(1, stat);
                 ps.setInt(2, page);
+                ps.setString(3, input);
                 rs= ps.executeQuery();
                 while(rs.next()) {
                     Order ord= new Order();
@@ -325,14 +331,16 @@ public class OrderDAO {
         }
         return null;
     }
-    public int getTotalOfOrder() {
+    public int getTotalOfOrder(String input) {
         int count= 0;
         ArrayList<String> orderID= new ArrayList<String>();
-        String query="EXEC getTotalOfOrder";
+        String query="EXEC getTotalOfOrder " +
+                "@searchPhrase = ?";
         try{
             conn= DBContext.makeConnection();
             if (conn != null) {
                 ps= conn.prepareStatement(query);
+                ps.setString(1, input);
                 rs= ps.executeQuery();
                 while (rs.next()) {
                     String orderId= rs.getString("OrderID");
@@ -440,12 +448,13 @@ public class OrderDAO {
         }
         return count;
     }
-    public int countHomeCookOrderByIDAndStatus(String homecookID, String status) {
+    public int countHomeCookOrderByIDAndStatus(String homecookID, String status, String input) {
         int count= 0;
         Order order= new Order();
         String query = "EXEC countHomeCookOrderByIDAndStatus " +
                 "@HomeCookID = ?, " +
-                "@StatusID = ?";
+                "@StatusID = ?, " +
+                "@searchPhrase = ?";
         int stat= order.getStatusID(status);
         try {
             conn = DBContext.makeConnection();
@@ -453,6 +462,7 @@ public class OrderDAO {
                 ps= conn.prepareStatement(query);
                 ps.setString(1,homecookID);
                 ps.setInt(2, stat);
+                ps.setString(3, input);
                 rs= ps.executeQuery();
                 while (rs.next()) {
                     count= rs.getInt("Total");
@@ -464,17 +474,19 @@ public class OrderDAO {
         }
         return count;
     }
-    public int countAllOrderByStatus(String status) {
+    public int countAllOrderByStatus(String status, String input) {
         int count =0;
         Order order= new Order();
         String query ="EXEC countAllOrderByStatus " +
-                "@StatusID = ?";
+                "@StatusID = ?, " +
+                "@searchPhrase = ?";
         int stat= order.getStatusID(status);
         try {
             conn= DBContext.makeConnection();
             if (conn!= null ) {
                 ps = conn.prepareStatement(query);
                 ps.setInt(1, stat);
+                ps.setString(2, input);
                 rs= ps.executeQuery();
                 while(rs.next()) {
                     count= rs.getInt("Total");
@@ -514,15 +526,17 @@ public class OrderDAO {
         }
         return null;
     }
-    public ArrayList<Order> getAllOrder(int page) {
+    public ArrayList<Order> getAllOrder(int page, String input) {
         ArrayList<Order> list= new ArrayList<>();
         String query= "EXEC getAllOrder " +
+                "@searchPhrase = ?, " +
                 "@Page = ?";
         try {
             conn= DBContext.makeConnection();
             if (conn != null) {
                 ps= conn.prepareStatement(query);
-                ps.setInt(1, page);
+                ps.setString(1, input);
+                ps.setInt(2, page);
                 rs=ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
@@ -795,6 +809,30 @@ public class OrderDAO {
         }
         return false;
     }
+    //Search order by Order ID or Phone
+    public int getTotalSearchedOrder (String input, String status) {
+        Order order= new Order();
+        int stat= order.getStatusID(status);
+        int count= 0;
+        String query= "EXEC countSearchOrder " +
+                "@searchPhrase = ?, " +
+                "@StatusID= ?";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1, input);
+                ps.setInt(2, stat);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    count = rs.getInt("total");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
     //Customer xem item trong ord
     public ArrayList<OrderItem> getListItemByOrderID(String ordID, int page) throws SQLException {
         ArrayList<OrderItem> list = new ArrayList<>();
@@ -826,7 +864,6 @@ public class OrderDAO {
 
     public static void main(String[] args) throws ParseException, SQLException {
         OrderDAO dao = new OrderDAO();
-        System.out.println(dao.getOrderByHomeCookIDAndStatus("6ABE8D62-72D2-4F13-B790-C35EA529365B",1,1));
 
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
 
@@ -842,8 +879,7 @@ public class OrderDAO {
         System.out.println(OD);
 
 //        System.out.println(dao.getOrderByTimeRangeAndStatus(ts,od,"Pending", 1));
-        System.out.println(dao.countAllOrderByStatus("Pending"));
-        System.out.println(dao.countOrderByDateRangeAndStatus(ts, od, "Pending"));
+        System.out.println(dao.getOrderByHomeCookID("A0E6A64E-CF5E-4DFD-A674-BD9163419CF3", "",1));
 
     }
 }
