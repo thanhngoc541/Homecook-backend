@@ -27,9 +27,10 @@ public class DishServices {
         return result;
     }
     @GET
-    @Path("/count/{status}")
-    public int countAllDishes(@PathParam("status") boolean status) throws SQLException {
-        int count = service.countAllDishesByStatus(status);
+    @Path("/count/{status}/{name}")
+    public int countAllDishes(@PathParam("status") boolean status, @PathParam("name") String name) throws SQLException {
+        if (name.equals("all")) name="";
+        int count = service.countAllDishesByStatus(name, status);
         if (count > 0) return count;
         return -1;
     }
@@ -58,10 +59,12 @@ public class DishServices {
     }
 
     @GET
-    @Path("/status/{status}/{page}")
+    @Path("/status/{status}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllDishesByStatus(@PathParam("status")boolean status,@PathParam("page") int page) throws SQLException {
-        List<Dish> d = service.getAllDishesByStatus(status,page);
+    public Response getAllDishesByStatus(@PathParam("status")boolean status,@PathParam("name") String name ,
+                                         @PathParam("page") int page) throws SQLException {
+        if (name.equals("all")) name="";
+        List<Dish> d = service.getAllDishesByStatus(status,page, name);
         if (d.size()>0){
             return Response.status(Response.Status.OK).entity(gson.toJson(d)).build();
         }

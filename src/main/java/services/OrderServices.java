@@ -46,16 +46,6 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/orders/{status}/{name}/{page}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getAllOrderByStatus(@PathParam("status") String status,
-                                      @PathParam("page")int page , @PathParam("name") String input) {
-        if (input.equals("all")) input="";
-        ArrayList<Order> orders= service.getOrderByStatus(status, page, input);
-        String result= gson.toJson(orders);
-        return result;
-    }
-    @GET
     @Path("/byId/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByID(@PathParam("id") String id) {
@@ -97,26 +87,36 @@ public class OrderServices {
         String result= gson.toJson(orders);
         return result;
     }
+//    @GET
+//    @Path("/orders/{fromDate}/{toDate}/{status}/{page}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public String getOrderByTimeRangeAndStatus(@PathParam("fromDate") String fromDate,
+//                                              @PathParam("toDate") String toDate,
+//                                      @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
+//        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+//        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
+//        ArrayList<Order> orders= service.getOrderByTimeRangeAndStatus(from, to, status, page);
+//        String result= gson.toJson(orders);
+//        return result;
+//    }
+//    @GET
+//    @Path("/orders/date/{page}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public String getOrderByTimeRange(String fromDate, String toDate,
+//                                       @PathParam("page") int page) throws SQLException {
+//        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
+//        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
+//        ArrayList<Order> orders= service.getOrderByTimeRange(from, to, page);
+//        String result= gson.toJson(orders);
+//        return result;
+//    }
     @GET
-    @Path("/orders/{fromDate}/{toDate}/{status}/{page}")
+    @Path("/orders/{status}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderByTimeRangeAndStatus(@PathParam("fromDate") String fromDate,
-                                              @PathParam("toDate") String toDate,
-                                      @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
-        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
-        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
-        ArrayList<Order> orders= service.getOrderByTimeRangeAndStatus(from, to, status, page);
-        String result= gson.toJson(orders);
-        return result;
-    }
-    @GET
-    @Path("/orders/{fromDate}/{toDate}/{page}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderByTimeRange(@PathParam("fromDate") String fromDate, @PathParam("toDate") String toDate,
-                                       @PathParam("page") int page) throws SQLException {
-        Instant from= Instant.ofEpochSecond(Long.parseLong(fromDate));
-        Instant to= Instant.ofEpochSecond(Long.parseLong(toDate));
-        ArrayList<Order> orders= service.getOrderByTimeRange(from, to, page);
+    public String getAllOrderByStatus(@PathParam("status") String status,
+                                      @PathParam("page")int page , @PathParam("name") String input) {
+        if (input.equals("all")) input="";
+        ArrayList<Order> orders= service.getOrderByStatus(status, page, input);
         String result= gson.toJson(orders);
         return result;
     }
