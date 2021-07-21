@@ -10,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -48,7 +49,16 @@ public class AccountServices {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
+    @GET
+    @Path("/{name}/{page}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getSearchedAccount(@PathParam("name") String name, @PathParam("page") int page) {
+        if (name.equals("all")) name="";
+        ArrayList<Account> accounts= service.getSearchedAccount(name, page);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result= gson.toJson(accounts);
+        return result;
+    }
     @GET
     @Path("/username/{username}")
     @Produces(MediaType.APPLICATION_JSON)
