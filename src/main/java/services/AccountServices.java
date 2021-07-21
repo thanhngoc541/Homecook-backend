@@ -72,7 +72,8 @@ public class AccountServices {
     public Response createAccount(String data)throws SQLException{
         Account account = gson.fromJson(data, Account.class);
         account.setSaltKey(encryption.saltKeyGenerate(account.getFullName().trim()));
-
+        System.out.println(account);
+        
         boolean rs = service.createAccount(account);
 
         return rs ? Response.status(Response.Status.OK).entity(gson.toJson(account)).build() : Response.serverError().build();

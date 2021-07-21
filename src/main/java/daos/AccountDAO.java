@@ -182,11 +182,7 @@ public class AccountDAO {
 				ps.setString(8, input.getPhoneNumber());
 				ps.setString(9, input.getSaltKey());
 
-				rs = ps.executeQuery();
-//				if (rs.next()){
-//					String UserID = rs.getString("AccountID");
-//					System.out.println(UserID);
-//				}
+				ps.executeUpdate();
 				return true;
 			}
 		}
