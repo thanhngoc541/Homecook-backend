@@ -89,8 +89,10 @@ public class OrderDAO {
         }
         return null;
     }
-    public ArrayList<Order> getOrderByCustomerIDAndStatus(String customerID,int status, String input , int page) throws SQLException {
+    public ArrayList<Order> getOrderByCustomerIDAndStatus(String customerID,String status, String input , int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
+        Order order= new Order();
+        int stat= order.getStatusID(status);
         String query = "EXEC getOrderByCustomerIDAndStatus "
                 + "@CustomerID = ?, "
                 + "@StatusID= ?, " +
@@ -101,7 +103,7 @@ public class OrderDAO {
             if (conn != null) {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, customerID);
-                ps.setInt(2, status);
+                ps.setInt(2, stat);
                 ps.setString(3, input);
                 ps.setInt(4, page);
 
@@ -118,7 +120,7 @@ public class OrderDAO {
 
                     String homecookID = rs.getString("HomeCookID");
                     //chuyen tu status id => name
-                    String stat = ord.getStatusName(rs.getInt("StatusID"));
+                    String statusName = ord.getStatusName(rs.getInt("StatusID"));
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
                     String phone = rs.getString("ReceiverPhone");
@@ -130,7 +132,7 @@ public class OrderDAO {
                     ord.setHomeCookID(homecookID);
                     ord.setTimeStamp(timeStamp.toInstant());
                     ord.setOrderDate(orderDate.toInstant());
-                    ord.setStatus(stat);
+                    ord.setStatus(statusName);
                     ord.setTotal(total);
                     ord.setNote(note);
                     ord.setReceiverPhone(phone);
@@ -399,6 +401,25 @@ public class OrderDAO {
             throwables.printStackTrace();
         }
         return 0;
+    }
+    public int countCustomerOrder(String customerID) {
+        int count=0;
+        String query = "EXEC getTotalCustomerOrder " +
+                "@CustomerID =  ?";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1, customerID);
+                rs= ps.executeQuery();
+                if (rs.next()) {
+                    count= rs.getInt("total");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
     }
     public int countOrderByDateRangeAndStatus (Instant fromDate, Instant toDate, String status) {
         int count =0;
@@ -894,8 +915,8 @@ public class OrderDAO {
         System.out.println(OD);
 
 //        System.out.println(dao.getOrderByTimeRangeAndStatus(ts,od,"Pending", 1));
-        System.out.println(dao.getOrderByHomeCookID("A0E6A64E-CF5E-4DFD-A674-BD9163419CF3", "",1));
-
+//        System.out.println(dao.getOrderByHomeCookID("A0E6A64E-CF5E-4DFD-A674-BD9163419CF3", "",1));
+        System.out.println(dao.getOrderByCustomerIDAndStatus("BF009BE2-5D2B-4FE8-8F2D-492EDEC07FA4", "Pending", "",1));
     }
 }
 
