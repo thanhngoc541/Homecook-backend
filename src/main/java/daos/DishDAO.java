@@ -23,14 +23,16 @@ public class DishDAO {
         if (pm != null) pm.close();
         if (con != null) con.close();
     }
-    public int countAllDishesByStatus(boolean status) throws SQLException {
-        String sql ="EXEC countAllDishesByStatus" +
+    public int countAllDishesByStatus(String input,boolean status) throws SQLException {
+        String sql ="EXEC countAllDishesByStatus " +
+                "@searchPhrase = ? , " +
                 " @Status = ?";
         try {
             con = DBContext.makeConnection();
             if (con != null){
                 pm = con.prepareStatement(sql);
-                pm.setBoolean(1, status);
+                pm.setString(1, input);
+                pm.setBoolean(2, status);
                 rs = pm.executeQuery();
                 if (rs.next()) return rs.getInt("totalDishes");
             }
@@ -96,17 +98,19 @@ public class DishDAO {
         return list;
     }
 
-    public List<Dish> getAllDishesByStatus(boolean status, int page) throws SQLException {
+    public List<Dish> getAllDishesByStatus(boolean status, int page, String input) throws SQLException {
         ArrayList<Dish> list = new ArrayList<>();
         String sql = "EXEC getAllDishesByStatus "
                 + "@Status = ?, "
-                + "@Page = ?";
+                + "@Page = ?, " +
+                "@searchPhrase = ?";
         try {
             con = DBContext.makeConnection();
             if (con != null) {
                 pm = con.prepareStatement(sql);
                 pm.setBoolean(1, status);
                 pm.setInt(2, page);
+                pm.setString(3, input);
                 rs = pm.executeQuery();
                 while (rs.next()) {
                     list.add(new Dish(rs.getString("DishID"),

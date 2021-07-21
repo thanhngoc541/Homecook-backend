@@ -79,8 +79,8 @@ public class AccountServices {
         }
     }
     @GET
-    @Path("/count")
-    public String getTotalAccount(String role) {
+    @Path("/count/{role}")
+    public String getTotalAccount(@PathParam("role") String role) {
         int total= service.countByRole(role);
         String result= gson.toJson(total);
         return result;
