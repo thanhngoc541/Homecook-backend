@@ -247,9 +247,6 @@ public class OrderServices {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/updateStatus/{id}/{status}")
     public Response updateOrder02(@PathParam("id") String orderID, @PathParam("status") String status) throws SQLException {
-//        Order order= gson.fromJson(data, Order.class);
-//        Order order= new Order();
-//        int stat=order.getStatusID(status);
         boolean result= service.changeOrderStatus(orderID, status);
         return result ? Response.ok().build() : Response.notModified().build();
     }
