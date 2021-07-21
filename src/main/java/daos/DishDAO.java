@@ -245,8 +245,8 @@ public class DishDAO {
 
 
     public boolean changeDishStatus(String DishID, boolean input) throws SQLException {
-        String sql = "EXEC changeDishStatus"
-                + "@IsAvailable = ?, "
+        String sql = "EXEC changeDishStatus "
+                + "@Status = ?, "
                 + "@DishID = ?";
         try {
             con = DBContext.makeConnection();
@@ -266,31 +266,9 @@ public class DishDAO {
 
 
      public static void main(String[] args) throws SQLException {
-//         DishDAO dishdao = new DishDAO();
-//         System.out.println(dishdao.getTotalHomeCookDish("6ABE8D62-72D2-4F13-B790-C35EA529365B"));
+         DishDAO dishdao = new DishDAO();
+         System.out.println(dishdao.changeDishStatus("469E31C4-1365-4EF3-8DCD-81A357C553F1",true));
      }
-//         for (Dish d : dishdao.getAllDishesByHomeCook("6ABE8D62-72D2-4F13-B790-C35EA529365B",1)){
-//             System.out.println(d);
-//         }
-//     }
 
-//        for (Dish d : dishdao.getAllDishesByStatus(true)){
-//            System.out.println(d);
-//        }
-//        for (Dish d : dishdao.getAllDishesByOrderID(4)){
-//            System.out.println(d);
-
-        /*
-         * for (Dish d : dishdao.getAllDishesByOrderID(4)){ System.out.println(d); }
-         */
-        //HomeCookID, DishName, Price, IsAvailable Description, ImageURL
-//        boolean flag = dishdao.createDish(new Dish(2,"Bun Bo",50.1,false,"Ngon nhat Sai Gon", "abc"));
-//        Dish dish = dishdao.getDishByID(2);
-//        dish.setDishName("Bun Cha Ha Noi");
-//        boolean flag = dishdao.updateDish(dish);
-//        boolean flag = dishdao.changeDishStatus(2,false);
-//        System.out.println(flag);
-
-//    }
 
 }
