@@ -144,7 +144,7 @@ public class MenuDAO {
                 while(rs.next()){
                     menuID=rs.getString("MenuID");
                     list.add(new Menu(rs.getString("MenuName"),
-                            rs.getString("MenuID"),
+                            menuID,
                             ID,
                             rs.getString("HomeCookName"),
                             rs.getBoolean("IsServing"),
