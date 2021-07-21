@@ -116,4 +116,21 @@ public class Menu {
     public void setDishes(List<Dish> dishes) {
         Dishes = dishes;
     }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "MenuName='" + MenuName + '\'' +
+                ", MenuID='" + MenuID + '\'' +
+                ", HomeCookID='" + HomeCookID + '\'' +
+                ", HomeCookName='" + HomeCookName + '\'' +
+                ", IsServing=" + IsServing +
+                ", Dishes=" + Dishes +
+                ", MenuURL='" + MenuURL + '\'' +
+                ", MenuDescription='" + MenuDescription + '\'' +
+                ", Rating=" + Rating +
+                ", Servings='" + Servings + '\'' +
+                ", Price=" + Price +
+                '}';
+    }
 }

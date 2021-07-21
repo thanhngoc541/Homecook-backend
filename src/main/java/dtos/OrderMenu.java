@@ -82,12 +82,12 @@ public class OrderMenu {
 
     @Override
     public String toString() {
-        return "\nOrderItem{" +
-                "ItemID=" + ItemID +
-                ", OrderID=" + OrderID +
-                ", Menu=" +Menu +
+        return "\nOrderMenu{" +
+                "ItemID='" + ItemID + '\'' +
+                ", OrderID='" + OrderID + '\'' +
                 ", Quantity=" + Quantity +
                 ", Note='" + Note + '\'' +
+                ", Menu=" + Menu+
                 ", TotalPrice=" + TotalPrice +
                 '}';
     }

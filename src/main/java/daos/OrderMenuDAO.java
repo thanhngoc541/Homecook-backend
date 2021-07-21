@@ -69,7 +69,11 @@ public class OrderMenuDAO {
                 ps.setInt(3, menu.getQuantity());
                 ps.setString(4, menu.getNote());
                 ps.setDouble(5, menu.getTotalPrice());
-                return menu.getMenu().getMenuID();
+                rs= ps.executeQuery();
+                if (rs.next()) {
+                    menu.setItemID(rs.getString("ItemID"));
+                }
+                return menu.getItemID();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

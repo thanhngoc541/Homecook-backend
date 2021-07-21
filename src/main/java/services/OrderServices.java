@@ -211,22 +211,23 @@ public class OrderServices {
 
     //-----------GetList menu
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createOrder(String data, @Context UriInfo uriInfo) throws SQLException, URISyntaxException {
         //lam sao de extract cai order item ra khoi data string
         Order resultID = new Order();
         Order order= gson.fromJson(data, Order.class);
         System.out.println(order);
-//        if (!order.isMenu()) {
-//             resultID = service.createOrder(order);
-//            if (resultID.getOrderItems() != null) {
-//                for (OrderItem item : resultID.getOrderItems()) {
-//                    item.setOrderID(order.getOrderID());
-//                    String resultItem= service.insertOrderItems(item);
-//                    System.out.println(resultItem);
-//                }
-//            }
-//        } else if
+        if (!order.isMenu()) {
+             resultID = service.createOrder(order);
+            if (resultID.getOrderItems() != null) {
+                for (OrderItem item : resultID.getOrderItems()) {
+                    item.setOrderID(order.getOrderID());
+                    String resultItem= service.insertOrderItems(item);
+                    System.out.println(resultItem);
+                }
+            }
+        }
         if (order.isMenu()) {
              resultID= service.createOrder(order);
             if (resultID.getOrderMenus() != null) {
@@ -243,7 +244,7 @@ public class OrderServices {
             uri= new URI(uriInfo.getAbsolutePath() +"/"+ resultID.getOrderID());
         }
         System.out.println("uri: " + uri);
-        return Response.created(uri).build();
+        return Response.status(Response.Status.OK).entity(uri).build();
     }
 
     @PUT
