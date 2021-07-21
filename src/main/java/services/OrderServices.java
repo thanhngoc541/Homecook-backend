@@ -37,18 +37,21 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/orders/{page}")
+    @Path("/orders/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllOrder(@PathParam("page") int page) {
-        ArrayList<Order> orders= service.getAllOrder(page);
+    public String getAllOrder(@PathParam("name") String input, @PathParam("page") int page) {
+        if (input.equals("all")) input="";
+        ArrayList<Order> orders= service.getAllOrder(page, input);
         String result= gson.toJson(orders);
         return result;
     }
     @GET
-    @Path("/orders/{status}/{page}")
+    @Path("/orders/{status}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllOrderByStatus(@PathParam("status") String status, @PathParam("page")int page) {
-        ArrayList<Order> orders= service.getOrderByStatus(status, page);
+    public String getAllOrderByStatus(@PathParam("status") String status,
+                                      @PathParam("page")int page , @PathParam("name") String input) {
+        if (input.equals("all")) input="";
+        ArrayList<Order> orders= service.getOrderByStatus(status, page, input);
         String result= gson.toJson(orders);
         return result;
     }
@@ -61,13 +64,15 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/homecook/{id}/{status}/{page}")
+    @Path("/homecook/{id}/{status}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByHomeCookIDAndStatus(@PathParam("id") String homecookID,
-                                                @PathParam("status") String status, @PathParam("page") int page) throws SQLException {
+                                                @PathParam("status") String status,
+                                                @PathParam("name") String input, @PathParam("page") int page) throws SQLException {
+        if (input.equals("all")) input= "";
         Order order= new Order();
         int stat= order.getStatusID(status);
-        ArrayList<Order> orders= service.getOrderByHomeCookIDAndStatus(homecookID, stat, page);
+        ArrayList<Order> orders= service.getOrderByHomeCookIDAndStatus(homecookID,input, stat, page);
         String result= gson.toJson(orders);
         return result;
     }
@@ -83,10 +88,12 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/homecook/{id}")
+    @Path("/homecook/{id}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderByHomeCookID(@PathParam("id") String id) throws SQLException {
-        ArrayList<Order> orders= service.getOrderByHomeCookID(id, 1);
+    public String getOrderByHomeCookID(@PathParam("id") String id, @PathParam("name") String input,
+                                       @PathParam("page") int page) throws SQLException {
+        if (input.equals("all")) input ="";
+        ArrayList<Order> orders= service.getOrderByHomeCookID(id, input, page);
         String result= gson.toJson(orders);
         return result;
     }
@@ -122,9 +129,10 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/count")
-    public String getTotalOrder() {
-        int total= service.getTotalOfOrder();
+    @Path("/count/{name}")
+    public String getTotalOrder(@PathParam("name") String input) {
+        if (input.equals("all")) input ="";
+        int total= service.getTotalOfOrder(input);
         String result= gson.toJson(total);
         return result;
     }
@@ -149,10 +157,11 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/count/orders/{status}")
+    @Path("/count/orders/{status}/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String countAllOrderByStatus(@PathParam("status")String status) {
-        int count = service.countAllOrderByStatus(status);
+    public String countAllOrderByStatus(@PathParam("status")String status, @PathParam("name") String input) {
+        if (input.equals("all")) input="";
+        int count = service.countAllOrderByStatus(status, input);
         String result= gson.toJson(count);
         return result;
     }
@@ -164,9 +173,11 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/count/homecook/{id}/{status}")
-    public String countHomeCookOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
-        int count= service.countHomeCookOrderByIDAndStatus(id, status);
+    @Path("/count/homecook/{id}/{status}/{name}")
+    public String countHomeCookOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status,
+                                                  @PathParam("name") String name) {
+        if (name.equals("all")) name="";
+        int count= service.countHomeCookOrderByIDAndStatus(id, status, name);
         String result = gson.toJson(count);
         return result;
     }
