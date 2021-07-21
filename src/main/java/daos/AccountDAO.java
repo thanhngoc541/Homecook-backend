@@ -149,15 +149,19 @@ public class AccountDAO {
 		}
 		return null;
 	}
-	public int getTotalSearchedAccount(String username) {
+	public int getTotalSearchedAccount(String role, String username) {
 		int count= 0;
+		Account  account= new Account();
+		int roleID= account.getRoleID(role);
 		String query= "EXEC countSearchAccount " +
-				"@searchPhrase = ?";
+				"@searchPhrase = ?, " +
+				"@Role = ?";
 		try {
 			conn = DBContext.makeConnection();
 			if (conn != null) {
 				ps= conn.prepareStatement(query);
 				 ps.setString(1, username);
+				 ps.setInt(2, roleID);
 				 rs= ps.executeQuery();
 				 while (rs.next()) {
 				 	count= rs.getInt("total");
@@ -168,18 +172,21 @@ public class AccountDAO {
 		}
 		return count;
 	}
-	public ArrayList<Account> getSearchedAccount(String name, int page) {
-
+	public ArrayList<Account> getSearchedAccount(String name, int page, String role) {
+		Account account= new Account();
+		int roleID= account.getRoleID(role);
 		ArrayList<Account> list = new ArrayList<>();
 		String query= "EXEC searchAccount " +
 				"@searchPhrase = ? , " +
-				"@Page = ?";
+				"@Page = ?, " +
+				"@Role = ?";
 		try {
 			conn = DBContext.makeConnection();
 			if (conn != null) {
 				ps= conn.prepareStatement(query);
 				ps.setString(1, name);
 				ps.setInt(2, page);
+				ps.setInt(3, roleID);
 
 				rs = ps.executeQuery();
 				while (rs.next()) {

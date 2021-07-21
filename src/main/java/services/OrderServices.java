@@ -60,6 +60,7 @@ public class OrderServices {
                                                 @PathParam("status") String status,
                                                 @PathParam("name") String input, @PathParam("page") int page) throws SQLException {
         if (input.equals("all")) input= "";
+
         Order order= new Order();
         int stat= order.getStatusID(status);
         ArrayList<Order> orders= service.getOrderByHomeCookIDAndStatus(homecookID,input, stat, page);
@@ -67,13 +68,13 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/customer/{id}/{status}/{page}/")
+    @Path("/customer/{id}/{status}/{name}/{page}/")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByCustomerIDAndStatus(@PathParam("id") String customerID, @PathParam("status") String status,
-                                                @PathParam("page") int page) throws SQLException {
+                                                @PathParam("name") String name,@PathParam("page") int page) throws SQLException {
         Order order= new Order();
         int stat= order.getStatusID(status);
-        ArrayList<Order> orders= service.getOrderByCustomerIDAndStatus(customerID, stat, page);
+        ArrayList<Order> orders= service.getOrderByCustomerIDAndStatus(customerID, stat, name, page);
         String result= gson.toJson(orders);
         return result;
     }
@@ -166,9 +167,11 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/count/customer/{id}/{status}")
-    public String countCustomerOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
-        int count= service.countCustomerOrderByIDAndStatus(id, status);
+    @Path("/count/customer/{id}/{status}/{name}")
+    public String countCustomerOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status,
+                                                  @PathParam("name") String name) {
+        if (name.equals("all")) name="";
+        int count= service.countCustomerOrderByIDAndStatus(id, status, name);
         String result = gson.toJson(count);
         return result;
     }
@@ -213,19 +216,19 @@ public class OrderServices {
         //lam sao de extract cai order item ra khoi data string
         Order resultID = new Order();
         Order order= gson.fromJson(data, Order.class);
-        if (!order.isMenu()) {
-             resultID = service.createOrder(order);
-            System.out.println(resultID);
-            if (resultID.getOrderItems() != null) {
-                for (OrderItem item : resultID.getOrderItems()) {
-                    item.setOrderID(order.getOrderID());
-                    String resultItem= service.insertOrderItems(item);
-                    System.out.println(resultItem);
-                }
-            }
-        } else {
+        System.out.println(order);
+//        if (!order.isMenu()) {
+//             resultID = service.createOrder(order);
+//            if (resultID.getOrderItems() != null) {
+//                for (OrderItem item : resultID.getOrderItems()) {
+//                    item.setOrderID(order.getOrderID());
+//                    String resultItem= service.insertOrderItems(item);
+//                    System.out.println(resultItem);
+//                }
+//            }
+//        } else if
+        if (order.isMenu()) {
              resultID= service.createOrder(order);
-            System.out.println(resultID);
             if (resultID.getOrderMenus() != null) {
                 for (OrderMenu menu : resultID.getOrderMenus()) {
                     menu.setOrderID(order.getOrderID());

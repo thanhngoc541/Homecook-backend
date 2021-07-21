@@ -26,38 +26,7 @@ public class Order {
         statusTable.put(6, "Rejected");
         statusTable.put(7, "Cancelled");
     }
-    public Order(String orderID, String homecookID, String customerID, Instant timeStamp,Instant orderDate, String status,
-                 String receiverPhone,
-                 String receiverAddress,
-                 String receiverName, double total, String note, ArrayList<OrderItem> orderItems) {
-        OrderID = orderID;
-        HomeCookID=  homecookID;
-        CustomerID= customerID;
-        TimeStamp= timeStamp;
-        OrderDate= orderDate;
-        Status= status;
-        ReceiverPhone= receiverPhone;
-        ReceiverAddress= receiverAddress;
-        ReceiverName= receiverName;
-        Total= total;
-        Note= note;
-        OrderItems= orderItems;
-    }
-    public Order(String homecookID, String customerID, long timeStamp, long orderDate, String receiverPhone,
-                 String receiverAddress,
-                 String receiverName, double total, String note) {
-        OrderID= null;
-        HomeCookID=  homecookID;
-        CustomerID= customerID;
-        TimeStamp= Instant.ofEpochMilli(timeStamp);
-        OrderDate= Instant.ofEpochMilli(timeStamp);
-        ReceiverPhone= receiverPhone;
-        ReceiverAddress= receiverAddress;
-        ReceiverName= receiverName;
-        Total= total;
-        Note= note;
-        OrderItems= null;
-    }
+
     public Order(String orderID, String homecookID, String customerID, Instant orderDate, Instant timeStamp,
                  String status, String receiverName, String receiverPhone, String receiverAddress, double total,
                  String note) {
@@ -73,24 +42,6 @@ public class Order {
         Total= total;
         Note= note;
     }
-    //Nay dung cho Order co menu
-    public Order(String orderID, String homecookID, String customerID, Instant orderDate, Instant timeStamp,
-                 String status, String receiverName, String receiverPhone, String receiverAddress, double total,
-                 String note, boolean isMenu) {
-        OrderID= orderID;
-        HomeCookID= homecookID;
-        CustomerID= customerID;
-        OrderDate= orderDate;
-        TimeStamp= timeStamp;
-        Status= status;
-        ReceiverName= receiverName;
-        ReceiverPhone= receiverPhone;
-        ReceiverAddress= receiverAddress;
-        Total= total;
-        Note= note;
-        IsMenu= isMenu;
-    }
-
     public Order(String orderID, Instant timeStamp, Instant orderDate ,String status, double total, String note) {
         this.OrderID= orderID;
         this.TimeStamp= timeStamp;

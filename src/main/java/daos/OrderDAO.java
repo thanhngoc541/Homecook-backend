@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder;
 import dtos.Dish;
 import dtos.Order;
 import dtos.OrderItem;
+import dtos.OrderMenu;
+
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,11 +89,12 @@ public class OrderDAO {
         }
         return null;
     }
-    public ArrayList<Order> getOrderByCustomerIDAndStatus(String customerID,int status, int page) throws SQLException {
+    public ArrayList<Order> getOrderByCustomerIDAndStatus(String customerID,int status, String input , int page) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
         String query = "EXEC getOrderByCustomerIDAndStatus "
                 + "@CustomerID = ?, "
-                + "@StatusID= ?, "
+                + "@StatusID= ?, " +
+                "@searchPhrase = ? ,"
                 + "@Page = ?";
         try {
             conn = DBContext.makeConnection();
@@ -99,7 +102,9 @@ public class OrderDAO {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, customerID);
                 ps.setInt(2, status);
-                ps.setInt(3, page);
+                ps.setString(3, input);
+                ps.setInt(4, page);
+
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
@@ -424,12 +429,13 @@ public class OrderDAO {
         }
         return 0;
     }
-    public int countCustomerOrderByIDAndStatus(String customerID, String status) {
+    public int countCustomerOrderByIDAndStatus(String customerID, String status, String input) {
         int count= 0;
         Order order= new Order();
         String query = "EXEC countCustomerOrderByIDAndStatus " +
                 "@CustomerID = ?, " +
-                "@StatusID = ?";
+                "@StatusID = ?, " +
+                "@searchPhrase = ?";
         int stat= order.getStatusID(status);
         try {
             conn = DBContext.makeConnection();
@@ -437,6 +443,7 @@ public class OrderDAO {
                 ps= conn.prepareStatement(query);
                 ps.setString(1,customerID);
                 ps.setInt(2, stat);
+                ps.setString(3, input);
                 rs= ps.executeQuery();
                 while (rs.next()) {
                     count= rs.getInt("Total");
@@ -758,7 +765,8 @@ public class OrderDAO {
                 + "@ReceiverAddress = ?, "
                 + "@ReceiverName = ?, "
                 + "@Total = ?, "
-                + "@Note = ? ";
+                + "@Note = ?, " +
+                "@IsMenu = ?";
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
@@ -771,6 +779,12 @@ public class OrderDAO {
                     }
                     ord.setTotal(total);
                 }
+                if (ord.getOrderMenus() != null) {
+                    for (OrderMenu menu : ord.getOrderMenus()) {
+                        total += menu.getTotalPrice();
+                    }
+                    ord.setTotal(total);
+                }
                 ps.setString(1, ord.getHomeCookID());
                 ps.setString(2, ord.getCustomerID());
                 ps.setTimestamp(3, timeStamp);
@@ -780,6 +794,7 @@ public class OrderDAO {
                 ps.setString(7, ord.getReceiverName());
                 ps.setDouble(8, ord.getTotal());
                 ps.setString(9, ord.getNote());
+                ps.setBoolean(10, ord.isMenu());
                 rs= ps.executeQuery();
                 if(rs.next()) {
                     ord.setOrderID(rs.getString("OrderID"));
