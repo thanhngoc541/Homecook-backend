@@ -1,10 +1,7 @@
 package daos;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import dtos.Account;
 
@@ -153,7 +150,43 @@ public class AccountDAO {
 		return null;
 	}
 
+	public ArrayList<Account> getSearchedAccount(String name, int page) {
 
+		ArrayList<Account> list = new ArrayList<>();
+		String query= "EXEC searchAccount " +
+				"@searchPhrase = ? , " +
+				"@Page = ?";
+		try {
+			conn = DBContext.makeConnection();
+			if (conn != null) {
+				ps= conn.prepareStatement(query);
+				ps.setString(1, name);
+				ps.setInt(2, page);
+
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					Account result = new Account();
+					result.setUserID(rs.getString("AccountID"));
+					result.setUsername(rs.getString("Username"));
+					result.setPassword(rs.getString("Password"));
+					result.setFullName(rs.getString("FullName").trim());
+					result.setEmail(rs.getString("Email"));
+					result.setDoB(
+							new java.util.Date(rs.getDate("DoB").getTime()));
+					result.setAddress(rs.getString("Address"));
+					result.setPhoneNumber(rs.getString("PhoneNumber"));
+					result.setActive(rs.getBoolean("IsActive"));
+					result.setRole(result.getRoleName(rs.getInt("RoleID")));
+					result.setSaltKey(rs.getString("SaltKey"));
+					list.add(result);
+				}
+				return list;
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return null;
+	}
 	public boolean createAccount(Account input) throws SQLException{
 		try {
 			conn = DBContext.makeConnection();
@@ -183,10 +216,6 @@ public class AccountDAO {
 				ps.setString(9, input.getSaltKey());
 
 				rs = ps.executeQuery();
-//				if (rs.next()){
-//					String UserID = rs.getString("AccountID");
-//					System.out.println(UserID);
-//				}
 				return true;
 			}
 		}
