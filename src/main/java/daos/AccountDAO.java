@@ -149,7 +149,25 @@ public class AccountDAO {
 		}
 		return null;
 	}
-
+	public int getTotalSearchedAccount(String username) {
+		int count= 0;
+		String query= "EXEC countSearchAccount " +
+				"@searchPhrase = ?";
+		try {
+			conn = DBContext.makeConnection();
+			if (conn != null) {
+				ps= conn.prepareStatement(query);
+				 ps.setString(1, username);
+				 rs= ps.executeQuery();
+				 while (rs.next()) {
+				 	count= rs.getInt("total");
+				 }
+			}
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+		}
+		return count;
+	}
 	public ArrayList<Account> getSearchedAccount(String name, int page) {
 
 		ArrayList<Account> list = new ArrayList<>();
