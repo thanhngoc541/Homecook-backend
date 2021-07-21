@@ -61,6 +61,7 @@ public class AccountServices {
         return result;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     @GET
     @Path("/count/{role}/{username}")
     public String getTotalSearchedAccount(@PathParam("role") String role ,@PathParam("username") String username) {
@@ -71,6 +72,8 @@ public class AccountServices {
     }
 =======
 >>>>>>> b9a7278 (pull)
+=======
+>>>>>>> bbb74ed (pull)
     @GET
     @Path("/username/{username}")
     @Produces(MediaType.APPLICATION_JSON)
