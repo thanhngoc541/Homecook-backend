@@ -34,11 +34,5 @@ public class encryption {
 
 			return hexString.toString();
 		}
-
-		public static String saltKeyGenerate(String fullname) {
-			String[] input = fullname.split(" ");
-			return input[0];
-		}
-
 		// Driver code
 }

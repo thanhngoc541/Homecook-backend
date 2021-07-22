@@ -362,9 +362,16 @@ public class AccountDAO {
 		return 0;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		AccountDAO dao= new AccountDAO();
 		System.out.println(dao.getHomecookCount());
+		
+		Account output = dao.getAccountByID("e055184a-4ec2-4777-bf5b-a0065281021a");
+		
+		output.setFullName("Trần Quân");
+		output.setAddress("Sky Nine, Quận 9, Tp Hồ Chí Minh");
+		dao.updateAccountInfo(output);
+		
+		System.out.println(dao.getAccountByID("e055184a-4ec2-4777-bf5b-a0065281021a"));	
 	}
-
 }

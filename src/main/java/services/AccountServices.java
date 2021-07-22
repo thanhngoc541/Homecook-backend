@@ -92,7 +92,7 @@ public class AccountServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createAccount(String data)throws SQLException{
         Account account = gson.fromJson(data, Account.class);
-        account.setSaltKey(encryption.saltKeyGenerate(account.getFullName().trim()));
+        account.setSaltKey(account.getUsername().trim());
         System.out.println(account);
         
         boolean rs = service.createAccount(account);
