@@ -240,7 +240,7 @@ public class AccountDAO {
 				ps.setString(8, input.getPhoneNumber());
 				ps.setString(9, input.getSaltKey());
 
-				rs = ps.executeQuery();
+				ps.executeUpdate();
 				return true;
 			}
 		}
