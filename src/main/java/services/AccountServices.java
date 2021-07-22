@@ -59,7 +59,6 @@ public class AccountServices {
         String result= gson.toJson(accounts);
         return result;
     }
-<<<<<<< HEAD
     @GET
     @Path("/count/{role}/{username}")
     public String getTotalSearchedAccount(@PathParam("role") String role ,@PathParam("username") String username) {
@@ -68,8 +67,6 @@ public class AccountServices {
         String result= gson.toJson(total);
         return result;
     }
-=======
->>>>>>> b9a7278 (pull)
     @GET
     @Path("/username/{username}")
     @Produces(MediaType.APPLICATION_JSON)
