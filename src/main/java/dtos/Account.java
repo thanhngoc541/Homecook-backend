@@ -32,7 +32,7 @@ public class Account {
         Address = address;
         PhoneNumber = phoneNumber;
         IsActive = isActive;
-        SaltKey = encryption.saltKeyGenerate(fullName.trim());
+        SaltKey = username;
     }
 
     public String getSaltKey() {
