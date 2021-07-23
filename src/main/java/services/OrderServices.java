@@ -208,6 +208,7 @@ public class OrderServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String getListItems(@PathParam("orderID") String id) throws SQLException {
         Order order= service.getOrderById(id);
+        System.out.println(order);
         String result= "";
         if (order.isMenu()) {
             ArrayList<OrderMenu> menus = serviceMenu.getOrderMenuByOrderID(id, 1);

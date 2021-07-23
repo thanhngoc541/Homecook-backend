@@ -126,7 +126,7 @@ public class OrderDAO {
                     String phone = rs.getString("ReceiverPhone");
                     String address = rs.getString("ReceiverAddress");
                     String name = rs.getString("ReceiverName");
-
+                    boolean isMenu = rs.getBoolean("IsMenu");
                     ord.setOrderID(orderID);
                     ord.setCustomerID(customerID);
                     ord.setHomeCookID(homecookID);
@@ -138,6 +138,7 @@ public class OrderDAO {
                     ord.setReceiverPhone(phone);
                     ord.setReceiverAddress(address);
                     ord.setReceiverName(name);
+                    ord.setMenu(isMenu);
 
                     list.add(ord);
 
@@ -185,6 +186,7 @@ public class OrderDAO {
                     ord.setReceiverName(rs.getString("ReceiverName"));
                     ord.setReceiverPhone(rs.getString("ReceiverPhone"));
                     ord.setReceiverAddress(rs.getString("ReceiverAddress"));
+                    ord.setMenu(rs.getBoolean("IsMenu"));
                     ord.setOrderID(orderID);
                     ord.setTimeStamp(timeStamp.toInstant());
                     ord.setOrderDate(orderDate.toInstant());
@@ -235,7 +237,7 @@ public class OrderDAO {
                     String name= rs.getString("ReceiverName");
                     double total = rs.getDouble("Total");
                     String note = rs.getString("Note");
-
+                    ord.setMenu(rs.getBoolean("IsMenu"));
                     ord.setOrderID(orderID);
                     ord.setTimeStamp(timeStamp.toInstant());
                     ord.setOrderDate(orderDate.toInstant());
@@ -304,7 +306,7 @@ public class OrderDAO {
                     ord.setReceiverPhone(phone);
                     ord.setReceiverAddress(address);
                     ord.setReceiverName(name);
-
+                    ord.setMenu(rs.getBoolean("IsMenu"));
                     orders.add(ord);
                 }
                 return orders;
@@ -329,7 +331,8 @@ public class OrderDAO {
                     String status = ord.getStatusName(rs.getInt("StatusID"));
                    ord= new Order(rs.getString("OrderID"), rs.getString("HomeCookID"), rs.getString("CustomerID"),
                            orderDate, stamp, status, rs.getString("ReceiverName"), rs.getString("ReceiverPhone"),
-                           rs.getString("ReceiverAddress"), rs.getDouble("Total"), rs.getString("Note"));
+                           rs.getString("ReceiverAddress"), rs.getDouble("Total"), rs.getString("Note"),
+                           rs.getBoolean("IsMenu"));
                 }
                 return ord;
             }
@@ -591,7 +594,7 @@ public class OrderDAO {
                     ord.setReceiverPhone(phone);
                     ord.setReceiverAddress(address);
                     ord.setReceiverName(name);
-
+                    ord.setMenu(rs.getBoolean("IsMenu"));
                     list.add(ord);
                 }
                 return list;
@@ -913,10 +916,13 @@ public class OrderDAO {
         Timestamp OD= Timestamp.from(od);
         System.out.println(TS);
         System.out.println(OD);
-
+//        System.out.println(dao.("A6DA0F2E-9DD0-4B9E-B047-64F151EE7F14"));
 //        System.out.println(dao.getOrderByTimeRangeAndStatus(ts,od,"Pending", 1));
 
 //        System.out.println(dao.getOrderByHo
+
+//        System.out.println(dao.getOrderByHomeCookID("A0E6A64E-CF5E-4DFD-A674-BD9163419CF3", "",1));
+//        System.out.println(dao.getOrderByCustomerIDAndStatus("BF009BE2-5D2B-4FE8-8F2D-492EDEC07FA4", "Pending", "",1));
     }
 }
 

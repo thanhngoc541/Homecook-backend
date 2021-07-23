@@ -80,4 +80,9 @@ public class OrderMenuDAO {
         }
         return null;
     }
+
+    public static void main(String[] args) {
+        OrderMenuDAO dao= new OrderMenuDAO();
+        System.out.println(dao.getOrderMenuByOrderID("",1));
+    }
 }

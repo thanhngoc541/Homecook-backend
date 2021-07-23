@@ -29,7 +29,7 @@ public class Order {
 
     public Order(String orderID, String homecookID, String customerID, Instant orderDate, Instant timeStamp,
                  String status, String receiverName, String receiverPhone, String receiverAddress, double total,
-                 String note) {
+                 String note, boolean isMenu) {
         OrderID= orderID;
         HomeCookID= homecookID;
         CustomerID= customerID;
@@ -41,6 +41,7 @@ public class Order {
         ReceiverAddress= receiverAddress;
         Total= total;
         Note= note;
+        IsMenu= isMenu;
     }
 
 
@@ -66,6 +67,7 @@ public class Order {
         Note= null;
         OrderItems= null;
         OrderMenus= null;
+        IsMenu = false;
     }
 
     public String getOrderID() {
