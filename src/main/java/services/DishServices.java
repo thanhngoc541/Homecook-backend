@@ -75,6 +75,7 @@ public class DishServices {
     @Consumes(MediaType.APPLICATION_JSON)
     public String createDish(String data) throws SQLException, URISyntaxException {
         Dish dish = gson.fromJson(data, Dish.class);
+        System.out.println(dish);
         return gson.toJson(service.createDish(dish));
     }
 
@@ -83,6 +84,7 @@ public class DishServices {
     public Response updateDish(String data) throws SQLException {
         Dish dish = gson.fromJson(data, Dish.class);
         boolean result = service.updateDish(dish);
+        System.out.println(dish);
         return result ? Response.status(Response.Status.OK).entity(dish.getDishId()).build() : Response.notModified().build();
     }
     @PUT

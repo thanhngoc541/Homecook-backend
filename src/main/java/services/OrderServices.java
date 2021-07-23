@@ -67,14 +67,15 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/customer/{id}/{status}/{page}/")
+    @Path("/customer/{id}/{status}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrderByCustomerIDAndStatus(@PathParam("id") String customerID, @PathParam("status") String status,
-                                                @PathParam("page") int page) throws SQLException {
-        Order order= new Order();
-        int stat= order.getStatusID(status);
-        ArrayList<Order> orders= service.getOrderByCustomerIDAndStatus(customerID, stat, page);
+                                                @PathParam("name") String name,@PathParam("page") int page) throws SQLException {
+        if(name.equals("all")) name="";
+        ArrayList<Order> orders= service.getOrderByCustomerIDAndStatus(customerID, status, name, page);
+        System.out.println(orders);
         String result= gson.toJson(orders);
+        System.out.println(result);
         return result;
     }
     @GET
@@ -157,6 +158,14 @@ public class OrderServices {
         return result;
     }
     @GET
+    @Path("/count/customer/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countCustomerOrder(@PathParam("id") String customerID) {
+        int count = service.countCustomerOrder(customerID);
+        String result= gson.toJson(count);
+        return result;
+    }
+    @GET
     @Path("/count/orders/{status}/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public String countAllOrderByStatus(@PathParam("status")String status, @PathParam("name") String input) {
@@ -166,14 +175,18 @@ public class OrderServices {
         return result;
     }
     @GET
-    @Path("/count/customer/{id}/{status}")
-    public String countCustomerOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status) {
-        int count= service.countCustomerOrderByIDAndStatus(id, status);
+    @Path("/count/customer/{id}/{status}/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String countCustomerOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status,
+                                                  @PathParam("name") String name) {
+        if (name.equals("all")) name="";
+        int count= service.countCustomerOrderByIDAndStatus(id, status, name);
         String result = gson.toJson(count);
         return result;
     }
     @GET
     @Path("/count/homecook/{id}/{status}/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
     public String countHomeCookOrderByIDAndStatus(@PathParam("id") String id, @PathParam("status") String status,
                                                   @PathParam("name") String name) {
         if (name.equals("all")) name="";
@@ -183,6 +196,7 @@ public class OrderServices {
     }
     @GET
     @Path("/count/homecook/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public String getTotalHomeCookOrder(@PathParam("id") String id) {
         int total= service.getTotalHomeCookOrder(id);
         String result= gson.toJson(total);
@@ -208,14 +222,15 @@ public class OrderServices {
 
     //-----------GetList menu
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createOrder(String data, @Context UriInfo uriInfo) throws SQLException, URISyntaxException {
         //lam sao de extract cai order item ra khoi data string
         Order resultID = new Order();
         Order order= gson.fromJson(data, Order.class);
+        System.out.println(order);
         if (!order.isMenu()) {
              resultID = service.createOrder(order);
-            System.out.println(resultID);
             if (resultID.getOrderItems() != null) {
                 for (OrderItem item : resultID.getOrderItems()) {
                     item.setOrderID(order.getOrderID());
@@ -223,9 +238,9 @@ public class OrderServices {
                     System.out.println(resultItem);
                 }
             }
-        } else {
+        }
+        if (order.isMenu()) {
              resultID= service.createOrder(order);
-            System.out.println(resultID);
             if (resultID.getOrderMenus() != null) {
                 for (OrderMenu menu : resultID.getOrderMenus()) {
                     menu.setOrderID(order.getOrderID());
@@ -240,7 +255,7 @@ public class OrderServices {
             uri= new URI(uriInfo.getAbsolutePath() +"/"+ resultID.getOrderID());
         }
         System.out.println("uri: " + uri);
-        return Response.created(uri).build();
+        return Response.status(Response.Status.OK).entity(uri).build();
     }
 
     @PUT

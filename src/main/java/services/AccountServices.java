@@ -50,11 +50,13 @@ public class AccountServices {
         }
     }
     @GET
-    @Path("/{name}/{page}")
+    @Path("/{role}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getSearchedAccount(@PathParam("name") String name, @PathParam("page") int page) {
+    public String getSearchedAccount(@PathParam("role") String role, @PathParam("name") String name,
+                                     @PathParam("page") int page) {
         if (name.equals("all")) name="";
-        ArrayList<Account> accounts= service.getSearchedAccount(name, page);
+        ArrayList<Account> accounts= service.getSearchedAccount(name, page, role);
+
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(accounts);
         return result;
@@ -63,10 +65,11 @@ public class AccountServices {
     @Path("/count/{role}/{username}")
     public String getTotalSearchedAccount(@PathParam("role") String role ,@PathParam("username") String username) {
         if (username.equals("all")) username="";
-        int total= service.getTotalSearchedAccount(username);
+        int total= service.getTotalSearchedAccount(role, username);
         String result= gson.toJson(total);
         return result;
     }
+
     @GET
     @Path("/username/{username}")
     @Produces(MediaType.APPLICATION_JSON)

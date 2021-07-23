@@ -111,16 +111,19 @@ public class Dish {
     @Override
     public String toString() {
         return "Dish{" +
-                "DishId=" + DishId +
-                ", DishName='" + DishName + '\'' +
+                "DishName='" + DishName + '\'' +
+                ", DishId='" + DishId + '\'' +
+                ", HomeCookID='" + HomeCookID + '\'' +
                 ", Price=" + Price +
                 ", IsAvailable=" + IsAvailable +
                 ", Description='" + Description + '\'' +
                 ", ImageURL='" + ImageURL + '\'' +
+                ", Servings='" + Servings + '\'' +
+                ", Rating=" + Rating +
                 '}';
     }
 
-	@Override
+    @Override
 	public boolean equals(Object obj) {
 		Dish d = (Dish) obj;
 		return this.IsAvailable == d.IsAvailable && this.DishId.equals(d.DishId) 

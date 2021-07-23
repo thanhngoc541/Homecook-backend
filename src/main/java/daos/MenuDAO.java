@@ -216,7 +216,7 @@ public class MenuDAO {
                 + "@Servings = ? , "
                 + "@Price = ? , "
                 + "@MenuURL = ? , "
-                + "@MenuDescription = ? ,";
+                + "@MenuDescription = ? ";
         try{
             con = DBContext.makeConnection();
             if (con != null){
@@ -252,9 +252,9 @@ public class MenuDAO {
                 + "@MenuName = ? , "
                 + "@IsServing = ? , "
                 + "@MenuURL = ? , "
-                + "@MenuDescription = ? "
+                + "@MenuDescription = ? ,"
                 + "@Servings = ? , "
-                + "@Price = ? , ";
+                + "@Price = ?  ";
         try{
             con = DBContext.makeConnection();
             if (con != null){
