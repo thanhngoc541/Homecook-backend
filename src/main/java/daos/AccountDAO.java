@@ -102,6 +102,7 @@ public class AccountDAO {
 					result.setActive(rs.getBoolean("IsActive"));
 					result.setRole(result.getRoleName(rs.getInt("RoleID")));
 					result.setSaltKey(rs.getString("SaltKey"));
+					result.setToken(rs.getString("token"));
 				}
 				return result;
 			}
@@ -325,6 +326,7 @@ public class AccountDAO {
 		}
 		return null;
 	}
+
 	public int getCustomerCount() {
 		int count=0;
 		String query= "EXEC getCustomerCount";
@@ -366,12 +368,12 @@ public class AccountDAO {
 		AccountDAO dao= new AccountDAO();
 		System.out.println(dao.getHomecookCount());
 		
-		Account output = dao.getAccountByID("e055184a-4ec2-4777-bf5b-a0065281021a");
-		
-		output.setFullName("Trần Quân");
-		output.setAddress("Sky Nine, Quận 9, Tp Hồ Chí Minh");
-		dao.updateAccountInfo(output);
-		
-		System.out.println(dao.getAccountByID("e055184a-4ec2-4777-bf5b-a0065281021a"));	
+		Account output = dao.getAccountByID("149dff8e-7eb7-40a9-be27-b89dba92aeaa");
+		System.out.println(output);
+//		output.setFullName("Trần Quân");
+//		output.setAddress("Sky Nine, Quận 9, Tp Hồ Chí Minh");
+//		dao.updateAccountInfo(output);
+//
+//		System.out.println(dao.getAccountByID("e055184a-4ec2-4777-bf5b-a0065281021a"));
 	}
 }

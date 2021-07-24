@@ -7,7 +7,7 @@ import java.util.Map;
 import Utils.encryption;
 
 public class Account {
-    private String Username, Role, Email, FullName, Address, PhoneNumber, UserID;
+    private String Username, Role, Email, FullName, Address, PhoneNumber, UserID, token;
     private String Password;
     private transient String SaltKey;
     private boolean IsActive;
@@ -33,6 +33,14 @@ public class Account {
         PhoneNumber = phoneNumber;
         IsActive = isActive;
         SaltKey = username;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getSaltKey() {
@@ -142,7 +150,8 @@ public class Account {
                 ", DoB='" + DoB + '\'' +
                 ", Address='" + Address + '\'' +
                 ", PhoneNumber='" + PhoneNumber + '\'' +
-                ", IsActive=" + IsActive +
+                ", IsActive=" + IsActive + '\'' +
+                ", token=" + token +
                 '}';
     }
     
