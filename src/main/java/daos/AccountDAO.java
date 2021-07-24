@@ -45,6 +45,7 @@ public class AccountDAO {
 		}
 		return 0;
 	}
+
 	public ArrayList<Account> getAllAccountByRole(String role, int page) throws SQLException  {
 		try {
 			ArrayList<Account> result = new ArrayList<Account>();
@@ -293,7 +294,8 @@ public class AccountDAO {
 					+ "@Date = ?,"
 					+ "@Address = ?,"
 					+ "@PhoneNumber = ?,"
-					+ "@UserID = ?";
+					+ "@UserID = ?, " +
+					"@token= ?";
 			 ps = conn.prepareStatement(query);
 
 			ps.setString(1, input.getUsername());
@@ -304,6 +306,7 @@ public class AccountDAO {
 			ps.setString(6,  input.getAddress());
 			ps.setString(7, input.getPhoneNumber());
 			ps.setString(8, input.getUserID());
+			ps.setString(9, input.getToken());
 			ps.executeUpdate();
 			return true;
 		}
@@ -314,7 +317,27 @@ public class AccountDAO {
 		}
 		return false;
 	}
-
+	public boolean setAccountToken(String id, String token) throws SQLException {
+		String query= "EXEC setAccountToken " +
+				"@AccountID = ?, " +
+				"@Token = ? ";
+		try {
+			conn = DBContext.makeConnection();
+			if (conn!= null) {
+				ps=conn.prepareStatement(query);
+				ps.setString(1, id);
+				ps.setString(2, token);
+				ps.executeUpdate();
+				return true;
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeConnection();
+		}
+		return false;
+	}
 	public Account login(String username, String password) throws SQLException {
 		try{
 			Account a = getAccountByUName(username);
@@ -367,9 +390,8 @@ public class AccountDAO {
 	public static void main(String[] args) throws SQLException {
 		AccountDAO dao= new AccountDAO();
 		System.out.println(dao.getHomecookCount());
-		
-		Account output = dao.getAccountByID("149dff8e-7eb7-40a9-be27-b89dba92aeaa");
-		System.out.println(output);
+
+		System.out.println(dao.setAccountToken("5D5B8D91-6817-4F41-87E4-FF584382783F", "cIuGNFJaF44rjaXWuFUsd4:APA91bEyDDY-8er8UjnwZYwgy8FR_334weZ_kpxmU8E20DfWx5xJV7p8CwmnDHZwmDUV9E5S2RsbLkoO25gbkrOxxVRbPegB11c0UKjeA6OwVdKlSBkdHPso4R_mwGY6M19HfqnSRFHR"));
 //		output.setFullName("Trần Quân");
 //		output.setAddress("Sky Nine, Quận 9, Tp Hồ Chí Minh");
 //		dao.updateAccountInfo(output);

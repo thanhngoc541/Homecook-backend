@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import daos.AccountDAO;
 import dtos.Account;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -110,12 +111,23 @@ public class AccountServices {
         return user != null ? Response.status(Response.Status.OK).entity(gson.toJson(user)).build() : Response.status(Response.Status.NO_CONTENT).build();
     }
 
-
+    @PUT
+    @Path("/updateToken")
+    @Consumes (MediaType.APPLICATION_JSON)
+    public Response setAccountToken(String data) throws SQLException {
+        Account account= gson.fromJson(data, Account.class);
+        System.out.println(account);
+        var result= service.setAccountToken(account.getUserID(), account.getToken());
+        account.setPassword("");
+        return result ? Response.status(Response.Status.OK).entity(gson.toJson(account)).build() :
+                Response.notModified().build();
+    }
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateAccountInfo(String data)throws SQLException{
         Account account = gson.fromJson(data, Account.class);
         var result = service.updateAccountInfo(account);
+        account.setPassword("");
         return result ? Response.status(Response.Status.OK).entity(account.getUserID()).build() : Response.notModified().build();
     }
 
