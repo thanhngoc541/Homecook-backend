@@ -60,7 +60,6 @@ public class MenuServices {
         List<Menu> items= service.getSearchedMenu(name,page);
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(items);
-
         return result;
     }
 
@@ -88,7 +87,6 @@ public class MenuServices {
     public String createMenu(String data) throws URISyntaxException ,SQLException{
         Menu menu = gson.fromJson(data, Menu.class);
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(menu);
         String result = gson.toJson(service.createMenu(menu));
         return result;
     }

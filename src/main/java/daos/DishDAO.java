@@ -267,8 +267,7 @@ public class DishDAO {
 
      public static void main(String[] args) throws SQLException {
          DishDAO dishdao = new DishDAO();
-         System.out.println(dishdao.updateDish(new Dish("6C5F2AC8-A065-42BC-86DA-B955DD6B54A4","A0E6A64E-CF5E-4DFD-A674-BD9163419CF3","testt", 0.2F ,
-         true, "testtt", "https://homecook.blob.core.windows.net/image/Screenshot_1622118692.png", 0, "2-3")));
+         System.out.println(dishdao.getAllDishesByStatus(true, 1, "241"));
      }
 
 

@@ -75,9 +75,7 @@ public class OrderServices {
                                                 @PathParam("name") String name,@PathParam("page") int page) throws SQLException {
         if(name.equals("all")) name="";
         ArrayList<Order> orders= service.getOrderByCustomerIDAndStatus(customerID, status, name, page);
-        System.out.println(orders);
         String result= gson.toJson(orders);
-        System.out.println(result);
         return result;
     }
     @GET
@@ -203,7 +201,6 @@ public class OrderServices {
     @Produces(MediaType.APPLICATION_JSON)
     public String getListItems(@PathParam("orderID") String id) throws SQLException {
         Order order= service.getOrderById(id);
-        System.out.println(order);
         String result= "";
         if (order.isMenu()) {
             ArrayList<OrderMenu> menus = serviceMenu.getOrderMenuByOrderID(id, 1);
@@ -224,14 +221,12 @@ public class OrderServices {
         //lam sao de extract cai order item ra khoi data string
         Order resultID = new Order();
         Order order= gson.fromJson(data, Order.class);
-        System.out.println(order);
         if (!order.isMenu()) {
              resultID = service.createOrder(order);
             if (resultID.getOrderItems() != null) {
                 for (OrderItem item : resultID.getOrderItems()) {
                     item.setOrderID(order.getOrderID());
                     String resultItem= service.insertOrderItems(item);
-                    System.out.println(resultItem);
                 }
             }
         }
@@ -241,7 +236,6 @@ public class OrderServices {
                 for (OrderMenu menu : resultID.getOrderMenus()) {
                     menu.setOrderID(order.getOrderID());
                     String resultItem = serviceMenu.insertOrderMenu(menu);
-                    System.out.println(resultItem);
                 }
             }
         }
@@ -250,7 +244,6 @@ public class OrderServices {
         if (!resultID.getOrderID().isEmpty()) {
             uri= new URI(uriInfo.getAbsolutePath() +"/"+ resultID.getOrderID());
         }
-        System.out.println("uri: " + uri);
         return Response.status(Response.Status.OK).entity(uri).build();
     }
 

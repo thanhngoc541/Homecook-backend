@@ -390,8 +390,7 @@ public class AccountDAO {
 	public static void main(String[] args) throws SQLException {
 		AccountDAO dao= new AccountDAO();
 		System.out.println(dao.getHomecookCount());
-
-		System.out.println(dao.setAccountToken("5D5B8D91-6817-4F41-87E4-FF584382783F", "cIuGNFJaF44rjaXWuFUsd4:APA91bEyDDY-8er8UjnwZYwgy8FR_334weZ_kpxmU8E20DfWx5xJV7p8CwmnDHZwmDUV9E5S2RsbLkoO25gbkrOxxVRbPegB11c0UKjeA6OwVdKlSBkdHPso4R_mwGY6M19HfqnSRFHR"));
+//		System.out.println(dao.setAccountToken("5D5B8D91-6817-4F41-87E4-FF584382783F", "cIuGNFJaF44rjaXWuFUsd4:APA91bEyDDY-8er8UjnwZYwgy8FR_334weZ_kpxmU8E20DfWx5xJV7p8CwmnDHZwmDUV9E5S2RsbLkoO25gbkrOxxVRbPegB11c0UKjeA6OwVdKlSBkdHPso4R_mwGY6M19HfqnSRFHR"));
 //		output.setFullName("Trần Quân");
 //		output.setAddress("Sky Nine, Quận 9, Tp Hồ Chí Minh");
 //		dao.updateAccountInfo(output);

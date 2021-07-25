@@ -61,21 +61,24 @@ public class DishServices {
     @GET
     @Path("/status/{status}/{name}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllDishesByStatus(@PathParam("status")boolean status,@PathParam("name") String name ,
+    public String getAllDishesByStatus(@PathParam("status")boolean status,@PathParam("name") String name ,
                                          @PathParam("page") int page) throws SQLException {
         if (name.equals("all")) name="";
-        List<Dish> d = service.getAllDishesByStatus(status,page, name);
-        if (d.size()>0){
-            return Response.status(Response.Status.OK).entity(gson.toJson(d)).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
+//        List<Dish> d = service.getAllDishesByStatus(status,page, name);
+//        if (d.size()>0){
+//            return Response.status(Response.Status.OK).entity(gson.toJson(d)).build();
+//        }
+//        return Response.status(Response.Status.NOT_FOUND).build();
+        List<Dish> d= service.getAllDishesByStatus(status, page, name);
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        String result= gson.toJson(d);
+        return result;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public String createDish(String data) throws SQLException, URISyntaxException {
         Dish dish = gson.fromJson(data, Dish.class);
-        System.out.println(dish);
         return gson.toJson(service.createDish(dish));
     }
 
@@ -84,7 +87,6 @@ public class DishServices {
     public Response updateDish(String data) throws SQLException {
         Dish dish = gson.fromJson(data, Dish.class);
         boolean result = service.updateDish(dish);
-        System.out.println(dish);
         return result ? Response.status(Response.Status.OK).entity(dish.getDishId()).build() : Response.notModified().build();
     }
     @PUT

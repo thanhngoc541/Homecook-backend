@@ -94,7 +94,6 @@ public class AccountServices {
     public Response createAccount(String data)throws SQLException{
         Account account = gson.fromJson(data, Account.class);
         account.setSaltKey(account.getUsername().trim());
-        System.out.println(account);
         
         boolean rs = service.createAccount(account);
 
@@ -104,7 +103,6 @@ public class AccountServices {
     @POST
     @Path("/login")
      public Response login(String data)throws SQLException{
-        System.out.println(data);
         Account account = gson.fromJson(data, Account.class);
         Account user = service.login(account.getUsername(), account.getPassword());
         user.setPassword("");
@@ -116,7 +114,6 @@ public class AccountServices {
     @Consumes (MediaType.APPLICATION_JSON)
     public Response setAccountToken(String data) throws SQLException {
         Account account= gson.fromJson(data, Account.class);
-        System.out.println(account);
         var result= service.setAccountToken(account.getUserID(), account.getToken());
         account.setPassword("");
         return result ? Response.status(Response.Status.OK).entity(gson.toJson(account)).build() :
