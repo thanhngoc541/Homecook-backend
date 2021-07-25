@@ -29,10 +29,12 @@ public class OrderServices {
     private OrderDAO service= new OrderDAO();
     private Gson gson= new GsonBuilder().setPrettyPrinting().create();
     @GET
-    @Path("/customer/{id}")
+    @Path("/customer/{id}/{input}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderByCustomerID(@PathParam("id") String id) throws SQLException {
-        ArrayList<Order> orders= service.getOrderByCustomerID(id, 1);
+    public String getOrderByCustomerID(@PathParam("id") String id,@PathParam("input") String input,
+                                       @PathParam("page") int page) throws SQLException {
+        if (input.equals("all")) input = "";
+        ArrayList<Order> orders= service.getOrderByCustomerID(id, page, input);
         String result= gson.toJson(orders);
         return result;
     }
@@ -111,6 +113,22 @@ public class OrderServices {
     public String getTotalOrder(@PathParam("name") String input) {
         if (input.equals("all")) input ="";
         int total= service.getTotalOfOrder(input);
+        String result= gson.toJson(total);
+        return result;
+    }
+    @GET
+    @Path("/sales/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByWeek(@PathParam("id") String homeCookID) {
+        ArrayList total= service.getOrderByWeek(homeCookID);
+        String result= gson.toJson(total);
+        return result;
+    }
+    @GET
+    @Path("/sales/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getOrderByWeek() {
+        ArrayList total= service.getOrderByWeekAdmin();
         String result= gson.toJson(total);
         return result;
     }

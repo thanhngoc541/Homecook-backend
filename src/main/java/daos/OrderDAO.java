@@ -34,17 +34,19 @@ public class OrderDAO {
 
 
     //Lay order cua customer (Customer View)
-    public ArrayList<Order> getOrderByCustomerID(String customerID, int page) throws SQLException {
+    public ArrayList<Order> getOrderByCustomerID(String customerID, int page, String searchPhrase) throws SQLException {
         ArrayList<Order> list = new ArrayList<>();
         String query = "EXEC getOrderByCustomerID "
         		+ "@CustomerID = ?, "
-        		+ "@Page = ?";
+        		+ "@Page = ?, " +
+                "@searchPhrase = ?";
         try {
             conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
                 ps.setString(1, customerID);
                 ps.setInt(2, page);
+                ps.setString(3, searchPhrase);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     Order ord = new Order();
@@ -383,6 +385,45 @@ public class OrderDAO {
             throwables.printStackTrace();
         }
         return count;
+    }
+    public ArrayList getOrderByWeek(String homecookID) {
+        ArrayList sales= new ArrayList();
+        String query= "EXEC getOrderByWeek " +
+                "@HomeCookID = ? ";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1, homecookID);
+                rs= ps.executeQuery();
+                while(rs.next()) {
+                    sales.add(rs.getInt("Total"));
+                }
+                return sales;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+    public ArrayList getOrderByWeekAdmin() {
+        ArrayList sales= new ArrayList();
+        String query= "EXEC getOrderByWeekAdmin";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    sales.add(rs.getInt("Total"));
+                }
+                return sales;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
     public int countOrderItem(String orderID) {
         int count =0;
@@ -915,14 +956,8 @@ public class OrderDAO {
         Timestamp OD= Timestamp.from(od);
         System.out.println(TS);
         System.out.println(OD);
-        System.out.println(dao.getOrderByHomeCookIDAndStatus("8A9121FD-27B3-4B27-ACE6-BDA1FDE7CC5E", "", 2, 1));
-//        System.out.println(dao.("A6DA0F2E-9DD0-4B9E-B047-64F151EE7F14"));
-//        System.out.println(dao.getOrderByTimeRangeAndStatus(ts,od,"Pending", 1));
-
-//        System.out.println(dao.getOrderByHo
-
-//        System.out.println(dao.getOrderByHomeCookID("A0E6A64E-CF5E-4DFD-A674-BD9163419CF3", "",1));
-//        System.out.println(dao.getOrderByCustomerIDAndStatus("BF009BE2-5D2B-4FE8-8F2D-492EDEC07FA4", "Pending", "",1));
+        System.out.println(dao.getOrderByWeekAdmin());
+//
     }
 }
 
