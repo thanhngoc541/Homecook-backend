@@ -193,7 +193,6 @@ public class OrderDAO {
                     ord.setStatus(stat);
                     ord.setTotal(total);
                     ord.setNote(note);
-
                     list.add(ord);
                 }
                 return list;
@@ -916,6 +915,7 @@ public class OrderDAO {
         Timestamp OD= Timestamp.from(od);
         System.out.println(TS);
         System.out.println(OD);
+        System.out.println(dao.getOrderByHomeCookIDAndStatus("8A9121FD-27B3-4B27-ACE6-BDA1FDE7CC5E", "", 2, 1));
 //        System.out.println(dao.("A6DA0F2E-9DD0-4B9E-B047-64F151EE7F14"));
 //        System.out.println(dao.getOrderByTimeRangeAndStatus(ts,od,"Pending", 1));
 
