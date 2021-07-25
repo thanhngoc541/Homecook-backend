@@ -20,16 +20,19 @@ public class MenuDAO {
         if (pm != null) pm.close();
         if (con !=null) con.close();
     }
-    public int getTotalSearchedMenu(String name) {
+    //Huy sua them boolean
+    public int getTotalSearchedMenu(String name, boolean status) {
         int count= 0;
 
         String query = "EXEC countSearchMenu "
-                + "@searchPhrase = ? ";
+                + "@searchPhrase = ? ," +
+                "@Status = ?";
         try{
             con= DBContext.makeConnection();
             if (con != null) {
                 pm= con.prepareStatement(query);
                 pm.setString(1, name);
+                pm.setBoolean(2, status);
                 rs= pm.executeQuery();
                 while (rs.next()) {
                     count = rs.getInt("total");
@@ -164,12 +167,14 @@ public class MenuDAO {
         }
         return list;
     }
-    public List<Menu> getSearchedMenu(String name, int page) throws SQLException {
+    //Huy sua them boolean
+    public List<Menu> getSearchedMenu(String name, int page, boolean status) throws SQLException {
 
         List list = new ArrayList<Menu>();
         String sql = "EXEC searchMenu "
                 + "@searchPhrase = ? ,"
-                + "@Page = ?";
+                + "@Page = ?, " +
+                "@Status = ?";
 
         try{
             con = DBContext.makeConnection();
@@ -177,7 +182,7 @@ public class MenuDAO {
                 pm = con.prepareStatement(sql);
                 pm.setString(1,name);
                 pm.setInt(2, page);
-
+                pm.setBoolean(3, status);
 
                 rs = pm.executeQuery();
 
@@ -337,6 +342,6 @@ public class MenuDAO {
 //                , null));
 //        System.out.println(menu);
         //dao.deleteMenu("fee2cb76-89aa-4ccd-ab52-03c619b3366c");
-        System.out.println(dao.getSearchedMenu("247",1 ));
+//        System.out.println(dao.getSearchedMenu("247",1 ));
     }
 }

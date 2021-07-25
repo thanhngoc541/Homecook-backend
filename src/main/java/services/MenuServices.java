@@ -35,11 +35,12 @@ public class MenuServices {
         String result= gson.toJson(total);
         return result;
     }
+    //Huy sua them boolean
     @GET
-    @Path("/count/{name}")
-    public String getTotalSearchedMenu(@PathParam("name") String name) {
+    @Path("/count/{status}/{name}")
+    public String getTotalSearchedMenu(@PathParam("name") String name, @PathParam("status") boolean status) {
         if (name.equals("all")) name="";
-        int total= service.getTotalSearchedMenu(name);
+        int total= service.getTotalSearchedMenu(name, status);
         String result= gson.toJson(total);
         return result;
     }
@@ -52,12 +53,14 @@ public class MenuServices {
         String result= gson.toJson(items);
         return result;
     }
+    //Huy sua them boolean
     @GET
-    @Path("/{name}/{page}")
+    @Path("/{name}/{status}/{page}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getSearchedMenu(@PathParam("name") String name,@PathParam("page") int page) throws  SQLException{
+    public String getSearchedMenu(@PathParam("name") String name,@PathParam("page") int page,
+                                  @PathParam("status") boolean status) throws  SQLException{
         if (name.equals("all")) name="";
-        List<Menu> items= service.getSearchedMenu(name,page);
+        List<Menu> items= service.getSearchedMenu(name,page,status);
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         String result= gson.toJson(items);
         return result;
