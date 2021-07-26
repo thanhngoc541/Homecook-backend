@@ -425,6 +425,201 @@ public class OrderDAO {
         }
         return null;
     }
+    public ArrayList<Order> getSevenOrder() {
+        ArrayList<Order> orderList= new ArrayList<Order>();
+        String query= "EXEC getFirstSevenOrder";
+        try{
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                rs= ps.executeQuery();
+                while(rs.next()) {
+                    Order ord= new Order();
+
+
+                    ord.setOrderID(rs.getString("OrderID"));
+
+                    ord.setReceiverAddress(rs.getString("ReceiverAddress"));
+                    ord.setReceiverName(rs.getString("ReceiverName"));
+                    ord.setReceiverPhone(rs.getString("ReceiverPhone"));
+                    ord.setStatus(ord.getStatusName(rs.getInt("StatusID")));
+                    ord.setTotal(rs.getDouble("Total"));
+                    orderList.add(ord);
+                }
+                return orderList;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+    public ArrayList<Order> getAllOrder(int page, String input) {
+        ArrayList<Order> list= new ArrayList<>();
+        String query= "EXEC getAllOrder " +
+                "@searchPhrase = ?, " +
+                "@Page = ?";
+        try {
+            conn= DBContext.makeConnection();
+            if (conn != null) {
+                ps= conn.prepareStatement(query);
+                ps.setString(1, input);
+                ps.setInt(2, page);
+                rs=ps.executeQuery();
+                while (rs.next()) {
+                    Order ord = new Order();
+                    //chuyen tu status id => name
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+                    //-----------
+                    java.sql.Timestamp tmpTimeStamp= new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    Date timeStamp= new Date(tmpOrderDate.getTime());
+                    String homecookID = rs.getString("HomeCookID");
+                    String orderID= rs.getString("OrderID");
+                    String status = ord.getStatusName(rs.getInt("StatusID"));
+                    double total = rs.getDouble("Total");
+                    String phone = rs.getString("ReceiverPhone");
+                    String address = rs.getString("ReceiverAddress");
+                    String name = rs.getString("ReceiverName");
+
+                    ord.setOrderID(orderID);
+                    ord.setOrderDate(orderDate.toInstant());
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setHomeCookID(homecookID);
+                    ord.setStatus(status);
+                    ord.setTotal(total);
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverAddress(address);
+                    ord.setReceiverName(name);
+                    ord.setMenu(rs.getBoolean("IsMenu"));
+                    list.add(ord);
+                }
+                return list;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+    public ArrayList<Order> getOrderByTimeRange(Instant fromDate, Instant toDate, int page) {
+        ArrayList<Order> orders= new ArrayList<Order>();
+        String query= "EXEC getOrderByTimeRange " +
+                "@FromDate = ? , " +
+                "@ToDate = ? , " +
+                "@Page = ?";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null ) {
+                Timestamp from= Timestamp.from(fromDate);
+                Timestamp to= Timestamp.from(toDate);
+                ps= conn.prepareStatement(query);
+                ps.setTimestamp(1, from);
+                ps.setTimestamp(2, to);
+                ps.setInt(3,page);
+                rs= ps.executeQuery();
+                while (rs.next()) {
+                    Order ord= new Order();
+                    String orderID = rs.getString("OrderID");
+                    //Doi tu sql Timestamp qua Date java
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    String customerID= rs.getString("CustomerID");
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+                    int status= rs.getInt("Status");
+
+                    String homecookID = rs.getString("HomeCookID");
+                    //chuyen tu status id => name
+                    double total = rs.getDouble("Total");
+                    String note = rs.getString("Note");
+                    String phone = rs.getString("ReceiverPhone");
+                    String address = rs.getString("ReceiverAddress");
+                    String name = rs.getString("ReceiverName");
+
+                    ord.setOrderID(orderID);
+                    ord.setCustomerID(customerID);
+                    ord.setHomeCookID(homecookID);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
+                    ord.setStatus(ord.getStatusName(status));
+                    ord.setTotal(total);
+                    ord.setNote(note);
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverAddress(address);
+                    ord.setReceiverName(name);
+
+                    orders.add(ord);
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+    public ArrayList<Order> getOrderByTimeRangeAndStatus(Instant fromDate, Instant toDate,String status, int page) throws SQLException {
+        ArrayList<Order> orders = new ArrayList<>();
+        Order order= new Order();
+        int stat= order.getStatusID(status);
+        String query = "EXEC getOrderByTimeRangeAndStatus "
+                + "@FromDate = ?, "
+                + "@ToDate = ?, " +
+                "@StatusID = ? ,"
+                + "@Page = ?";
+
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                Timestamp from= Timestamp.from(fromDate);
+                Timestamp to= Timestamp.from(toDate);
+                ps = conn.prepareStatement(query);
+
+                ps.setTimestamp(1, from);
+                ps.setTimestamp(2, to);
+                ps.setInt(3, stat);
+                ps.setInt(4, page);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Order ord= new Order();
+                    String orderID = rs.getString("OrderID");
+                    //Doi tu sql Timestamp qua Date java
+                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
+                    java.util.Date timeStamp = new Date(tmpTime.getTime());
+                    String customerID= rs.getString("CustomerID");
+                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
+                    Date orderDate= new Date(tmpOrderDate.getTime());
+
+                    String homecookID = rs.getString("HomeCookID");
+                    //chuyen tu status id => name
+                    double total = rs.getDouble("Total");
+                    String note = rs.getString("Note");
+                    String phone = rs.getString("ReceiverPhone");
+                    String address = rs.getString("ReceiverAddress");
+                    String name = rs.getString("ReceiverName");
+
+                    ord.setOrderID(orderID);
+                    ord.setCustomerID(customerID);
+                    ord.setHomeCookID(homecookID);
+                    ord.setTimeStamp(timeStamp.toInstant());
+                    ord.setOrderDate(orderDate.toInstant());
+                    ord.setStatus(status);
+                    ord.setTotal(total);
+                    ord.setNote(note);
+                    ord.setReceiverPhone(phone);
+                    ord.setReceiverAddress(address);
+                    ord.setReceiverName(name);
+
+                    orders.add(ord);
+                }
+                return orders;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return null;
+    }
+
+    //------COUNT
     public int countOrderItem(String orderID) {
         int count =0;
         String query= "EXEC countOrderItem " +
@@ -569,199 +764,51 @@ public class OrderDAO {
         }
         return 0;
     }
-    public ArrayList<Order> getSevenOrder() {
-        ArrayList<Order> orderList= new ArrayList<Order>();
-        String query= "EXEC getFirstSevenOrder";
-        try{
-            conn = DBContext.makeConnection();
-            if (conn != null) {
-                ps= conn.prepareStatement(query);
-                rs= ps.executeQuery();
-                while(rs.next()) {
-                    Order ord= new Order();
-
-
-                    ord.setOrderID(rs.getString("OrderID"));
-
-                    ord.setReceiverAddress(rs.getString("ReceiverAddress"));
-                    ord.setReceiverName(rs.getString("ReceiverName"));
-                    ord.setReceiverPhone(rs.getString("ReceiverPhone"));
-                    ord.setStatus(ord.getStatusName(rs.getInt("StatusID")));
-                    ord.setTotal(rs.getDouble("Total"));
-                    orderList.add(ord);
-                }
-                return orderList;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
-    public ArrayList<Order> getAllOrder(int page, String input) {
-        ArrayList<Order> list= new ArrayList<>();
-        String query= "EXEC getAllOrder " +
-                "@searchPhrase = ?, " +
-                "@Page = ?";
-        try {
-            conn= DBContext.makeConnection();
-            if (conn != null) {
-                ps= conn.prepareStatement(query);
-                ps.setString(1, input);
-                ps.setInt(2, page);
-                rs=ps.executeQuery();
-                while (rs.next()) {
-                    Order ord = new Order();
-                    //chuyen tu status id => name
-                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
-                    Date orderDate= new Date(tmpOrderDate.getTime());
-                    //-----------
-                    java.sql.Timestamp tmpTimeStamp= new Timestamp(rs.getTimestamp("TimeStamp").getTime());
-                    Date timeStamp= new Date(tmpOrderDate.getTime());
-                    String homecookID = rs.getString("HomeCookID");
-                    String orderID= rs.getString("OrderID");
-                    String status = ord.getStatusName(rs.getInt("StatusID"));
-                    double total = rs.getDouble("Total");
-                    String phone = rs.getString("ReceiverPhone");
-                    String address = rs.getString("ReceiverAddress");
-                    String name = rs.getString("ReceiverName");
-
-                    ord.setOrderID(orderID);
-                    ord.setOrderDate(orderDate.toInstant());
-                    ord.setTimeStamp(timeStamp.toInstant());
-                    ord.setHomeCookID(homecookID);
-                    ord.setStatus(status);
-                    ord.setTotal(total);
-                    ord.setReceiverPhone(phone);
-                    ord.setReceiverAddress(address);
-                    ord.setReceiverName(name);
-                    ord.setMenu(rs.getBoolean("IsMenu"));
-                    list.add(ord);
-                }
-                return list;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
-    public ArrayList<Order> getOrderByTimeRange(Instant fromDate, Instant toDate, int page) {
-        ArrayList<Order> orders= new ArrayList<Order>();
-        String query= "EXEC getOrderByTimeRange " +
-                "@FromDate = ? , " +
-                "@ToDate = ? , " +
-                "@Page = ?";
+    public int countTodayOrderAdmin(Instant date) {
+        int count = 0;
+        String query = "EXEC getTodayOrderAdmin " +
+                "@date = ?";
         try {
             conn = DBContext.makeConnection();
             if (conn != null ) {
-                Timestamp from= Timestamp.from(fromDate);
-                Timestamp to= Timestamp.from(toDate);
+                Timestamp inputDate= Timestamp.from(date);
                 ps= conn.prepareStatement(query);
-                ps.setTimestamp(1, from);
-                ps.setTimestamp(2, to);
-                ps.setInt(3,page);
-                rs= ps.executeQuery();
-                while (rs.next()) {
-                    Order ord= new Order();
-                    String orderID = rs.getString("OrderID");
-                    //Doi tu sql Timestamp qua Date java
-                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
-                    java.util.Date timeStamp = new Date(tmpTime.getTime());
-                    String customerID= rs.getString("CustomerID");
-                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
-                    Date orderDate= new Date(tmpOrderDate.getTime());
-                    int status= rs.getInt("Status");
-
-                    String homecookID = rs.getString("HomeCookID");
-                    //chuyen tu status id => name
-                    double total = rs.getDouble("Total");
-                    String note = rs.getString("Note");
-                    String phone = rs.getString("ReceiverPhone");
-                    String address = rs.getString("ReceiverAddress");
-                    String name = rs.getString("ReceiverName");
-
-                    ord.setOrderID(orderID);
-                    ord.setCustomerID(customerID);
-                    ord.setHomeCookID(homecookID);
-                    ord.setTimeStamp(timeStamp.toInstant());
-                    ord.setOrderDate(orderDate.toInstant());
-                    ord.setStatus(ord.getStatusName(status));
-                    ord.setTotal(total);
-                    ord.setNote(note);
-                    ord.setReceiverPhone(phone);
-                    ord.setReceiverAddress(address);
-                    ord.setReceiverName(name);
-
-                    orders.add(ord);
+                ps.setTimestamp(1, inputDate);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    count = rs.getInt("Total");
                 }
+                return count;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
+        return 0;
     }
-    public ArrayList<Order> getOrderByTimeRangeAndStatus(Instant fromDate, Instant toDate,String status, int page) throws SQLException {
-        ArrayList<Order> orders = new ArrayList<>();
-        Order order= new Order();
-        int stat= order.getStatusID(status);
-        String query = "EXEC getOrderByTimeRangeAndStatus "
-        		+ "@FromDate = ?, "
-        		+ "@ToDate = ?, " +
-                "@StatusID = ? ,"
-        		+ "@Page = ?";
-
+    public int countTodayOrderHomeCook(String homecookID, Instant date) {
+        int count = 0;
+        String query = "EXEC getTodayOrderAdmin " +
+                "@HomeCookID = ? , " +
+                "@date = ?";
         try {
             conn = DBContext.makeConnection();
-            if (conn != null) {
-                Timestamp from= Timestamp.from(fromDate);
-                Timestamp to= Timestamp.from(toDate);
-                ps = conn.prepareStatement(query);
-
-                ps.setTimestamp(1, from);
-                ps.setTimestamp(2, to);
-                ps.setInt(3, stat);
-                ps.setInt(4, page);
+            if (conn != null ) {
+                Timestamp inputDate= Timestamp.from(date);
+                ps= conn.prepareStatement(query);
+                ps.setString(1, homecookID);
+                ps.setTimestamp(2, inputDate);
                 rs = ps.executeQuery();
-                while (rs.next()) {
-                    Order ord= new Order();
-                    String orderID = rs.getString("OrderID");
-                    //Doi tu sql Timestamp qua Date java
-                    java.sql.Timestamp tmpTime = new Timestamp(rs.getTimestamp("TimeStamp").getTime());
-                    java.util.Date timeStamp = new Date(tmpTime.getTime());
-                    String customerID= rs.getString("CustomerID");
-                    java.sql.Timestamp tmpOrderDate= new Timestamp(rs.getTimestamp("OrderDate").getTime());
-                    Date orderDate= new Date(tmpOrderDate.getTime());
-
-                    String homecookID = rs.getString("HomeCookID");
-                    //chuyen tu status id => name
-                    double total = rs.getDouble("Total");
-                    String note = rs.getString("Note");
-                    String phone = rs.getString("ReceiverPhone");
-                    String address = rs.getString("ReceiverAddress");
-                    String name = rs.getString("ReceiverName");
-
-                    ord.setOrderID(orderID);
-                    ord.setCustomerID(customerID);
-                    ord.setHomeCookID(homecookID);
-                    ord.setTimeStamp(timeStamp.toInstant());
-                    ord.setOrderDate(orderDate.toInstant());
-                    ord.setStatus(status);
-                    ord.setTotal(total);
-                    ord.setNote(note);
-                    ord.setReceiverPhone(phone);
-                    ord.setReceiverAddress(address);
-                    ord.setReceiverName(name);
-
-                    orders.add(ord);
+                if (rs.next()) {
+                    count = rs.getInt("Total");
                 }
-                return orders;
+                return count;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-        } finally {
-            closeConnection();
         }
-        return null;
+        return 0;
     }
+
 
     //Doi status
     //
