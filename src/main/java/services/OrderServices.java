@@ -114,20 +114,12 @@ public class OrderServices {
         String result= gson.toJson(total);
         return result;
     }
-    // @GET
-    // @Path("/count/{date}")
-    // public String countTodayOrderAdmin(@PathParam("date") String input) {
-    //     Instant date= Instant.ofEpochSecond(Long.parseLong(input));
-    //     int count = service.countTodayOrderAdmin(date);
-    //     String result = gson.toJson(count);
-    //     return result;
-    // }
+
     @GET
-    @Path("/count/{id}/{date}")
-    public String countTodayOrderHomeCook(@PathParam("id") String homecookID , @PathParam("date") String input) {
-        Instant date= Instant.ofEpochSecond(Long.parseLong(input));
-        int count = service.countTodayOrderHomeCook(homecookID, date);
-        String result = gson.toJson(count);
+    @Path("/count/admin")
+    public String getTotalOrderByWeekAdmin() {
+        int total= service.getTotalOrderByWeekAdmin();
+        String result= gson.toJson(total);
         return result;
     }
     @GET

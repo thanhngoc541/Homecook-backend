@@ -408,13 +408,13 @@ public class OrderDAO {
         return null;
     }
     public ArrayList getOrderByWeekAdmin() {
-        ArrayList sales= new ArrayList();
-        String query= "EXEC getOrderByWeekAdmin";
+        ArrayList sales = new ArrayList();
+        String query = "EXEC getOrderByWeekAdmin";
         try {
-            conn= DBContext.makeConnection();
+            conn = DBContext.makeConnection();
             if (conn != null) {
                 ps = conn.prepareStatement(query);
-                rs= ps.executeQuery();
+                rs = ps.executeQuery();
                 while (rs.next()) {
                     sales.add(rs.getInt("Total"));
                 }
@@ -424,6 +424,24 @@ public class OrderDAO {
             throwables.printStackTrace();
         }
         return null;
+    }
+    public int getTotalOrderByWeekAdmin() {
+        int sales = 0;
+        String query = "EXEC getOrderByWeekAdmin";
+        try {
+            conn = DBContext.makeConnection();
+            if (conn != null) {
+                ps = conn.prepareStatement(query);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    sales += rs.getInt("Total");
+                }
+                return sales;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return 0;
     }
     public ArrayList<Order> getSevenOrder() {
         ArrayList<Order> orderList= new ArrayList<Order>();
@@ -1003,7 +1021,7 @@ public class OrderDAO {
         Timestamp OD= Timestamp.from(od);
         System.out.println(TS);
         System.out.println(OD);
-        System.out.println(dao.getOrderByWeekAdmin());
+        System.out.println(dao.getTotalOrderByWeekAdmin());
 //
     }
 }
